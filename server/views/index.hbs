@@ -1,0 +1,14 @@
+<script src="http://build.origami.ft.com/v2/bundles/js?modules=o-errors@^3.3.0"></script>
+
+{{#if isProduction }}
+	{{> sentry }}
+{{/if}}
+
+<link rel="stylesheet" href="/static/main.css" type="text/css" />
+
+<main data-version="{{version}}">
+	Hello World
+</main>
+
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+<script src="/static/main.js"></script>

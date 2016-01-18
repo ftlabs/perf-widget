@@ -1,0 +1,14 @@
+{
+	"schemaVersion": 1,
+	"name": "perf-widget",
+	"purpose": "Records and highlights properties of FT webpages.",
+	"audience": "public",
+	"serviceTier": "bronze",
+	"dateCreated": "2016-01-18",
+	"contacts": [
+		{ "name":"FT Labs team", "email":"ftlabs@ft.com", "rel":"owner", "domain":"All support enquiries" }
+	],
+	"links": [
+		{ "url":"https://github.com/ftlabs/perf-widget.git", "category":"repo" }
+	]
+}
