@@ -43,3 +43,14 @@ module.exports.createTables = function createTables() {
 		return;
 	})
 };
+
+module.exports.query = function query(command) {
+	const connection = getConnection();
+
+	return connection.then(function(connection) {
+
+		const query = denodeify(connection.query.bind(connection));
+		
+		return query(mysql.escape(command));
+	});
+};

@@ -44,6 +44,7 @@
     "mockery": "^1.4.0",
     "nodemon": "^1.8.1",
     "selenium-standalone": "^4.8.0",
+    "sinon": "^1.17.2",
     "supertest": "^1.1.0",
     "webdriverio": "^3.3.0"
   },
