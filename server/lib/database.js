@@ -33,7 +33,7 @@ module.exports.createTables = function createTables() {
 		const queries = readSQLFiles().map(function(sql) {
 			console.log(sql)
 			return query(sql);
-		})
+		});
 
 		return Promise.all(queries);
 	})
