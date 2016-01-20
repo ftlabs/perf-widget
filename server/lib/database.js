@@ -42,5 +42,5 @@ module.exports.createTables = function createTables() {
 		debug(error);
 		process.kill(1);
 		return;
-	})			
+	})
 };
