@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const db = require('./lib/database');
+
+db.createTables();
 
 // FT Web App configuration
 const ftwebservice = require('express-ftwebservice');

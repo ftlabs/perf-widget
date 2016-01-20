@@ -24,6 +24,7 @@
 		"express-ftwebservice": "^2.0.0",
 		"express-hbs": "^0.8.4",
 		"morgan": "^1.6.1",
+		"mysql": "^2.10.2",
 		"npm-run-all": "^1.4.0",
 		"origami-build-tools": "^4.3.2",
 		"raven": "^0.9.0"
