@@ -54,7 +54,7 @@
 		"develop": "npm run watch -- --exec 'npm-run-all -p start build'",
 		"lint": "obt verify --excludeFiles=\\!client/src/js/**/*.js",
 		"postinstall": "npm run build",
-		"start": "DEBUG=perf-widget:* node ./server/bin/www",
+		"start": "DEBUG=perf-widget:* node $npm_package_main",
 		"tdd": "npm run watch -- --exec 'npm-run-all test'",
 		"test": "npm-run-all lint test:*",
 		"test:client": "karma start ./tests/karma.conf.js",
