@@ -55,4 +55,28 @@ describe('App', function () {
 			.expect('Content-Type', /json/)
 			.expect(200, done);
 	});
+
+	it('returns 422 for /data-for', function (done) {
+		request(app)
+			.get('/data-for')
+			.expect(422, done);
+	});
+
+	it('returns JSON for /data-for', function (done) {
+		request(app)
+			.get('/data-for')
+			.expect('Content-Type', /json/, done)
+	});
+
+	it('returns FT Labs API JSON structure for /data-for', function (done) {
+		request(app)
+			.get('/data-for')
+			.expect({
+				success: false,
+				data: {
+					error: 'Missing url query parameter.'
+				}, 
+				code: 422 
+			}, done);
+	});
 });
