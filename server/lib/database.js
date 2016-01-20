@@ -31,7 +31,6 @@ module.exports.createTables = function createTables() {
 		const query = denodeify(connection.query.bind(connection));
 
 		const queries = readSQLFiles().map(function(sql) {
-			console.log(sql)
 			return query(sql);
 		});
 
