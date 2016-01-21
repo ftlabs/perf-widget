@@ -50,7 +50,6 @@ module.exports.query = function query(command) {
 	return connection.then(function(connection) {
 
 		const query = denodeify(connection.query.bind(connection));
-		
-		return query(mysql.escape(command));
+		return query(command);
 	});
 };

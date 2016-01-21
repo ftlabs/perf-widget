@@ -12,8 +12,12 @@ const sinon = require('sinon');
 const databaseMock = {
 	query: sinon.stub()
 };
-
 mockery.registerMock('./database', databaseMock);
+
+const mysqlMock = {
+	escape: sinon.stub()
+};
+mockery.registerMock('mysql', mysqlMock);
 
 const moduleUnderTest = '../../../server/lib/pageExists';
 
@@ -30,11 +34,13 @@ const pageExists = require(moduleUnderTest);
 describe('pageExists', function () {
 	afterEach(function () {
 		databaseMock.query.reset();
+		mysqlMock.escape.reset();
 	});
 
 	after(mockery.disable);
 
 	it('given any parameters, it returns a promise', function () {
+		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.resolve());
 		expect(pageExists()).to.be.a('promise');
 		expect(pageExists(null)).to.be.a('promise');
@@ -47,6 +53,7 @@ describe('pageExists', function () {
 	});
 
 	it('rejects if the queries promise is rejected', function () {
+		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.reject());
 		expect(pageExists()).to.be.rejected;
 		expect(pageExists(null)).to.be.rejected;
@@ -59,6 +66,7 @@ describe('pageExists', function () {
 	});
 
 	it('resolves if the queries promise is resolved', function () {
+		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.resolve());
 		expect(pageExists()).to.be.resolved;
 		expect(pageExists(null)).to.be.resolved;
@@ -71,17 +79,20 @@ describe('pageExists', function () {
 	});
 
 	it('resolves with a boolean value', function () {
+		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.resolve());
 		expect(pageExists()).to.eventually.be.resolved;
 		expect(pageExists(0, 1)).to.eventually.be.a('boolean');
 	});
 
 	it('resolves with true is page exists', function () {
+		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.resolve(1));
 		expect(pageExists()).to.eventually.be.true;
 	});
 
 	it('resolves with false is page does not exist', function () {
+		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.resolve(0));
 		expect(pageExists()).to.eventually.be.false;
 	});
