@@ -14,6 +14,7 @@
   },
   "main": "server/bin/www",
   "dependencies": {
+    "array-includes": "^3.0.1",
     "babel-core": "^6.3.21",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
@@ -28,6 +29,7 @@
     "mysql": "^2.10.2",
     "npm-run-all": "^1.4.0",
     "origami-build-tools": "^4.3.2",
+    "psi": "^2.0.2",
     "raven": "^0.9.0"
   },
   "devDependencies": {
@@ -60,7 +62,9 @@
     "tdd": "npm run watch -- --exec 'npm-run-all test'",
     "test": "npm-run-all lint test:*",
     "test:client": "karma start ./tests/karma.conf.js",
-    "test:integration": "wdio ./tests/wdio.conf.js",
+    "test:integration": "npm-run-all test:integration:*",
+    "test:integration:api": "_mocha ./tests/integration/api/*.spec.js",
+    "test:integration:client": "wdio ./tests/wdio.conf.js",
     "test:server": "istanbul cover _mocha -- -R spec ./tests/server/**/*.spec.js",
     "watch": "nodemon --ignore client/dist --ignore coverage -e js,scss,json"
   }
