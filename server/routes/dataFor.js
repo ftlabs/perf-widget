@@ -10,7 +10,6 @@ const detectUrl = require('is-url-superb');
 module.exports = function dataFor(req, res) {
 
 	const badResponse = response(res, 422, false);
-	const alreadyCreated = response(res, 201, true);
 	const jobCreated = response(res, 202, true);
 	const data = response(res, 200, true);
 
@@ -50,7 +49,7 @@ module.exports = function dataFor(req, res) {
 						
 						debug('Page is already in the queue.');
 
-						alreadyCreated({
+						jobCreated({
 							reason: 'This page is currently in the queue to be processed.'
 						});
 
