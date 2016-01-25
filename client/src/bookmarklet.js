@@ -1,6 +1,6 @@
 /* eslint-disable */
 var sEl=document.createElement('script'),	
-	srcAddress = '/* @echo serviceURL */';
+	srcAddress = '/* @echo serviceURL */' + "/static/main.js";
 
 sEl.setAttribute('src', srcAddress);
 
