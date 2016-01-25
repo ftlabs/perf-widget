@@ -16,12 +16,12 @@ module.exports = function detectPageType(url) {
 			patterns.push(patternRegex);
 		});
 
-		const pattern = patterns.find(function(pattern) {
+		const matchedPattern = patterns.find(function(pattern) {
 			return pattern.test(url);
 		});
 
-		if (pattern !== undefined) {
-			return patternType[pattern];
+		if (matchedPattern !== undefined) {
+			return patternType[matchedPattern];
 		} else {
 			return undefined;
 		}
