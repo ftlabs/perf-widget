@@ -1,7 +1,11 @@
+require('dotenv').load({silent: true});
 const express = require('express');
 const path = require('path');
 const app = express();
 const db = require('./lib/database');
+const worker = require('./lib/worker');
+
+worker.start();
 
 db.createTables();
 
