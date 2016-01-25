@@ -5,18 +5,21 @@ const queue = require('./../lib/queue');
 const getLatestValuesFor = require('./../lib/getLatestValuesFor');
 const debug = require('debug')('perf-widget:routes:dataFor');
 const createPage = require('./../lib/createPage');
+const detectUrl = require('is-url-superb');
 
 module.exports = function dataFor(req, res) {
-	const url = req.query.url;
 
 	const badResponse = response(res, 422, false);
 	const alreadyCreated = response(res, 201, true);
 	const jobCreated = response(res, 202, true);
 	const data = response(res, 200, true);
 
-	if (url === undefined) {
+	const url = req.query.url;
+	const isUrl = detectUrl(url);
 
-		badResponse({
+	if (!isUrl) {
+
+		return badResponse({
 			error: 'Missing url query parameter.'
 		});
 
@@ -79,7 +82,6 @@ module.exports = function dataFor(req, res) {
 					}
 				});
 			}
-		})
-		
+		});
 	}
 }
