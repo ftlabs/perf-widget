@@ -40,9 +40,9 @@ describe('App', function () {
 			.expect(202, done);
 	});
 
-	it('returns 201 for a url it has seen before but has no data for', function (done) {
+	it('returns 202 for a url it has seen before but has no data for', function (done) {
 		request(app)
 			.get('/data-for?url=https://next.ft.com/uk')
-			.expect(201, done);
+			.expect(202, done);
 	});
 });
