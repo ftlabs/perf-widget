@@ -23,7 +23,16 @@ module.exports = function dataFor(req, res) {
 			error: 'Missing url query parameter.'
 		});
 
+	} else if (queue.has(url)) {
+						
+		debug('Page is already in the queue.');
+
+		jobCreated({
+			reason: 'This page is currently in the queue to be processed.'
+		});
+
 	} else {
+
 		pageExists(url).then(function(exists) {
 			
 			if (exists) {
@@ -46,14 +55,6 @@ module.exports = function dataFor(req, res) {
 								pageData: insights
 							});
 						});
-					} else if (queue.has(url)) {
-						
-						debug('Page is already in the queue.');
-
-						jobCreated({
-							reason: 'This page is currently in the queue to be processed.'
-						});
-
 					} else {
 						queue.add(url);
 
