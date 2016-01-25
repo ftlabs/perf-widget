@@ -8,13 +8,12 @@ module.exports = function detectPageType(url) {
 	return queryResult.then(function(results) {
 		
 		const patternType = {};
-		
-		results.forEach(function(result) {
-			patternType[new RegExp(result.pattern)] = result.type;
-		});
+		const patterns = [];
 
-		const patterns = results.map(function(result) {
-			return new RegExp(result.pattern);
+		results.forEach(function(result) {
+			const patternRegex = new RegExp(result.pattern);
+			patternType[patternRegex] = result.type;
+			patterns.push(patternRegex);
 		});
 
 		const pattern = patterns.find(function(pattern) {
