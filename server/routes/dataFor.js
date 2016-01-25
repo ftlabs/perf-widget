@@ -14,7 +14,8 @@ module.exports = function dataFor(req, res) {
 	const data = response(res, 200, true);
 
 	const url = req.query.url;
-	const isUrl = detectUrl(url);
+
+	const isUrl = typeof url === 'string' ? detectUrl(url) : false;
 
 	if (!isUrl) {
 
