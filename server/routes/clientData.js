@@ -1,9 +1,7 @@
 // const dataFor = require('../lib/dataFor');
-const debug = require('debug')('perf-widget:routes:clientData');
+const dataFor = function (){
 
-const dataFor = function (addr){
-
-	return new Promise(function (resolve, reject){
+	return new Promise(function (resolve){
 
 		resolve({
 			success: true,

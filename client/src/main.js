@@ -1,7 +1,6 @@
 /* Global Math, console */
 (function (){
-
-	const serviceRoot = '/* @echo serviceURL */';
+	
 	const holder = document.createElement('div');
 	const style = document.createElement('style');
 	holder.setAttribute('id', 'perf-widge-holder');
