@@ -28,7 +28,7 @@ describe('App', function () {
 			.expect({
 				success: false,
 				data: {
-					error: 'Missing url query parameter.'
+					error: 'Missing url parameter.'
 				}, 
 				code: 422 
 			}, done);

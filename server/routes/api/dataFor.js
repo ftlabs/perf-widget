@@ -1,88 +1,23 @@
+const dataFor = require('./../../lib/dataFor');
+
 const response = require('./../../lib/jsonResponse');
-const insightsExist = require('./../../lib/insightsExist');
-const pageExists = require('./../../lib/pageExists');
-const queue = require('./../../lib/queue');
-const getLatestValuesFor = require('./../../lib/getLatestValuesFor');
-const debug = require('debug')('perf-widget:routes:dataFor');
-const createPage = require('./../../lib/createPage');
-const detectUrl = require('is-url-superb');
 
-module.exports = function dataFor(req, res) {
-
-	const badResponse = response(res, 422, false);
-	const jobCreated = response(res, 202, true);
-	const data = response(res, 200, true);
-
-	const url = req.query.url;
-
-	const isUrl = typeof url === 'string' ? detectUrl(url) : false;
-
-	if (!isUrl) {
-
-		return badResponse({
-			error: 'Missing url query parameter.'
-		});
-
-	} else if (queue.has(url)) {
-						
-		debug('Page is already in the queue.');
-
-		jobCreated({
-			reason: 'This page is currently in the queue to be processed.'
-		});
-
-	} else {
-
-		pageExists(url).then(function(exists) {
+module.exports = function (req, res) {
+	
+	dataFor(req.query.url)
+	.then(function(data) {
+		if (data.error) {
 			
-			if (exists) {
-				
-				debug('Page exists, checking if insights exist for page.');
+			response(res, 422, false, data);
 
-				insightsExist(url)
-				.then(function(exists) {
-					debug('here:', exists)
-					if (exists)	{
-						
-						debug('Insights exist, retrieving latest insights.');
+		} else if (data.reason) {
 
-						getLatestValuesFor(url)
-						.then(function(insights) {
-							
-							debug('Insights:', insights);
+			response(res, 202, true, data);
 
-							data({
-								pageData: insights
-							});
-						});
-					} else {
-						queue.add(url);
+		} else {
 
-						jobCreated({
-							reason: 'This page has been added to the queue to be processed.'
-						});
-					}
-				});	
-			} else {
-				debug('page does not exist, creating page row for', url);
+			response(res, 200, true, data);
 
-				createPage(url).then(function(added) {
-					if (added) {
-						debug('Page created for', url, 'Adding page to queue');
-
-						queue.add(url);
-
-						jobCreated({
-							reason: 'This page has been added to the queue to be processed.'
-						});
-					} else {
-						debug('Page not created for', url);
-						badResponse({
-							error: 'URL does not map to a type. Please contact FT Labs to add a corresponding type for this URL.'
-						});
-					}
-				});
-			}
-		});
-	}
+		}
+	});
 }
