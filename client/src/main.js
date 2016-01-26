@@ -1,12 +1,10 @@
-/* Global fetch */
+/* Global Math, console */
 (function (){
 
 	const serviceRoot = '/* @echo serviceURL */';
 	const holder = document.createElement('div');
 	const style = document.createElement('style');
-
 	holder.setAttribute('id', 'perf-widge-holder');
-	style.setAttribute('scoped', 'true');
 
 	style.textContent = `
 
@@ -14,17 +12,17 @@
 			position: fixed;
 			bottom : 20px;
 			right : 20px;
-			width : 300px;
+			width : 250px;
 			height : 300px;
 			background-color : #333;
-			z-index : 100;
+			z-index : 2147483647;
+			border-radius: 5px;
+		    box-shadow: 0 0 5px black;
 		}
 
 	`;
 
-	fetch(serviceRoot + "/data-for?sig=" + encodeURIComponent(window.location.href) ).then(res => {return res;}).then(data => {console.log(data);})
-
-	holder.appendChild(style);
+	document.head.appendChild(style);
 	document.body.appendChild(holder);
 
 }());

@@ -1,0 +1,98 @@
+(function(){
+		
+	console.log('perf-widget script inserted...');
+
+	const holder = document.createElement('div');
+	const style = document.createElement('style');
+	holder.setAttribute('id', 'perf-widget-holder');
+
+	style.textContent = `
+
+		#perf-widget-holder {
+			position: fixed;
+			bottom : 20px;
+			right : 20px;
+			width : 250px;
+			max-height : 300px;
+			overflow-y: scroll;
+			background-color : #333;
+			z-index : 2147483647;
+			border-radius: 5px;
+		    box-shadow: 0 0 5px black;
+		    color: white;
+		    box-sizing: border-box;
+		    padding: 10px;
+		    font-size: 16px;
+		    padding-bottom: 20px;
+		}
+
+		#perf-widget-holder > *{
+		    font-weight: 100;
+		}
+
+		#perf-widget-holder h3:first-of-type{
+			margin-top:0;
+		}
+
+		#perf-widget-holder h3{
+			margin-bottom: 10px;
+		}
+
+		#perf-widget-holder li{
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+			font-size: 0.8em;
+		}
+
+	`;
+
+	{{#if data}}
+
+		var output = '';
+
+		{{#if data.perf}}
+		
+			console.log('We have perf data');
+			output += `<h3>Performance</h3>`;
+
+			output += `{{#each data.perf}} <li>{{text}}</li> {{/each}}`;
+
+		{{/if}}
+
+		{{#if data.security}}
+		
+			console.log('We have security data');
+
+			output += `<h3>Security</h3>`;
+
+			output += `{{#each data.security}} <li>{{text}}</li> {{/each}}`;
+
+		{{/if}}
+
+		{{#if data.accessibility}}
+		
+			console.log('We have accessibility data');
+			output += `<h3>Accessibility</h3>`;
+
+			output += `{{#each data.accessibility}} <li>{{text}}</li> {{/each}}`;
+		
+		{{/if}}
+
+		console.log(output);
+
+		holder.innerHTML = output;
+		document.head.appendChild(style);
+		document.body.appendChild(holder);
+
+
+		{{else}}
+
+		console.log('No Data');
+
+	{{/if}}
+
+
+	console.log("perf-widget script inserted...");
+
+}());
