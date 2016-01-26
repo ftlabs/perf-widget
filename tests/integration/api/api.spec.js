@@ -10,25 +10,25 @@ describe('App', function () {
 		app.listen(9999, done);
 	});
 
-	it('returns 422 for /data-for', function (done) {
+	it('returns 422 for /api/data-for', function (done) {
 		request(app)
-			.get('/data-for')
+			.get('/api/data-for')
 			.expect(422, done);
 	});
 
-	it('returns JSON for /data-for', function (done) {
+	it('returns JSON for /api/data-for', function (done) {
 		request(app)
-			.get('/data-for')
+			.get('/api/data-for')
 			.expect('Content-Type', /json/, done)
 	});
 
-	it('returns FT Labs API JSON structure for /data-for', function (done) {
+	it('returns FT Labs API JSON structure for /api/data-for', function (done) {
 		request(app)
-			.get('/data-for')
+			.get('/api/data-for')
 			.expect({
 				success: false,
 				data: {
-					error: 'Missing url query parameter.'
+					error: 'Missing url parameter.'
 				}, 
 				code: 422 
 			}, done);
@@ -36,13 +36,13 @@ describe('App', function () {
 
 	it('returns 202 for a never before seen url', function (done) {
 		request(app)
-			.get('/data-for?url=https://next.ft.com/uk')
+			.get('/api/data-for?url=https://next.ft.com/uk')
 			.expect(202, done);
 	});
 
-	it('returns 201 for a url it has seen before but has no data for', function (done) {
+	it('returns 202 for a url it has seen before but has no data for', function (done) {
 		request(app)
-			.get('/data-for?url=https://next.ft.com/uk')
-			.expect(201, done);
+			.get('/api/data-for?url=https://next.ft.com/uk')
+			.expect(202, done);
 	});
 });

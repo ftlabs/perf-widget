@@ -8,21 +8,20 @@ module.exports = function detectPageType(url) {
 	return queryResult.then(function(results) {
 		
 		const patternType = {};
-		
+		const patterns = [];
+
 		results.forEach(function(result) {
-			patternType[new RegExp(result.pattern)] = result.type;
+			const patternRegex = new RegExp(result.pattern);
+			patternType[patternRegex] = result.type;
+			patterns.push(patternRegex);
 		});
 
-		const patterns = results.map(function(result) {
-			return new RegExp(result.pattern);
-		});
-
-		const pattern = patterns.find(function(pattern) {
+		const matchedPattern = patterns.find(function(pattern) {
 			return pattern.test(url);
 		});
 
-		if (pattern !== undefined) {
-			return patternType[pattern];
+		if (matchedPattern !== undefined) {
+			return patternType[matchedPattern];
 		} else {
 			return undefined;
 		}
