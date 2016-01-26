@@ -3,7 +3,7 @@ const router = require('express').Router(); //eslint-disable-line new-cap
 // Serve static assets from /static
 router.use('/static', require('./staticFiles'));
 
-router.get('/api', require('./api/index.js'));
+router.use('/api', require('./api'));
 
 // 404 handler
 router.use(function (req, res) {
