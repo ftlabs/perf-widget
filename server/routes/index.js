@@ -1,20 +1,9 @@
 const router = require('express').Router(); //eslint-disable-line new-cap
 
-const dataFor = require('./dataFor');
-const staticFiles = require('./staticFiles');
-
 // Serve static assets from /static
-router.use('/static', staticFiles);
+router.use('/static', require('./staticFiles'));
 
-// Home page
-router.get('/', function (req, res) {
-	res.render('index', {
-		isProduction : process.env.NODE_ENV === "production",
-		sentryClientKey : process.env.sentryClientKey
-	});
-});
-
-router.get('/data-for', dataFor);
+router.get('/api', require('./api/index.js'));
 
 // 404 handler
 router.use(function (req, res) {

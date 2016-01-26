@@ -1,10 +1,10 @@
-const response = require('./../lib/jsonResponse');
-const insightsExist = require('./../lib/insightsExist');
-const pageExists = require('./../lib/pageExists');
-const queue = require('./../lib/queue');
-const getLatestValuesFor = require('./../lib/getLatestValuesFor');
+const response = require('./../../lib/jsonResponse');
+const insightsExist = require('./../../lib/insightsExist');
+const pageExists = require('./../../lib/pageExists');
+const queue = require('./../../lib/queue');
+const getLatestValuesFor = require('./../../lib/getLatestValuesFor');
 const debug = require('debug')('perf-widget:routes:dataFor');
-const createPage = require('./../lib/createPage');
+const createPage = require('./../../lib/createPage');
 const detectUrl = require('is-url-superb');
 
 module.exports = function dataFor(req, res) {
