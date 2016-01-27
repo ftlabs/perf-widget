@@ -4,13 +4,9 @@ const dataFor = require('../lib/dataFor');
 
 	return new Promise(function (resolve){
 
-		resolve({
-			success: true,
-			data: {
-
-				insights: [
+		resolve([
 					{
-						category: 'performance',
+						category: 'Performance',
 						text: 'Your page is slow',
 						provider: 'Google Pagespeed',
 						link: 'http://example.com/1234575785',
@@ -18,7 +14,7 @@ const dataFor = require('../lib/dataFor');
 						concern : false
 					},
 					{
-						cat: 'security',
+						category: 'security',
 						text: 'Your page is insecure',
 						provider: 'Google Pagespeed',
 						link: 'http://example.com/1234575785',
@@ -26,17 +22,13 @@ const dataFor = require('../lib/dataFor');
 						concern : true
 					},
 					{
-						cat: 'accessibility',
+						category: 'accessibility',
 						text: 'Your page is inaccessible',
 						provider: 'Google Pagespeed',
 						link: 'http://example.com/1234575785',
 						value: 42
 					},
-				]
-
-			},
-			code: 200
-		});
+				]);
 
 	});	
 
