@@ -1,6 +1,6 @@
 /* eslint-disable */
 var sEl=document.createElement('script');
-var srcAddress = '/* @echo serviceURL */' + "/client/data-for";
+var srcAddress = '/* @echo serviceURL */' + "/client/data-for?url=" + window.encodeURIComponent(window.location.href);
 
 sEl.setAttribute('id', 'perf-widget-script-src');
 sEl.setAttribute('src', srcAddress);

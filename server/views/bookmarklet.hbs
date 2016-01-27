@@ -74,12 +74,12 @@
 
 		var output = '';
 
-		{{#if data.perf}}
+		{{#if data.Performance}}
 		
 			console.log('We have perf data');
 			output += `<h3>Performance</h3>`;
 
-			output += `{{#each data.perf}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Performance}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
 
 		{{/if}}
 

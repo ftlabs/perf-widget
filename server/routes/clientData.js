@@ -1,5 +1,6 @@
-// const dataFor = require('../lib/dataFor');
-const dataFor = function (){
+const debug = require('debug')('perf-widget:lib:clientData');
+const dataFor = require('../lib/dataFor');
+/*const dataFor = function (){
 
 	return new Promise(function (resolve){
 
@@ -9,7 +10,7 @@ const dataFor = function (){
 
 				insights: [
 					{
-						cat: 'perf',
+						category: 'performance',
 						text: 'Your page is slow',
 						provider: 'Google Pagespeed',
 						link: 'http://example.com/1234575785',
@@ -39,25 +40,23 @@ const dataFor = function (){
 
 	});	
 
-}
+}*/
 
 module.exports = function (req, res) {
 
-	const websiteToTest = req.get('referer');
+	const websiteToTest = req.query.url;
 	const categories = {};
 
 	dataFor(websiteToTest)
 		.then(results => {
 
-			if(results.data !== undefined){
+			if(results !== undefined){
 
-				results.data.insights.forEach(insight => {
-
-					if(categories[insight.cat] === undefined){
-						categories[insight.cat] = [];
+				results.forEach(insight => {
+					if(categories[insight.category] === undefined){
+						categories[insight.category] = [];
 					}
-					categories[insight.cat].push(insight);
-
+					categories[insight.category].push(insight);
 				});
 
 			}
@@ -66,6 +65,9 @@ module.exports = function (req, res) {
 				data : categories
 			});
 
+		})
+		.catch(err => {
+			res.end(err);
 		})
 	;
 	
