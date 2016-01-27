@@ -13,14 +13,16 @@ const dataFor = function (){
 						text: 'Your page is slow',
 						provider: 'Google Pagespeed',
 						link: 'http://example.com/1234575785',
-						value: 42
+						value: 42,
+						concern : false
 					},
 					{
 						cat: 'security',
 						text: 'Your page is insecure',
 						provider: 'Google Pagespeed',
 						link: 'http://example.com/1234575785',
-						value: 42
+						value: 42,
+						concern : true
 					},
 					{
 						cat: 'accessibility',

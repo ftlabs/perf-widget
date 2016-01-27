@@ -43,6 +43,29 @@
 			padding: 0;
 			margin: 0;
 			font-size: 0.8em;
+			display: flex;
+		    align-items: center;
+		}
+
+		#perf-widget-holder li::before{
+		    width: 1em;
+		    height: 1em;
+		    display: inline-block;
+		    content: "";
+		    margin-right: 0.5em;
+		    background-size: 100%;
+		    padding-top: 1px;
+		    background-position: 50%;
+		    background-repeat: no-repeat;
+		    background-image: url('http://local.ft.com:3000/static/images/unsure.png');
+		}
+
+		#perf-widget-holder li.concern-false::before{
+		    background-image: url('http://local.ft.com:3000/static/images/check.png');
+		}
+
+		#perf-widget-holder li.concern-true::before{
+			background-image: url('http://local.ft.com:3000/static/images/issue.png');
 		}
 
 	`;
@@ -56,7 +79,7 @@
 			console.log('We have perf data');
 			output += `<h3>Performance</h3>`;
 
-			output += `{{#each data.perf}} <li>{{text}}</li> {{/each}}`;
+			output += `{{#each data.perf}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
 
 		{{/if}}
 
@@ -66,7 +89,7 @@
 
 			output += `<h3>Security</h3>`;
 
-			output += `{{#each data.security}} <li>{{text}}</li> {{/each}}`;
+			output += `{{#each data.security}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
 
 		{{/if}}
 
@@ -75,7 +98,7 @@
 			console.log('We have accessibility data');
 			output += `<h3>Accessibility</h3>`;
 
-			output += `{{#each data.accessibility}} <li>{{text}}</li> {{/each}}`;
+			output += `{{#each data.accessibility}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
 		
 		{{/if}}
 
