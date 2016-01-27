@@ -76,15 +76,7 @@ module.exports = function dataFor(url) {
 			
 				debug('Insights exist, retrieving latest insights.');
 
-				return getLatestValuesFor(url)
-				.then(function(insights) {
-					
-					debug('Insights:', insights);
-
-					return {
-						pageData: insights
-					};
-				});
+				return getLatestValuesFor(url);
 			});
 		});
 	});
