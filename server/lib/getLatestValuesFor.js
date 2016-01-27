@@ -21,8 +21,6 @@ module.exports = function getLatestValuesFor(url) {
 			}
 		});
 
-		debug('wassup', result);
-
 		return result;
 	});
 };
