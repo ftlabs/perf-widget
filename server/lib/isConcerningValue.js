@@ -1,6 +1,4 @@
 const query = require('./database').query;
-const escape = require('mysql').escape;
-const debug = require('debug')('perf-widget:lib:isConcerningValue');
 
 const command = `SELECT name, minimum, maximum FROM properties`;
 
