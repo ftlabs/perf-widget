@@ -1,5 +1,7 @@
 const debug = require('debug')('perf-widget:lib:clientData');
 const dataFor = require('../lib/dataFor');
+const app = require('../app');
+require('dotenv').load({silent: true});
 
 module.exports = function (req, res) {
 
@@ -21,6 +23,7 @@ module.exports = function (req, res) {
 			}
 
 			res.render('bookmarklet', {
+				serviceURL : process.env.SERVER_DOMAIN === undefined ? `http://localhost:${process.env.PORT}` : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
 				data : categories
 			});
 
