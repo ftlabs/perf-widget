@@ -19,6 +19,9 @@ const mysqlMock = {
 };
 mockery.registerMock('mysql', mysqlMock);
 
+const isConcerningValueMock = sinon.stub().returns(true);
+mockery.registerMock('./isConcerningValue', isConcerningValueMock);
+
 const moduleUnderTest = '../../../server/lib/getLatestValuesFor';
 
 mockery.enable({
