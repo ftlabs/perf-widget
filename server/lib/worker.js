@@ -25,13 +25,9 @@ module.exports.start = function start() {
 			const date = Date.now() / 1000;
 
 			// Add results to the database
-			const insightsAdded = [];
-
-			results.forEach(function insight(value, name) {
-				debug('addInsights', name, page, value, date)
-				const insight = addInsights(name, page, value, date);
-
-				insightsAdded.push(insight);
+			const insightsAdded = results.map(function (insight) {
+				debug('addInsights', insight.name, page, insight.value, date, insight.link)
+				return addInsights(insight.name, page, insight.value, date, insight.link);
 			});
 
 			// After results are added to the database, repeat this process

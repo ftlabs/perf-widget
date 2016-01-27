@@ -1,22 +1,10 @@
-const psi = require('psi');
+const insights = require('./insightProviders');
 const debug = require('debug')('perf-widget:lib:gatherInsights');
+const flattenDeep = require('lodash').flattenDeep;
 
 module.exports = function gatherInsights(url) {
 	
 	debug('Gathering insights for', url);
 
-	const insights = [];
-
-	insights.push(psi(url));
-
-	return Promise.all(insights).then(function results(data) {
-		const map = new Map();
-
-		const pageSpeedScore = data[0].ruleGroups.SPEED.score;
-
-		map.set('PageSpeedInsightsScore', pageSpeedScore);
-		debug('PageSpeedInsightsScore', pageSpeedScore);
-		
-		return map;
-	});
+	return Promise.all(insights(url)).then(flattenDeep);
 };
