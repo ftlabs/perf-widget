@@ -1,38 +1,5 @@
 const debug = require('debug')('perf-widget:lib:clientData');
 const dataFor = require('../lib/dataFor');
-/*const dataFor = function (){
-
-	return new Promise(function (resolve){
-
-		resolve([
-					{
-						category: 'Performance',
-						text: 'Your page is slow',
-						provider: 'Google Pagespeed',
-						link: 'http://example.com/1234575785',
-						value: 42,
-						concern : false
-					},
-					{
-						category: 'security',
-						text: 'Your page is insecure',
-						provider: 'Google Pagespeed',
-						link: 'http://example.com/1234575785',
-						value: 42,
-						concern : true
-					},
-					{
-						category: 'accessibility',
-						text: 'Your page is inaccessible',
-						provider: 'Google Pagespeed',
-						link: 'http://example.com/1234575785',
-						value: 42
-					},
-				]);
-
-	});	
-
-}*/
 
 module.exports = function (req, res) {
 
