@@ -14,14 +14,6 @@ module.exports = function getLatestValuesFor(url) {
 
 		const result = rows.map(function (row) {
 			return isConcerningValue(row.name, row.value).then(function (concern) {
-				debug({
-					category: row.category,
-					provider: row.provider,
-					text: row.description,
-					link: row.link,
-					value: row.value,
-					concern: concern
-				});
 
 				return {
 					category: row.category,
