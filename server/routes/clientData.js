@@ -21,6 +21,7 @@ module.exports = function (req, res) {
 			}
 
 			res.render('bookmarklet', {
+				serviceURL : process.env.SERVER_DOMAIN === undefined ? `http://localhost:${process.env.PORT}` : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
 				data : categories
 			});
 
