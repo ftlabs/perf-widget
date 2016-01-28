@@ -7,6 +7,7 @@ const queue = require('./queue');
 const getLatestValuesFor = require('./getLatestValuesFor');
 const createPage = require('./createPage');
 const domainQueue = require('./domainQueue');
+const insightsOutOfDate = require('./insightsOutOfDate');
 
 function pageDataFor(url) {
 	return Promise.resolve()
@@ -51,7 +52,19 @@ function pageDataFor(url) {
 			
 				debug('Insights exist, retrieving latest insights.');
 
-				return getLatestValuesFor(url);
+				return insightsOutOfDate(url)
+				.then(function(outOfDate) {
+					debug('wtf', outOfDate);
+					if (outOfDate) {
+						queue.add(url);
+
+						return {
+							reason: 'Results were out of date. This page has been added to the queue to be processed.'
+						};
+					}
+
+					return getLatestValuesFor(url);
+				});
 			});
 		});
 	});
