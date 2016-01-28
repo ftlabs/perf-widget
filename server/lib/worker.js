@@ -121,7 +121,7 @@ function addCompetitorsToQueue() {
 		queue.add(url);
 	});
 
-	setTimeout(addCompetitorsToQueue, DAY_IN_MILLISECONDS)
+	setTimeout(addCompetitorsToQueue, DAY_IN_MILLISECONDS);
 }
 
 module.exports.start = function start () {
