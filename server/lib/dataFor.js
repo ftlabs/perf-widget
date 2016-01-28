@@ -54,7 +54,7 @@ function pageDataFor(url) {
 
 				return insightsOutOfDate(url)
 				.then(function(outOfDate) {
-					debug('wtf', outOfDate);
+
 					if (outOfDate) {
 						queue.add(url);
 
