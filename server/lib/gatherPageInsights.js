@@ -1,8 +1,8 @@
 const insights = require('./insightProviders');
-const debug = require('debug')('perf-widget:lib:gatherInsights');
+const debug = require('debug')('perf-widget:lib:gatherPageInsights');
 const flattenDeep = require('lodash').flattenDeep;
 
-module.exports = function gatherInsights(url) {
+module.exports = function gatherPageInsights(url) {
 	
 	debug('Gathering insights for', url);
 

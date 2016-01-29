@@ -1,4 +1,4 @@
-const debug = require('debug')('perf-widget:lib:clientData');
+const debug = require('debug')('perf-widget:lib:clientData'); // eslint-disable-line no-unused-vars
 const dataFor = require('../lib/dataFor');
 
 module.exports = function (req, res) {

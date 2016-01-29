@@ -1,6 +1,6 @@
 const query = require('./database').query;
 const escape = require('mysql').escape;
-const debug = require('debug')('perf-widget:lib:insightsOutOfDate');
+const debug = require('debug')('perf-widget:lib:insightsOutOfDate'); // eslint-disable-line no-unused-vars
 const DAYS_TO_STAY_IN_CACHE = process.env.DAYS_TO_STAY_IN_CACHE;
 
 function daysToSeconds(days) {
