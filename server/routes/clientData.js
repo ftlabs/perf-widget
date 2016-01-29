@@ -30,8 +30,6 @@ module.exports = function (req, res) {
 
 			}
 
-			
-
 		})
 		.catch(err => {
 			res.end(err);

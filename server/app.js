@@ -4,10 +4,17 @@ const path = require('path');
 const app = express();
 const db = require('./lib/database');
 const worker = require('./lib/worker');
+const debug = require('debug')('perf-widget:app');
 
-worker.start();
-
-db.createTables();
+db.createTables().then(function() {
+	worker.start();
+})
+.catch(function(error) {
+	debug('Could not create the tables required for the application.');
+	debug(error);
+	process.kill(1);
+	return;
+})
 
 // FT Web App configuration
 const ftwebservice = require('express-ftwebservice');
