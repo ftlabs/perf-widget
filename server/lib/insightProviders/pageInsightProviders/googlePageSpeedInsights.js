@@ -1,6 +1,6 @@
 const psi = require('psi');
 
-module.exports = function gatherInsights(url) {
+module.exports = function googlePageSpeedInsights(url) {
 
 	return psi(url).then(function(results) {
 		const pageSpeedScore = results.ruleGroups.SPEED.score;

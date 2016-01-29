@@ -3,125 +3,131 @@ const detectUrl = require('is-url-superb');
 const parseUrl = require('url').parse;
 const insightsExist = require('./insightsExist');
 const pageExists = require('./pageExists');
-const queue = require('./queue');
 const getLatestValuesFor = require('./getLatestValuesFor');
 const createPage = require('./createPage');
-const domainQueue = require('./domainQueue');
 const insightsOutOfDate = require('./insightsOutOfDate');
+const flattenDeep = require('lodash').flattenDeep;
+const addInsights = require('./addInsights');
+const gatherPageInsights = require('./gatherPageInsights');
+const gatherDomainInsights = require('./gatherDomainInsights');
+const bluebird = require('bluebird');
+
+const cache = require("lru-cache")(
+	{ 
+		max: 500, 
+		maxAge: 1000 * 60 * 60 * 24 
+	}
+);
 
 function pageDataFor(url) {
-	return Promise.resolve()
-	.then(function() {
-
-		if (queue.has(url)) {				
-			debug('Page is already in the queue.');
-
-			return {
-				reason: 'This page is currently in the queue to be processed.'
-			};
-		}
-
-		return pageExists(url)
+	return pageExists(url)
 		.then(function(exists) {
 			if (!exists) {
-				debug('Page does not exist, creating page row for', url);
 
-				return createPage(url).then(function(added) {
-					debug('Page created for', url, 'Adding page to queue');
-
-					queue.add(url);
-
-					return {
-						reason: 'This page has been added to the queue to be processed.'
-					};
+				return createPage(url).then(function() {
+					return gatherAndAddPageInsights(url).then(function() {
+						return getLatestValuesFor(url);
+					});
 				});
 			}
-
-			debug('Page exists, checking if insights exist for page.');
 
 			return insightsExist(url)
 			.then(function(exists) {
 
 				if (!exists) {
-					queue.add(url);
-
-					return {
-						reason: 'This page has been added to the queue to be processed.'
-					};
+					return gatherAndAddPageInsights(url).then(function() {
+						return getLatestValuesFor(url);
+					});
 				}
-			
-				debug('Insights exist, retrieving latest insights.');
 
 				return insightsOutOfDate(url)
 				.then(function(outOfDate) {
 
 					if (outOfDate) {
-						queue.add(url);
-
-						return {
-							reason: 'Results were out of date. This page has been added to the queue to be processed.'
-						};
+						return gatherAndAddPageInsights(url).then(function() {
+							return getLatestValuesFor(url);
+						});
 					}
 
 					return getLatestValuesFor(url);
-				});
 			});
 		});
 	});
 }
 
-function domainDataFor(url) {
-	return Promise.resolve()
-	.then(function() {
-
-		if (domainQueue.has(url)) {
-			debug('Page is already in the queue.');
-
-			return {
-				reason: 'This page is currently in the queue to be processed.'
-			};
-		}
-
-		return pageExists(url)
+function domainDataFor(domain) {
+	return pageExists(domain)
 		.then(function(exists) {
 			if (!exists) {
-				debug('Page does not exist, creating page row for', url);
 
-				return createPage(url).then(function(added) {
-					debug('Page created for', url, 'Adding page to queue');
-
-					domainQueue.add(url);
-
-					return {
-						reason: 'This page has been added to the queue to be processed.'
-					};
+				return createPage(domain).then(function() {
+					return gatherAndAddDomainInsights(domain).then(function() {
+						return getLatestValuesFor(domain);
+					});
 				});
 			}
 
-			debug('Page exists, checking if insights exist for page.');
-
-			return insightsExist(url)
+			return insightsExist(domain)
 			.then(function(exists) {
 
 				if (!exists) {
-					domainQueue.add(url);
-
-					return {
-						reason: 'This page has been added to the queue to be processed.'
-					};
+					return gatherAndAddDomainInsights(domain).then(function() {
+						return getLatestValuesFor(domain);
+					});
 				}
-			
-				debug('Insights exist, retrieving latest insights.');
 
-				return getLatestValuesFor(url);
+				return insightsOutOfDate(domain)
+				.then(function(outOfDate) {
+
+					if (outOfDate) {
+						return gatherAndAddDomainInsights(domain).then(function() {
+							return getLatestValuesFor(domain);
+						});
+					}
+
+					return getLatestValuesFor(domain);
 			});
 		});
+	});
+}
+
+function gatherAndAddDomainInsights(domain) {
+	return gatherDomainInsights(domain)
+	.then(function(results) {
+
+		// Use same timestamp for all results
+		const date = Date.now() / 1000;
+
+		// Add results to the database
+		const insightsAdded = results.map(function (insight) {
+			return addInsights(insight.name, domain, insight.value, date, insight.link);
+		});
+
+		// After results are added to the database, repeat this process
+		return Promise.all(insightsAdded);
+	});
+}
+
+function gatherAndAddPageInsights(page) {
+	return gatherPageInsights(page)
+	.then(function(results) {
+
+		// Use same timestamp for all results
+		const date = Date.now() / 1000;
+
+		// Add results to the database
+		const insightsAdded = results.map(function (insight) {
+			debug('addInsights', insight.name, page, insight.value, date, insight.link)
+			return addInsights(insight.name, page, insight.value, date, insight.link);
+		});
+
+		// After results are added to the database, repeat this process
+		return Promise.all(insightsAdded)
 	});
 }
 
 module.exports = function (url) {
-	return Promise.resolve()
-	.then(function() {
+	return Promise.resolve().then(function() {
 		if (!url) {
 			return {
 				error: 'Missing url parameter.'
@@ -136,21 +142,26 @@ module.exports = function (url) {
 			};
 		}
 
-		const host = parseUrl(url).host;
+		debug('cache.has(url)', cache.has(url));
+		if (cache.has(url)) {
+			const insightsPromise = bluebird.resolve(cache.get(url));
 
-		return Promise.all([pageDataFor(url), domainDataFor(host)]).then(function(data) {
-			const pageData = data[0];
-			const domainData = data[1];
-			if (pageData.reason || domainData.reason) {
-				return {
-					reason: pageData.reason || domainData.reason
-				};
+			if (insightsPromise.isFulfilled()) {
+				debug('insightsPromise.value()', insightsPromise.value())
+				return insightsPromise.value();
+			} else if (insightsPromise.isRejected()) {
+				debug('Promise was rejected, deleting from cache.')
+				cache.del(url);
 			}
+		}
 
-			return {
-				domain: domainData,
-				page: pageData
-			};
-		});
+		const host = parseUrl(url).host;
+		const insights = bluebird.all([pageDataFor(url), domainDataFor(host)]).then(flattenDeep);
+
+		cache.set(url, insights);
+
+		return {
+			reason: 'Gathering results'
+		};
 	});
 };
