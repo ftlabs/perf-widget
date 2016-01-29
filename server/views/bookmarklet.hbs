@@ -4,7 +4,14 @@
 
 	const holder = document.createElement('div');
 	const style = document.createElement('style');
+	var output = ``;
+	const close = document.createElement('span');
+	
 	holder.setAttribute('id', 'perf-widget-holder');
+
+	if(window.pWidgeGlobals === undefined){
+		window.pWidgeGlobals = {};	
+	}
 
 	style.textContent = `
 
@@ -28,6 +35,23 @@
 
 		#perf-widget-holder > *{
 		    font-weight: 100;
+		}
+
+		#perf-widget-holder .close{
+		    position: absolute;
+		    right: 5px;
+		    top: 5px;
+		    color: rgba(255,255,255,.5);
+		    border: 1px solid white;
+		    width: 1em;
+		    height: 1em;
+		    text-align: center;
+		    border-radius: 100%;
+		    cursor: pointer;
+		    background-size: 50%;
+		    background-position: 50%;
+		    background-repeat: no-repeat;
+		    background-image: url('http://local.ft.com:3000/static/images/cross.png');
 		}
 
 		#perf-widget-holder h3:first-of-type{
@@ -70,9 +94,17 @@
 
 	`;
 
-	{{#if data}}
+	function resetTimeout(){
+		if(pWidgeGlobals.tO !== undefined){
+			clearTimeout(pWidgeGlobals.tO);		
+		}
+	}
 
-		var output = '';
+	function closeDialog(){
+		holder.parentNode.removeChild(holder);
+	}
+
+	{{#if data}}
 
 		{{#if data.Performance}}
 		
@@ -102,20 +134,28 @@
 		
 		{{/if}}
 
-		console.log(output);
+		close.setAttribute('class', 'close');
 
-		holder.innerHTML = output;
-		document.head.appendChild(style);
-		document.body.appendChild(holder);
+		close.addEventListener('click', function(){
+			resetTimeout();
+			closeDialog();
+		}, false);
 
+	{{else}}
 
-		{{else}}
+		output += `{{ message }}`
 
-		console.log('No Data');
+		resetTimeout();
+		pWidgeGlobals.tO = setTimeout(function(){
+			closeDialog()
+		}, 3000);
 
 	{{/if}}
 
+	holder.innerHTML = output;
+	holder.appendChild(close);
 
-	console.log("perf-widget script inserted...");
+	document.head.appendChild(style);
+	document.body.appendChild(holder);
 
 }());

@@ -7,22 +7,30 @@ module.exports = function (req, res) {
 	const categories = {};
 
 	dataFor(websiteToTest)
-		.then(results => {
+		.then(response => {
+			
+			if(response.reason === undefined && response.error === undefined){
 
-			if(results !== undefined){
-
-				results.forEach(insight => {
+				response.forEach(insight => {
 					if(categories[insight.category] === undefined){
 						categories[insight.category] = [];
 					}
 					categories[insight.category].push(insight);
 				});
 
+				res.render('bookmarklet', {
+					data : categories
+				});
+
+			} else {
+
+				res.render('bookmarklet', {
+					message : "No available data for this site"
+				});
+
 			}
 
-			res.render('bookmarklet', {
-				data : categories
-			});
+			
 
 		})
 		.catch(err => {
