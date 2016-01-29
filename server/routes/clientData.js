@@ -8,24 +8,44 @@ module.exports = function (req, res) {
 
 	dataFor(websiteToTest)
 		.then(response => {
+
+			debug("\n\n", response, "\n\n");
 			
 			if(response.reason === undefined && response.error === undefined){
 
-				response.forEach(insight => {
-					if(categories[insight.category] === undefined){
-						categories[insight.category] = [];
-					}
-					categories[insight.category].push(insight);
-				});
+				if (response.domain !== undefined) {
+
+					response.domain.forEach(insight => {
+						if(categories[insight.category] === undefined){
+							categories[insight.category] = [];
+						}
+						insight.isDomainIssue = true;
+						categories[insight.category].push(insight);
+					});
+
+				}
+
+				if (response.page !== undefined) {
+
+					response.page.forEach(insight => {
+						if(categories[insight.category] === undefined){
+							categories[insight.category] = [];
+						}
+						insight.isDomainIssue = false;
+						categories[insight.category].push(insight);
+					});
+
+				}
 
 				res.render('bookmarklet', {
+					serviceURL : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
 					data : categories
 				});
 
 			} else {
 
 				res.render('bookmarklet', {
-					message : "No available data for this site"
+					message : response.reason
 				});
 
 			}
@@ -35,6 +55,4 @@ module.exports = function (req, res) {
 			res.end(err);
 		})
 	;
-	
-
 };
