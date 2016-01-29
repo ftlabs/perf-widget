@@ -1,4 +1,4 @@
-const dataFor = require('./dataFor');
+const pageDataFor = require('./pageDataFor');
 const bluebird = require('bluebird');
 
 module.exports = function addCompetitorsToQueue() {
@@ -6,7 +6,6 @@ module.exports = function addCompetitorsToQueue() {
 
 	const competitorUrls = [
 		'http://www.theguardian.com/uk',
-		'http://international.nytimes.com/',
 		'http://international.nytimes.com/',
 		'http://www.wsj.com/europe',
 		'http://www.theguardian.com/politics/2016/jan/17/britain-stronger-in-europe-eu-campaign-leaflet-uk',
@@ -20,7 +19,7 @@ module.exports = function addCompetitorsToQueue() {
 		'http://www.wsj.com/video/democratic-debate-in-two-minutes/31043401-0168-4AAD-ABB3-08F6E888F07E.html'
 	];
 
-	bluebird.map(competitorUrls, dataFor, 3);
+	bluebird.map(competitorUrls, pageDataFor, {concurrency: 3});
 
 	setTimeout(addCompetitorsToQueue, DAY_IN_MILLISECONDS);
 };
