@@ -2,7 +2,7 @@
 require('dotenv').load({silent: true});
 
 const app = require('../app');
-const debug = require('debug')('perf-widget:www');
+const debug = require('debug')('perf-widget:bin:www');
 const http = require('http');
 
 /**

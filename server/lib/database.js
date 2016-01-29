@@ -35,13 +35,7 @@ module.exports.createTables = function createTables() {
 		});
 
 		return Promise.all(queries);
-	})
-	.catch(function(error) {
-		debug('Could not create the tables required for the application.');
-		debug(error);
-		process.kill(1);
-		return;
-	})
+	});
 };
 
 module.exports.query = function query(command) {
