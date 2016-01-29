@@ -7,29 +7,52 @@ module.exports = function (req, res) {
 	const categories = {};
 
 	dataFor(websiteToTest)
-		.then(results => {
+		.then(response => {
 
-			if(results !== undefined){
+			debug("\n\n", response, "\n\n");
+			
+			if(response.reason === undefined && response.error === undefined){
 
-				results.forEach(insight => {
-					if(categories[insight.category] === undefined){
-						categories[insight.category] = [];
-					}
-					categories[insight.category].push(insight);
+				if (response.domain !== undefined) {
+
+					response.domain.forEach(insight => {
+						if(categories[insight.category] === undefined){
+							categories[insight.category] = [];
+						}
+						insight.isDomainIssue = true;
+						categories[insight.category].push(insight);
+					});
+
+				}
+
+				if (response.page !== undefined) {
+
+					response.page.forEach(insight => {
+						if(categories[insight.category] === undefined){
+							categories[insight.category] = [];
+						}
+						insight.isDomainIssue = false;
+						categories[insight.category].push(insight);
+					});
+
+				}
+
+				res.render('bookmarklet', {
+					serviceURL : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
+					data : categories
+				});
+
+			} else {
+
+				res.render('bookmarklet', {
+					message : response.reason
 				});
 
 			}
-
-			res.render('bookmarklet', {
-				serviceURL : process.env.SERVER_DOMAIN === undefined ? `http://localhost:${process.env.PORT}` : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
-				data : categories
-			});
 
 		})
 		.catch(err => {
 			res.end(err);
 		})
 	;
-	
-
 };
