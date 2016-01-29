@@ -7,9 +7,9 @@ const queryResult = query(command);
 const propertyThresholds = queryResult.then(function(rows) {
 
 	return new Map(rows.map(function (row) {
-		const minimum = row.minimum || 0;
+		const minimum = row.minimum || -Infinity;
 		const maximum = row.maximum || Infinity;
-		
+
 		return [row.name, function(value) {
 				if (value <= minimum) {
 					return true;
