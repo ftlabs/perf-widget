@@ -1,14 +1,63 @@
-<script src="http://build.origami.ft.com/v2/bundles/js?modules=o-errors@^3.3.0"></script>
+<!DOCTYPE html>
+<html>
 
-{{#if isProduction }}
-	{{> sentry }}
-{{/if}}
+	<head>
 
-<link rel="stylesheet" href="/static/main.css" type="text/css" />
+		<title>FT Labs Perf-Widget</title>
+		<link rel="stylesheet" href="https://origami-buildservice-qa.herokuapp.com/bundles/css?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4" />
 
-<main data-version="{{version}}">
-	Hello World
-</main>
+		<style type="text/css">
+			body {
+				font-family: BentonSans;
+			}
+		</style>
 
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-<script src="/static/main.js"></script>
+	</head>
+
+	<body>
+
+		<header data-o-component="o-header" class="o-header">
+			<div class="o-header__container">
+				<div class="o-header__inner">
+					<div class="o-header__primary">
+						<div class="o-header__primary__left">
+							<a class="o-header__logo o-header__logo--ft" href="http://labs.ft.com">
+								<abbr title="Financial Times">FT</abbr>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main>
+			<div class="o-techdocs-hero">
+				<h2 class="o-techdocs-hero__title">
+					FT Labs Perf-Widget Bookmarklet and Service
+				</h2>
+			</div>
+
+			<div class="o-techdocs-container">
+
+				<div class="o-techdocs-main">
+
+					<div class="o-techdocs-content">
+						<h3>What is this?</h3>
+						<p>Perf-Widget (or Insights, or P-Widge) is a bookmarklet and service that allows you to benchmark and compare FT sites with competitors</p>
+
+						<h3>How do I use it?</h3>
+						<p>First, you need to add the <a href="{{bookmarklet}}">Perf-Widget</a> to your bookmarks bar. All you have to do is drag the link up to bookmark bar add drop it to add it.</p>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</main>
+
+		<script src="https://origami-buildservice-qa.herokuapp.com/bundles/js?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4"></script>
+
+	</body>
+
+</html>
