@@ -8,8 +8,6 @@ module.exports = function (req, res) {
 
 	dataFor(websiteToTest)
 		.then(response => {
-
-			debug("\n\n", response, "\n\n");
 			
 			if(response.reason === undefined && response.error === undefined){
 
