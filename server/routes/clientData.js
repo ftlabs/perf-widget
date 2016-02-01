@@ -1,10 +1,12 @@
 const debug = require('debug')('perf-widget:lib:clientData'); // eslint-disable-line no-unused-vars
 const dataFor = require('../lib/dataFor');
+const bm = require('../lib/bookmarklet');
 
 module.exports = function (req, res) {
 
 	const websiteToTest = req.query.url;
 	const categories = {};
+	const serviceURL =`${process.env.SERVER_DOMAIN}:${process.env.PORT}`;
 
 	dataFor(websiteToTest)
 		.then(response => {
@@ -19,13 +21,15 @@ module.exports = function (req, res) {
 					});
 
 					res.render('bookmarklet', {
-						serviceURL : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
-						data : categories
+						serviceURL,
+						data : categories,
+						bm
 					});
 
 				} else {
 
 					res.render('bookmarklet', {
+						serviceURL,
 						message : response.reason || response.error
 					});
 

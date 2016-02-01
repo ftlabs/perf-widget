@@ -14,7 +14,7 @@ const cache = require("lru-cache")(
 );
 
 module.exports = function (url) {
-	return Promise.resolve().then(function() {
+	return Promise.resolve().then(function () {
 		if (!url) {
 			return {
 				error: 'Missing url parameter.'
