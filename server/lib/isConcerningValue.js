@@ -1,3 +1,5 @@
+const debug = require('debug')('perf-widget:lib:isConcerningValue'); // eslint-disable-line no-unused-vars
+
 const query = require('./database').query;
 
 const command = `SELECT name, minimum, maximum FROM properties`;
