@@ -6,7 +6,7 @@ module.exports = function (req, res) {
 
 	const websiteToTest = req.query.url;
 	const categories = {};
-	const serviceURL =`${process.env.SERVER_DOMAIN}:${process.env.PORT}`;
+	const serviceURL = `${process.env.SERVER_DOMAIN}:${process.env.PORT}`;
 
 	dataFor(websiteToTest)
 		.then(response => {
