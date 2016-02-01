@@ -8,47 +8,28 @@ module.exports = function (req, res) {
 
 	dataFor(websiteToTest)
 		.then(response => {
+				
+				if(Array.isArray(response)){
 
-			debug("\n\n", response, "\n\n");
-			
-			if(response.reason === undefined && response.error === undefined){
-
-				if (response.domain !== undefined) {
-
-					response.domain.forEach(insight => {
+					response.forEach(insight => {
 						if(categories[insight.category] === undefined){
 							categories[insight.category] = [];
 						}
-						insight.isDomainIssue = true;
 						categories[insight.category].push(insight);
 					});
 
-				}
+					res.render('bookmarklet', {
+						serviceURL : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
+						data : categories
+					});
 
-				if (response.page !== undefined) {
+				} else {
 
-					response.page.forEach(insight => {
-						if(categories[insight.category] === undefined){
-							categories[insight.category] = [];
-						}
-						insight.isDomainIssue = false;
-						categories[insight.category].push(insight);
+					res.render('bookmarklet', {
+						message : response.reason || response.error
 					});
 
 				}
-
-				res.render('bookmarklet', {
-					serviceURL : `${process.env.SERVER_DOMAIN}:${process.env.PORT}`,
-					data : categories
-				});
-
-			} else {
-
-				res.render('bookmarklet', {
-					message : response.reason
-				});
-
-			}
 
 		})
 		.catch(err => {
