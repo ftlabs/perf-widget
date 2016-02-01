@@ -10,7 +10,7 @@
   "license": "",
   "description": "Perf Widget front-end and back-end",
   "engines": {
-    "node": "5.0.0"
+    "node": "5.x.x"
   },
   "main": "server/bin/www",
   "dependencies": {
