@@ -26,7 +26,7 @@ module.exports = function (req, res) {
 				} else {
 
 					res.render('bookmarklet', {
-						message : response.reason
+						message : response.reason || response.error
 					});
 
 				}
