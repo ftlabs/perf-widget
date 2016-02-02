@@ -180,7 +180,7 @@
 	{{else}}
 
 		output += `{{ message }}`
-
+		window.pWidgeGlobals.freshInsights = false;
 		resetTimeout();
 		pWidgeGlobals.tO = setTimeout(function(){
 			removeSelf()
