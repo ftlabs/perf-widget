@@ -4,6 +4,8 @@ const path = require('path');
 const app = express();
 const db = require('./lib/database');
 const debug = require('debug')('perf-widget:app');
+const hsts = require('hsts');
+const enforceSSL = require('express-enforces-ssl');
 
 db.createTables().then(function() {
 	require('./lib/updateCompetitorInsights')();
@@ -14,6 +16,18 @@ db.createTables().then(function() {
 	process.kill(1);
 	return;
 });
+
+app.use( hsts({
+	maxAge : 604800000,
+	includeSubdomains : true,
+	force : true
+ }));
+
+app.enable('trust proxy');
+
+if(process.env.NODE_ENV !== 'development'){
+	app.use(enforceSSL());	
+}
 
 // FT Web App configuration
 const ftwebservice = require('express-ftwebservice');

@@ -7,7 +7,7 @@ const insightsOutOfDate = require('./insightsOutOfDate');
 const addInsights = require('./addInsights');
 const gatherDomainInsights = require('./gatherDomainInsights');
 
-module.exports = function domainDataFor(domain) {
+module.exports = function domainDataFor(domain, freshInsights) {
 	return pageExists(domain)
 		.then(function(exists) {
 			debug('pageExists', exists, domain)
@@ -18,6 +18,14 @@ module.exports = function domainDataFor(domain) {
 						return getLatestValuesFor(domain);
 					});
 				});
+			}
+
+			if(freshInsights){
+
+				return gatherAndAddDomainInsights(domain).then(function() {
+					return getLatestValuesFor(domain);
+				});				
+
 			}
 
 			return insightsExist(domain)

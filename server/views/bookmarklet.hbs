@@ -4,9 +4,12 @@
 
 	const holder = document.createElement('div');
 	const style = document.createElement('style');
-	var output = ``;
 	const close = document.createElement('span');
-	
+	const refresh = document.createElement('span');
+
+	const resultsURL = `{{serviceURL}}/client/data-for?url=${window.location.href}`;
+	var output = ``;
+
 	holder.setAttribute('id', 'perf-widget-holder');
 
 	if(window.pWidgeGlobals === undefined){
@@ -51,7 +54,24 @@
 		    background-size: 50%;
 		    background-position: 50%;
 		    background-repeat: no-repeat;
-		    background-image: url('http://local.ft.com:3000/static/images/cross.png');
+		    background-image: url('{{serviceURL}}/static/images/cross.png');
+		}
+
+		#perf-widget-holder .refresh{
+		    position: absolute;
+		    right: 30px;
+		    top: 5px;
+		    color: rgba(255,255,255,.5);
+		    // border: 1px solid white;
+		    width: 1em;
+		    height: 1em;
+		    text-align: center;
+		    border-radius: 100%;
+		    cursor: pointer;
+		    background-size: 80%;
+		    background-position: 50%;
+		    background-repeat: no-repeat;
+		    background-image: url('{{serviceURL}}/static/images/refresh.png');
 		}
 
 		#perf-widget-holder h3:first-of-type{
@@ -67,8 +87,8 @@
 			padding: 0;
 			margin: 0;
 			font-size: 0.8em;
-			display: flex;
-		    align-items: center;
+			width: 90%;
+			margin-left: 10%;
 		}
 
 		#perf-widget-holder li::before{
@@ -82,6 +102,8 @@
 		    background-position: 50%;
 		    background-repeat: no-repeat;
 		    background-image: url('{{serviceURL}}/static/images/unsure.png');
+		    position: absolute;
+		    left: 15px;
 		}
 
 		#perf-widget-holder li.concern-false::before{
@@ -92,6 +114,12 @@
 			background-image: url('{{serviceURL}}/static/images/issue.png');
 		}
 
+		#perf-widget-holder li a{
+			color: rgba(255,255,255,.4);
+			border: 0 solid black;
+			text-decoration:none;
+		}
+
 	`;
 
 	function resetTimeout(){
@@ -100,18 +128,29 @@
 		}
 	}
 
-	function closeDialog(){
+	function removeSelf(){
+		const scriptEl = document.getElementById('perf-widget-script-src');
+		scriptEl.parentNode.removeChild(scriptEl);
+		style.parentNode.removeChild(style);
 		holder.parentNode.removeChild(holder);
 	}
 
+	function loadSelf(){
+		const tA = document.createElement('textarea');
+		tA.innerHTML = "{{bm}}";
+		window.location = tA.value;
+	}
+
 	{{#if data}}
+
+		pWidgeGlobals.freshInsights = true;
 
 		{{#if data.Performance}}
 		
 			console.log('We have perf data');
 			output += `<h3>Performance</h3>`;
 
-			output += `{{#each data.Performance}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Performance}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 
 		{{/if}}
 
@@ -121,7 +160,7 @@
 
 			output += `<h3>Security</h3>`;
 
-			output += `{{#each data.Security}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Security}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 
 		{{/if}}
 
@@ -130,30 +169,36 @@
 			console.log('We have accessibility data');
 			output += `<h3>Accessibility</h3>`;
 
-			output += `{{#each data.Accessibility}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Accessibility}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 		
 		{{/if}}
 
 		close.setAttribute('class', 'close');
-
 		close.addEventListener('click', function(){
 			resetTimeout();
-			closeDialog();
+			removeSelf();
+		}, false);
+
+		refresh.setAttribute('class', 'refresh');
+		refresh.addEventListener('click', function(){
+			removeSelf();
+			loadSelf();
 		}, false);
 
 	{{else}}
 
 		output += `{{ message }}`
-
+		window.pWidgeGlobals.freshInsights = false;
 		resetTimeout();
 		pWidgeGlobals.tO = setTimeout(function(){
-			closeDialog()
+			removeSelf()
 		}, 3000);
 
 	{{/if}}
 
 	holder.innerHTML = output;
 	holder.appendChild(close);
+	holder.appendChild(refresh);
 
 	document.head.appendChild(style);
 	document.body.appendChild(holder);
