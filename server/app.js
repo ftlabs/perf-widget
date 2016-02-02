@@ -16,7 +16,7 @@ db.createTables().then(function() {
 	process.kill(1);
 	return;
 });
-
+app.enable('trust proxy');
 app.use( hsts({
 	maxAge : 604800000,
 	force : true
