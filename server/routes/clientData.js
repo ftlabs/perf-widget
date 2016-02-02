@@ -9,11 +9,12 @@ module.exports = function (req, res) {
 	const categories = {};
 	const serviceURL = `${process.env.SERVER_DOMAIN}${ process.env.NODE_ENV === 'development' ? ':' + process.env.PORT : ''}`;
 
-	debug("freshInsights", freshInsights, typeof(req.query.fresh));
 
 	dataFor(websiteToTest, freshInsights)
 		.then(response => {
-				
+			
+				debug("\n\n", response, "\n\n");
+
 				if(Array.isArray(response)){
 
 					response.forEach(insight => {
