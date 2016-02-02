@@ -6,14 +6,14 @@ const bluebird = require('bluebird');
 const pageDataFor = require('./pageDataFor');
 const domainDataFor = require('./domainDataFor');
 
-const cache = require("lru-cache")(
+const cache = require('lru-cache')(
 	{ 
 		max: 500, 
 		maxAge: 1000 * 60 * 60 * 24 
 	}
 );
 
-module.exports = function (url) {
+module.exports = function (url, freshInsights) {
 	return Promise.resolve().then(function () {
 		if (!url) {
 			return {
@@ -29,25 +29,27 @@ module.exports = function (url) {
 			};
 		}
 
-		debug('cache.has(url)', cache.has(url), url);
-		if (cache.has(url)) {
-			const insightsPromise = bluebird.resolve(cache.get(url));
+		if (!freshInsights) {
+			debug('cache.has(url)', cache.has(url), url);
+			if (cache.has(url)) {
+				const insightsPromise = bluebird.resolve(cache.get(url));
 
-			if (insightsPromise.isFulfilled()) {
-				debug('insightsPromise.value()', insightsPromise.value())
-				return insightsPromise.value();
-			} else if (insightsPromise.isRejected()) {
-				debug('Promise was rejected, deleting from cache.')
-				cache.del(url);
-			} else {
-				return {
-					reason: 'Gathering results'
-				};				
+				if (insightsPromise.isFulfilled()) {
+					debug('insightsPromise.value()', insightsPromise.value())
+					return insightsPromise.value();
+				} else if (insightsPromise.isRejected()) {
+					debug('Promise was rejected, deleting from cache.')
+					cache.del(url);
+				} else {
+					return {
+						reason: 'Gathering results'
+					};				
+				}
 			}
 		}
 
 		const host = parseUrl(url).host;
-		const insights = bluebird.all([pageDataFor(url), domainDataFor(host)]).then(flattenDeep);
+		const insights = bluebird.all([pageDataFor(url, freshInsights), domainDataFor(host, freshInsights)]).then(flattenDeep);
 
 		cache.set(url, insights);
 

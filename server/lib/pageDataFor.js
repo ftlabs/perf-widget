@@ -7,33 +7,41 @@ const insightsOutOfDate = require('./insightsOutOfDate');
 const addInsights = require('./addInsights');
 const gatherPageInsights = require('./gatherPageInsights');
 
-module.exports = function pageDataFor(url) {
+module.exports = function pageDataFor (url, freshInsights) {
 	return pageExists(url)
-		.then(function(exists) {
+		.then (function (exists) {
 			debug('pageExists', exists, url)
 			if (!exists) {
 
-				return createPage(url).then(function() {
-					return gatherAndAddPageInsights(url).then(function() {
+				return createPage(url).then (function () {
+					return gatherAndAddPageInsights(url).then (function () {
 						return getLatestValuesFor(url);
 					});
 				});
 			}
 
+			if(freshInsights){
+
+				return gatherAndAddPageInsights(url).then (function () {
+					return getLatestValuesFor(url);
+				});
+
+			}
+
 			return insightsExist(url)
-			.then(function(exists) {
+			.then (function (exists) {
 
 				if (!exists) {
-					return gatherAndAddPageInsights(url).then(function() {
+					return gatherAndAddPageInsights(url).then (function () {
 						return getLatestValuesFor(url);
 					});
 				}
 
 				return insightsOutOfDate(url)
-				.then(function(outOfDate) {
+				.then (function (outOfDate) {
 
 					if (outOfDate) {
-						return gatherAndAddPageInsights(url).then(function() {
+						return gatherAndAddPageInsights(url).then (function () {
 							return getLatestValuesFor(url);
 						});
 					}
@@ -44,9 +52,9 @@ module.exports = function pageDataFor(url) {
 	});
 };
 
-function gatherAndAddPageInsights(page) {
+function gatherAndAddPageInsights (page) {
 	return gatherPageInsights(page)
-	.then(function(results) {
+	.then (function (results) {
 
 		// Use same timestamp for all results
 		const date = Date.now() / 1000;
