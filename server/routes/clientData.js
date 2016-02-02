@@ -13,8 +13,6 @@ module.exports = function (req, res) {
 	dataFor(websiteToTest, freshInsights)
 		.then(response => {
 			
-				debug("\n\n", response, "\n\n");
-
 				if(Array.isArray(response)){
 
 					response.forEach(insight => {
