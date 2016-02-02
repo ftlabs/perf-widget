@@ -19,8 +19,11 @@ db.createTables().then(function() {
 
 app.use( hsts({
 	maxAge : 604800000,
+	includeSubdomains : true,
 	force : true
  }));
+
+app.enable('trust proxy');
 
 if(process.env.NODE_ENV !== 'development'){
 	app.use(enforceSSL());	
