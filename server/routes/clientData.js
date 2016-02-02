@@ -5,10 +5,13 @@ const bm = require('../lib/bookmarklet');
 module.exports = function (req, res) {
 
 	const websiteToTest = req.query.url;
+	const freshInsights = req.query.fresh === 'true';
 	const categories = {};
 	const serviceURL = `${process.env.SERVER_DOMAIN}:${process.env.PORT}`;
 
-	dataFor(websiteToTest)
+	debug("freshInsights", freshInsights, typeof(req.query.fresh));
+
+	dataFor(websiteToTest, freshInsights)
 		.then(response => {
 				
 				if(Array.isArray(response)){

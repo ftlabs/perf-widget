@@ -2,6 +2,12 @@
 var sEl=document.createElement('script');
 var srcAddress = '/* @echo serviceURL */' + "/client/data-for?url=" + window.encodeURIComponent(window.location.href) + "&d=" + Date.now();
 
+if(window.pWidgeGlobals !== undefined){
+	if(window.pWidgeGlobals.freshInsights){
+		srcAddress += "&fresh=true";
+	}	
+}
+
 sEl.setAttribute('id', 'perf-widget-script-src');
 sEl.setAttribute('src', srcAddress);
 
