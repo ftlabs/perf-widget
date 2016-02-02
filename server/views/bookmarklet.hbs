@@ -150,7 +150,7 @@
 			console.log('We have perf data');
 			output += `<h3>Performance</h3>`;
 
-			output += `{{#each data.Performance}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
+			output += `{{#each data.Performance}} <li class="concern-{{ ok }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 
 		{{/if}}
 
@@ -160,7 +160,7 @@
 
 			output += `<h3>Security</h3>`;
 
-			output += `{{#each data.Security}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
+			output += `{{#each data.Security}} <li class="concern-{{ ok }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 
 		{{/if}}
 
@@ -169,7 +169,7 @@
 			console.log('We have accessibility data');
 			output += `<h3>Accessibility</h3>`;
 
-			output += `{{#each data.Accessibility}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
+			output += `{{#each data.Accessibility}} <li class="concern-{{ ok }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 		
 		{{/if}}
 

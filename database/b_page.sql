@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS `page` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `url` varchar(2000) NOT NULL DEFAULT '',
+  `domain` varchar(2000) NOT NULL DEFAULT '',
   `type` varchar(20),
   PRIMARY KEY (`id`),
   KEY `pagetype_page` (`type`),
