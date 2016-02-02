@@ -87,8 +87,8 @@
 			padding: 0;
 			margin: 0;
 			font-size: 0.8em;
-			display: flex;
-		    align-items: center;
+			width: 90%;
+			margin-left: 10%;
 		}
 
 		#perf-widget-holder li::before{
@@ -102,6 +102,8 @@
 		    background-position: 50%;
 		    background-repeat: no-repeat;
 		    background-image: url('{{serviceURL}}/static/images/unsure.png');
+		    position: absolute;
+		    left: 15px;
 		}
 
 		#perf-widget-holder li.concern-false::before{
@@ -110,6 +112,12 @@
 
 		#perf-widget-holder li.concern-true::before{
 			background-image: url('{{serviceURL}}/static/images/issue.png');
+		}
+
+		#perf-widget-holder li a{
+			color: rgba(255,255,255,.4);
+			border: 0 solid black;
+			text-decoration:none;
 		}
 
 	`;
@@ -142,7 +150,7 @@
 			console.log('We have perf data');
 			output += `<h3>Performance</h3>`;
 
-			output += `{{#each data.Performance}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Performance}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 
 		{{/if}}
 
@@ -152,7 +160,7 @@
 
 			output += `<h3>Security</h3>`;
 
-			output += `{{#each data.Security}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Security}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 
 		{{/if}}
 
@@ -161,7 +169,7 @@
 			console.log('We have accessibility data');
 			output += `<h3>Accessibility</h3>`;
 
-			output += `{{#each data.Accessibility}} <li class="concern-{{ concern }}">{{text}}</li> {{/each}}`;
+			output += `{{#each data.Accessibility}} <li class="concern-{{ concern }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
 		
 		{{/if}}
 
