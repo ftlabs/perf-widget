@@ -2,7 +2,7 @@ const pageDataFor = require('./pageDataFor');
 const bluebird = require('bluebird');
 const debug = require('debug')('perf-widget:lib:updateCompetitorInsights'); // eslint-disable-line no-unused-vars
 
-module.exports = function addCompetitorsToQueue() {
+module.exports = function updateCompetitorInsights () {
 	const DAY_IN_MILLISECONDS = 60 * 60 * 24 * 1000;
 
 	const competitorUrls = [
@@ -24,5 +24,5 @@ module.exports = function addCompetitorsToQueue() {
 		debug('Finished updating the competitor pages.');
 	});
 
-	setTimeout(addCompetitorsToQueue, DAY_IN_MILLISECONDS);
+	setTimeout(updateCompetitorInsights, DAY_IN_MILLISECONDS);
 };
