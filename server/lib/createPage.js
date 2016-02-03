@@ -3,11 +3,10 @@ const query = require('./database').query;
 const escape = require('mysql').escape;
 const detectPageType = require('./detectPageType');
 const parse = require('url').parse;
-const debug = require('debug')('perf-widget:lib:createPage');
+const debug = require('debug')('perf-widget:lib:createPage'); // eslint-disable-line no-unused-vars
 
 module.exports = function createPage(url) {
 	const domain = parse(url).host || url;
-	debug('domain:', domain, 'url:', url, 'parsed:', parse(url));
 
 	return detectPageType(url).then(function pageType(type) {
 		let addPageCommand;
