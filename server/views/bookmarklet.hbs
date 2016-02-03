@@ -36,51 +36,51 @@
 			background-color : #333;
 			z-index : 2147483647;
 			border-radius: 5px;
-		    box-shadow: 0 0 5px black;
-		    color: white;
-		    box-sizing: border-box;
-		    padding: 10px;
-		    font-size: 14px;
-		    padding-bottom: 20px;
+			box-shadow: 0 0 5px black;
+			color: white;
+			box-sizing: border-box;
+			padding: 10px;
+			font-size: 14px;
+			padding-bottom: 20px;
 			font-family: Helvetica, Arial, sans-serif;
 		}
 
 		#perf-widget-holder > *{
-		    font-weight: 100;
+			font-weight: 100;
 		}
 
 		#perf-widget-holder .close{
-		    position: absolute;
-		    right: 5px;
-		    top: 5px;
-		    color: rgba(255,255,255,.5);
-		    border: 1px solid white;
-		    width: 1em;
-		    height: 1em;
-		    text-align: center;
-		    border-radius: 100%;
-		    cursor: pointer;
-		    background-size: 50%;
-		    background-position: 50%;
-		    background-repeat: no-repeat;
-		    background-image: url('{{serviceURL}}/static/images/cross.png');
+			position: absolute;
+			right: 5px;
+			top: 5px;
+			color: rgba(255,255,255,.5);
+			border: 1px solid white;
+			width: 1em;
+			height: 1em;
+			text-align: center;
+			border-radius: 100%;
+			cursor: pointer;
+			background-size: 50%;
+			background-position: 50%;
+			background-repeat: no-repeat;
+			background-image: url('{{serviceURL}}/static/images/cross.png');
 		}
 
 		#perf-widget-holder .refresh{
-		    position: absolute;
-		    right: 30px;
-		    top: 5px;
-		    color: rgba(255,255,255,.5);
-		    // border: 1px solid white;
-		    width: 1em;
-		    height: 1em;
-		    text-align: center;
-		    border-radius: 100%;
-		    cursor: pointer;
-		    background-size: 80%;
-		    background-position: 50%;
-		    background-repeat: no-repeat;
-		    background-image: url('{{serviceURL}}/static/images/refresh.png');
+			position: absolute;
+			right: 30px;
+			top: 5px;
+			color: rgba(255,255,255,.5);
+			// border: 1px solid white;
+			width: 1em;
+			height: 1em;
+			text-align: center;
+			border-radius: 100%;
+			cursor: pointer;
+			background-size: 80%;
+			background-position: 50%;
+			background-repeat: no-repeat;
+			background-image: url('{{serviceURL}}/static/images/refresh.png');
 		}
 
 		#perf-widget-holder h3:first-of-type{
@@ -103,22 +103,22 @@
 		}
 
 		#perf-widget-holder li::before{
-		    width: 1em;
-		    height: 1em;
-		    display: inline-block;
-		    content: "";
-		    margin-right: 0.5em;
-		    background-size: 100%;
-		    padding-top: 7px;
-		    background-position: 50%;
-		    background-repeat: no-repeat;
-		    background-image: url('{{serviceURL}}/static/images/unsure.png');
-		    position: absolute;
-		    left: 15px;
+			width: 1em;
+			height: 1em;
+			display: inline-block;
+			content: "";
+			margin-right: 0.5em;
+			background-size: 100%;
+			padding-top: 7px;
+			background-position: 50%;
+			background-repeat: no-repeat;
+			background-image: url('{{serviceURL}}/static/images/unsure.png');
+			position: absolute;
+			left: 15px;
 		}
 
 		#perf-widget-holder li.concern-false::before{
-		    background-image: url('{{serviceURL}}/static/images/check.png');
+			background-image: url('{{serviceURL}}/static/images/check.png');
 		}
 
 		#perf-widget-holder li.concern-true::before{
