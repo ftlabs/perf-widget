@@ -19,6 +19,14 @@
 	style.textContent = `
 
 		#perf-widget-holder {
+			all: initial;
+		}
+
+		#perf-widget-holder > * {
+			all: unset;
+		}
+
+		#perf-widget-holder {
 			position: fixed;
 			bottom : 20px;
 			right : 20px;
@@ -32,8 +40,9 @@
 		    color: white;
 		    box-sizing: border-box;
 		    padding: 10px;
-		    font-size: 16px;
+		    font-size: 14px;
 		    padding-bottom: 20px;
+			font-family: Helvetica, Arial, sans-serif;
 		}
 
 		#perf-widget-holder > *{
@@ -80,6 +89,8 @@
 
 		#perf-widget-holder h3{
 			margin-bottom: 10px;
+			margin-top: 10px;
+			display: block;
 		}
 
 		#perf-widget-holder li{
@@ -98,7 +109,7 @@
 		    content: "";
 		    margin-right: 0.5em;
 		    background-size: 100%;
-		    padding-top: 1px;
+		    padding-top: 7px;
 		    background-position: 50%;
 		    background-repeat: no-repeat;
 		    background-image: url('{{serviceURL}}/static/images/unsure.png');
@@ -118,6 +129,7 @@
 			color: rgba(255,255,255,.4);
 			border: 0 solid black;
 			text-decoration:none;
+			font-size: 0.8em;
 		}
 
 	`;
