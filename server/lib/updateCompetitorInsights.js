@@ -1,5 +1,6 @@
 const pageDataFor = require('./pageDataFor');
 const bluebird = require('bluebird');
+const debug = require('debug')('perf-widget:lib:updateCompetitorInsights'); // eslint-disable-line no-unused-vars
 
 module.exports = function addCompetitorsToQueue() {
 	const DAY_IN_MILLISECONDS = 60 * 60 * 24 * 1000;
@@ -19,7 +20,9 @@ module.exports = function addCompetitorsToQueue() {
 		'http://www.wsj.com/video/democratic-debate-in-two-minutes/31043401-0168-4AAD-ABB3-08F6E888F07E.html'
 	];
 
-	bluebird.map(competitorUrls, pageDataFor, {concurrency: 3});
+	bluebird.map(competitorUrls, pageDataFor, {concurrency: 3}).then(function () {
+		debug('Finished updating the competitor pages.');
+	});
 
 	setTimeout(addCompetitorsToQueue, DAY_IN_MILLISECONDS);
 };
