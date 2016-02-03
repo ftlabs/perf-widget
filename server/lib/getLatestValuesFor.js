@@ -28,39 +28,54 @@ module.exports = function getLatestValuesFor(url) {
 
 					var text; // eslint-disable-line no-var
 
-					if (betterThanOtherFTProducts === undefined) {
-						if (concerning) {
-							text = row.concerning_text;
-						} else {
-							text = row.reassuring_text;
-						}
+					const results = [];
+
+					if (concerning) {
+						results.push({
+							ok: false,
+							text: row.concerning_text
+						});
 					} else {
+						results.push({
+							ok: true,
+							text: row.reassuring_text
+						});
+					}
+
+					if (betterThanOtherFTProducts !== undefined) {
 						if (betterThanOtherFTProducts) {
-							text = row.better_than_ft;
+							results.push({
+								ok: true,
+								text: row.better_than_ft
+							});
 						} else {
-							text = row.worse_than_ft;
+							results.push({
+								ok: false,
+								text: row.worse_than_ft
+							});
 						}
 					}
 
 					if (betterThanCompetitorProducts !== undefined) {
-						var competitor; // eslint-disable-line no-var
-						if (betterThanCompetitorProducts['false'].length > 0) {
-							ok = false;
-							competitor = betterThanCompetitorProducts['false'][0];
-							text = `${row.worse_than_competitor} ${competitor}`;
-						} else {
-							ok = true;
-							competitor = betterThanCompetitorProducts['true'][0];
-							text = `${row.better_than_competitor} ${competitor}`;
-						}
+						betterThanCompetitorProducts['false'].forEach(function(competitor) {
+							results.push({
+								ok: false,
+								text: `${row.worse_than_competitor} ${competitor}`
+							});
+						});
+						betterThanCompetitorProducts['true'].forEach(function(competitor) {
+							results.push({
+								ok: true,
+								text: `${row.better_than_competitor} ${competitor}`
+							});
+						});
 					}
 
 					return {
 						category: row.category,
 						provider: row.provider,
-						text: text,
-						link: row.link,
-						ok: ok
+						comparisons: results,
+						link: row.link
 					};
 				});
 			});

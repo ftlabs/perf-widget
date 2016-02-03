@@ -88,12 +88,23 @@
 		}
 
 		#perf-widget-holder h3{
-			margin-bottom: 10px;
 			margin-top: 10px;
 			display: block;
 		}
 
-		#perf-widget-holder li{
+		#perf-widget-holder .insights{
+			padding-left: 10px;
+		    display: block;
+		    margin-top: 5px;
+		}
+
+		#perf-widget-holder .insights h4{
+			font-size: 0.8em;
+			margin-top: 0;
+			margin-bottom : 0.3em;
+		}
+
+		#perf-widget-holder .insights li{
 			list-style-type: none;
 			padding: 0;
 			margin: 0;
@@ -103,34 +114,33 @@
 			display: inline-block;
 		}
 
-		#perf-widget-holder li::before{
+		#perf-widget-holder .insights li::before{
 			width: 1em;
 			height: 1em;
 			display: inline-block;
 			content: "";
 			margin-right: 0.5em;
 			background-size: 100%;
-			padding-top: 7px;
+			padding-top: 2px;
 			background-position: 50%;
 			background-repeat: no-repeat;
 			background-image: url('{{serviceURL}}/static/images/unsure.png');
 			position: absolute;
-			left: 15px;
+			margin-left: -18px;
 		}
 
-		#perf-widget-holder li.ok-true::before{
+		#perf-widget-holder .insights li.ok-true::before{
 			background-image: url('{{serviceURL}}/static/images/check.png');
 		}
 
-		#perf-widget-holder li.ok-false::before{
+		#perf-widget-holder .insights li.ok-false::before{
 			background-image: url('{{serviceURL}}/static/images/issue.png');
 		}
 
-		#perf-widget-holder li a{
-			color: rgba(255,255,255,.4);
+		#perf-widget-holder .insights li a{
+			color: rgba(255,255,255,.8);
 			border: 0 solid black;
 			text-decoration:none;
-			font-size: 0.8em;
 			display: inline-block;
 		}
 
@@ -159,33 +169,20 @@
 
 		pWidgeGlobals.freshInsights = true;
 
-		{{#if data.Performance}}
-		
-			console.log('We have perf data');
-			output += `<h3>Performance</h3>`;
+		{{#each data}}
 
-			output += `{{#each data.Performance}} <li class="ok-{{ ok }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
+			output += `<h3>{{category}}</h3><div class="insights"><h4>{{provider}}</h4>`;
 
-		{{/if}}
+			{{#each comparisons}}
 
-		{{#if data.Security}}
-		
-			console.log('We have security data');
+				output += `<li class="ok-{{ ok }}"><a href="{{../link}}" target="_blank">{{text}}</a></li>`;
 
-			output += `<h3>Security</h3>`;
+			{{/each}}
 
-			output += `{{#each data.Security}} <li class="ok-{{ ok }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
+			output += "</div>";
 
-		{{/if}}
+		{{/each}}
 
-		{{#if data.Accessibility}}
-		
-			console.log('We have accessibility data');
-			output += `<h3>Accessibility</h3>`;
-
-			output += `{{#each data.Accessibility}} <li class="ok-{{ ok }}">{{text}} <a href="{{link}}" target="_blank">({{provider}})</a></li> {{/each}}`;
-		
-		{{/if}}
 
 		close.setAttribute('class', 'close');
 		close.addEventListener('click', function(){
