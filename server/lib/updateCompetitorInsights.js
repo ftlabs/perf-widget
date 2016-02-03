@@ -20,7 +20,7 @@ module.exports = function updateCompetitorInsights () {
 		'http://www.wsj.com/video/democratic-debate-in-two-minutes/31043401-0168-4AAD-ABB3-08F6E888F07E.html'
 	];
 
-	bluebird.map(competitorUrls, pageDataFor, {concurrency: 3}).then(function () {
+	return bluebird.map(competitorUrls, pageDataFor, {concurrency: 3}).then(function () {
 		debug('Finished updating the competitor pages.');
 	});
 

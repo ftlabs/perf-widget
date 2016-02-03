@@ -7,16 +7,6 @@ const debug = require('debug')('perf-widget:app');
 const hsts = require('hsts');
 const enforceSSL = require('express-enforces-ssl');
 
-db.createTables().then(function() {
-	require('./lib/updateCompetitorInsights')();
-})
-.catch(function(error) {
-	debug('Could not create the tables required for the application.');
-	debug(error);
-	process.kill(1);
-	return;
-});
-
 app.enable('trust proxy');
 
 if(process.env.NODE_ENV !== 'development'){
@@ -62,3 +52,13 @@ app.use(require('body-parser').json());
 app.use('/', require('./routes'));
 
 module.exports = app;
+
+const updateCompetitorInsights = require('./lib/updateCompetitorInsights');
+
+module.exports.ready = db.createTables().then(updateCompetitorInsights)
+.catch(function(error) {
+	debug('Could not create the tables required for the application.');
+	debug(error);
+	process.kill(1);
+	return;
+});
