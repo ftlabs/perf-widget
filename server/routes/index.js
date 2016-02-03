@@ -1,6 +1,4 @@
 const router = require('express').Router(); //eslint-disable-line new-cap
-const path = require('path');
-const express = require('express');
 
 // Serve static assets from /static
 router.get('/', require('./home'));
