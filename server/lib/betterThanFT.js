@@ -1,6 +1,6 @@
 const query = require('./database').query;
 const escape = require('mysql').escape;
-const debug = require('debug')('perf-widget:lib:betterThanFT');
+const debug = require('debug')('perf-widget:lib:betterThanFT'); // eslint-disable-line no-unused-vars
 
 module.exports = function betterThanFT(name, value) {
 	
@@ -20,8 +20,6 @@ module.exports = function betterThanFT(name, value) {
 				result = value <= averageForFT;
 			}
 		}
-		
-		debug('averageForFT:', averageForFT, 'value:', value, 'better:', result, 'count:', count);
 
 		return result;
 	});
