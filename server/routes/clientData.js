@@ -6,7 +6,6 @@ module.exports = function (req, res) {
 
 	const websiteToTest = req.query.url;
 	const freshInsights = req.query.fresh === 'true';
-	const categories = {};
 	const serviceURL = `${process.env.SERVER_DOMAIN}${ process.env.NODE_ENV === 'development' ? ':' + process.env.PORT : ''}`;
 
 
@@ -15,16 +14,9 @@ module.exports = function (req, res) {
 			
 				if(Array.isArray(response)){
 
-					response.forEach(insight => {
-						if(categories[insight.category] === undefined){
-							categories[insight.category] = [];
-						}
-						categories[insight.category].push(insight);
-					});
-
 					res.render('bookmarklet', {
 						serviceURL,
-						data : categories,
+						data : response,
 						bm
 					});
 
