@@ -65,7 +65,7 @@
   },
   "scripts": {
     "build": "npm-run-all clean copy build:app",
-    "build:app": "obt build --js=./client/src/main.js --sass=./client/src/main.scss --buildFolder=./client/dist && cp ./client/src/bookmarklet.js ./client/dist && cp -r ./client/src/images ./client/dist && gulp set-service-url && gulp one-line-bookmark",
+    "build:app": "mkdir ./client/dist && cp ./client/src/bookmarklet.js ./client/dist && cp -r ./client/src/images ./client/dist && gulp set-service-url && gulp one-line-bookmark",
     "clean": "rimraf client/dist/**/*",
     "copy": "mkdir -p client/dist",
     "develop": "npm run watch -- --exec 'npm-run-all -p start build'",
