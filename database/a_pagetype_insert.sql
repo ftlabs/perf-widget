@@ -1,6 +1,6 @@
 INSERT IGNORE INTO `pagetype` (`type`, `pattern`)
 VALUES
 	('article','(^https?:\\/\\/next.ft.com\\/content\\/.*)'),
-	('homepage','(^https?:\\/\\/next.ft.com\\/(international|uk))'),
+	('homepage','(^https?:\\/\\/next.ft.com\\/(international|uk))|(^https?:\\/\\/app.ft.com\\/index_page\\/home)'),
 	('stream','(^https?:\\/\\/next.ft.com\\/stream\\/.*)'),
 	('video','(^https?:\\/\\/video.ft.com\\/?.*)');

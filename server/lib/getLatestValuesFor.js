@@ -1,12 +1,13 @@
 const query = require('./database').query;
 const escape = require('mysql').escape;
-const debug = require('debug')('perf-widget:lib:getLatestValuesFor');
+const debug = require('debug')('perf-widget:lib:getLatestValuesFor'); // eslint-disable-line no-unused-vars
 const isConcerningValue = require('./isConcerningValue');
 const betterThanFT = require('./betterThanFT');
 const isFT = require('./isFT');
+const betterThanCompetitors = require('./betterThanCompetitors');
 
 module.exports = function getLatestValuesFor(url) {
-	const command = `SELECT properties.name, properties.category, properties.provider, properties.better_than_ft, properties.worse_than_ft, properties.concerning_text, properties.reassuring_text, current_values.link, current_values.value FROM current_values JOIN properties ON properties.id = current_values.property_id JOIN page ON page.id = current_values.page_id AND page.url = ${escape(url)};`;
+	const command = `SELECT page.type, properties.name, properties.category, properties.provider, properties.better_than_competitor, properties.worse_than_competitor, properties.better_than_ft, properties.worse_than_ft, properties.concerning_text, properties.reassuring_text, current_values.link, current_values.value FROM current_values JOIN properties ON properties.id = current_values.property_id JOIN page ON page.id = current_values.page_id AND page.url = ${escape(url)};`;
 
 	const queryResult = query(command);
 
@@ -16,12 +17,14 @@ module.exports = function getLatestValuesFor(url) {
 
 				return Promise.all([
 					isConcerningValue(row.name, row.value), 
-					betterThanFT(row.name, row.value)
+					betterThanFT(row.name, row.value),
+					betterThanCompetitors(row.name, row.value, row.type)
 				]).then(function (values) {
 					const concerning = values[0];
 					const betterThanOtherFTProducts = values[1];
+					const betterThanCompetitorProducts = values[2];
 
-					const ok = betterThanOtherFTProducts === undefined ? !concerning : betterThanOtherFTProducts;
+					var ok = betterThanOtherFTProducts === undefined ? !concerning : betterThanOtherFTProducts; // eslint-disable-line no-var
 
 					var text; // eslint-disable-line no-var
 
@@ -36,6 +39,19 @@ module.exports = function getLatestValuesFor(url) {
 							text = row.better_than_ft;
 						} else {
 							text = row.worse_than_ft;
+						}
+					}
+
+					if (betterThanCompetitorProducts !== undefined) {
+						var competitor; // eslint-disable-line no-var
+						if (betterThanCompetitorProducts['false'].length > 0) {
+							ok = false;
+							competitor = betterThanCompetitorProducts['false'][0];
+							text = `${row.worse_than_competitor} ${competitor}`;
+						} else {
+							ok = true;
+							competitor = betterThanCompetitorProducts['true'][0];
+							text = `${row.better_than_competitor} ${competitor}`;
 						}
 					}
 
