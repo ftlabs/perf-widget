@@ -33,6 +33,7 @@
     "gulp-preprocess": "^2.0.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
+    "gulp-webpack": "^1.5.0",
     "hsts": "^1.0.0",
     "is-url-superb": "^2.0.0",
     "lodash": "^4.0.0",
@@ -64,9 +65,10 @@
     "webdriverio": "^3.3.0"
   },
   "scripts": {
-    "build": "npm-run-all clean copy build:app",
+    "build": "npm-run-all clean copy build:app build:extension",
     "build:app": "gulp set-service-url && gulp one-line-bookmark",
-    "clean": "rimraf client/dist/**/*",
+    "build:extension": "gulp build-extension",
+    "clean": "rimraf client/dist/ extension-dist/",
     "copy": "mkdir -p client/dist && cp ./client/src/bookmarklet.js ./client/dist && cp -r ./client/src/images ./client/dist",
     "develop": "npm run watch -- --exec 'npm-run-all -p start build'",
     "lint": "obt verify --excludeFiles=\\!client/src/js/**/*.js",
