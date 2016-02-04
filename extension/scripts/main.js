@@ -1,6 +1,7 @@
 'use strict';
 
 chrome.runtime.sendMessage({method: 'isEnabled'}, function(response) {
-	window.perfWidgetUrl = 'https://ftlabs-perf-widget.herokuapp.com/';
+	if (!response.enabled) return;
+	window.perfWidgetUrl = 'https://ftlabs-perf-widget-test.herokuapp.com';
 	require('../../client/src/bookmarklet.js');
 });
