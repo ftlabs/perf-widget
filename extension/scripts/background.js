@@ -6,7 +6,7 @@ var enabled;
 if (localStorage.getItem('enabled') === null) {
 	enabled = true;
 } else {
-	enabled = !!Number(localStorage.getItem('enabled'));
+	enabled = localStorage.getItem('enabled') === "true";
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -17,6 +17,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 	if (request.method === 'setEnabled') {
 		enabled = request.enabled;
-		localStorage.setItem('enabled', Number(request.enabled));
+		localStorage.setItem('enabled', String(request.enabled));
 	}
 });
