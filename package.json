@@ -65,9 +65,10 @@
     "webdriverio": "^3.3.0"
   },
   "scripts": {
-    "build": "npm-run-all clean copy build:app",
+    "build": "npm-run-all clean copy build:app build:extension",
     "build:app": "gulp set-service-url && gulp one-line-bookmark",
-    "clean": "rimraf client/dist/**/*",
+    "build:extension": "gulp build-extension",
+    "clean": "rimraf client/dist/ extension-dist/",
     "copy": "mkdir -p client/dist && cp ./client/src/bookmarklet.js ./client/dist && cp -r ./client/src/images ./client/dist",
     "develop": "npm run watch -- --exec 'npm-run-all -p start build'",
     "lint": "obt verify --excludeFiles=\\!client/src/js/**/*.js",
