@@ -13,11 +13,15 @@ const g = {
 	T : 7
 };
 
+str[:1]
+
+
+
 module.exports = function (url) {
 
 	return scan(url).then(function(results) {
 
-		const grade = results.endpoints[0].grade === undefined ? null : g[results.endpoints[0].grade];
+		const grade = results.endpoints[0].grade === undefined ? null : g[results.endpoints[0].grade[0]];
 
 		return [{
 			name: 'SSLLabsGrade',
