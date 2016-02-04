@@ -1,6 +1,5 @@
 const debug = require('debug')('perf-widget:lib:clientData'); // eslint-disable-line no-unused-vars
 const dataFor = require('../lib/dataFor');
-const bm = require('../lib/bookmarklet');
 
 module.exports = function (req, res) {
 
@@ -16,8 +15,7 @@ module.exports = function (req, res) {
 
 					res.render('bookmarklet', {
 						serviceURL,
-						data : response,
-						bm
+						data : response
 					});
 
 				} else {
