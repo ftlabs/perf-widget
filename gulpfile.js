@@ -28,22 +28,15 @@ gulp.task('build-extension', ['copy-extension-files'], function(){
 
 	gulp.src('./extension/scripts/main.js')
 	.pipe(webpack({output: {
-        filename: 'main.js',
-      }}))
-	.pipe(gulp.dest('./extension/dist/scripts/'));
+		filename: 'main.js',
+	}}))
+	.pipe(gulp.dest('./extension-dist/scripts/'));
 
 });
 
 gulp.task('copy-extension-files', function(){
 
 	return gulp.src('./extension/**/*')
-	.pipe(gulp.dest('./extension/dist/'));
-
-});
-
-gulp.task('copy-extension-files', function(){
-
-	return gulp.src('./extension/**/*')
-	.pipe(gulp.dest('./extension/dist/'));
+	.pipe(gulp.dest('./extension-dist/'));
 
 });

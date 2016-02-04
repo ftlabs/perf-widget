@@ -4,3 +4,4 @@
 npm-debug.log
 /client/dist
 /coverage/
+/extension-dist/
