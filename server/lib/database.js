@@ -41,8 +41,6 @@ module.exports.createTables = function createTables() {
 module.exports.query = function query(command) {
 	const connection = getConnection();
 
-	debug(command);
-
 	return connection.then(function(connection) {
 
 		const query = denodeify(connection.query.bind(connection));
