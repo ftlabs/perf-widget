@@ -186,6 +186,7 @@
 
 		close.setAttribute('class', 'close');
 		close.addEventListener('click', function(){
+			window.pWidgeGlobals.freshInsights = false;
 			resetTimeout();
 			removeSelf();
 		}, false);
