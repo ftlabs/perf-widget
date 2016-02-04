@@ -167,8 +167,6 @@
 
 	{{#if data}}
 
-		pWidgeGlobals.freshInsights = true;
-
 		{{#each data}}
 
 			output += `<h3>{{category}}</h3><div class="insights"><h4>{{provider}}</h4>`;
@@ -186,13 +184,13 @@
 
 		close.setAttribute('class', 'close');
 		close.addEventListener('click', function(){
-			window.pWidgeGlobals.freshInsights = false;
 			resetTimeout();
 			removeSelf();
 		}, false);
 
 		refresh.setAttribute('class', 'refresh');
 		refresh.addEventListener('click', function(){
+			window.pWidgeGlobals.freshInsights = true;
 			removeSelf();
 			loadSelf();
 		}, false);
