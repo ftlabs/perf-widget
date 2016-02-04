@@ -5,11 +5,12 @@ const uglify = require('gulp-uglify');
 const insert = require('gulp-insert');
 const env = require('dotenv').config();
 const webpack = require('gulp-webpack');
+const serverDomain = process.env.SERVER_DOMAIN || 'https://ftlabs-perf-widget-test.herokuapp.com';
 
 gulp.task('set-service-url', function (){
 
 	return gulp.src('./client/dist/*.js')
-		.pipe(preprocess( { context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : process.env.SERVER_DOMAIN} } ) )
+		.pipe(preprocess( { context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain } } ) )
 		.pipe(gulp.dest('./client/dist/'))
 	;
 
@@ -30,6 +31,7 @@ gulp.task('build-extension', ['copy-extension-files'], function(){
 	.pipe(webpack({output: {
 		filename: 'main.js',
 	}}))
+	.pipe(preprocess( { context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain } } ) )
 	.pipe(gulp.dest('./extension-dist/scripts/'));
 
 });

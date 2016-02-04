@@ -1,6 +1,6 @@
 /* eslint-disable */
 var sEl=document.createElement('script');
-var perfWidgetUrl = window.perfWidgetUrl || '/* @echo serviceURL */';
+var perfWidgetUrl = '/* @echo serviceURL */';
 var srcAddress = perfWidgetUrl + "/client/data-for?url=" + window.encodeURIComponent(window.location.href) + "&d=" + Date.now();
 
 if(window.pWidgeGlobals !== undefined){
