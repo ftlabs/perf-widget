@@ -13,10 +13,6 @@ const g = {
 	T : 7
 };
 
-str[:1]
-
-
-
 module.exports = function (url) {
 
 	return scan(url).then(function(results) {
