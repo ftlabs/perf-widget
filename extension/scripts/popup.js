@@ -1,5 +1,5 @@
 'use strict'; 
-/*global window, chrome, document, justOnce, theme, size, copyToClipboard, cbData*/
+/*global window, chrome, document*/
 
 chrome.runtime.sendMessage({method: 'isEnabled'}, function(response) {
 	document.forms[0].enabled.checked = response.enabled;
