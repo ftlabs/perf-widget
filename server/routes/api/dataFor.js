@@ -4,7 +4,9 @@ const response = require('./../../lib/jsonResponse');
 
 module.exports = function (req, res) {
 	
-	dataFor(req.query.url)
+	const freshInsights = req.query.fresh === "true";
+
+	dataFor(req.query.url, freshInsights)
 	.then(function (data) {
 
 		if (data.error) {

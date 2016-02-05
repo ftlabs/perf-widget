@@ -17,10 +17,12 @@ function loadWidget() {
 		chrome.runtime.onMessage.removeListener(recieveData);
 	}
 
-	function getData (url) {
+	function getData (url, fresh) {
+		fresh = fresh || false;
 		chrome.runtime.sendMessage({
 			method: 'getData',
-			url
+			url : url,
+			fresh : fresh
 		});
 	}
 
@@ -44,7 +46,7 @@ function loadWidget() {
 
 	function refreshFn () {
 		textTarget.innerHTML = waitingText;
-		getData(myUrl);
+		getData(myUrl, true);
 	}
 
 	// prepare to recieve data.
