@@ -24,10 +24,6 @@ module.exports = function getLatestValuesFor(url) {
 					const betterThanOtherFTProducts = values[1];
 					const betterThanCompetitorProducts = values[2];
 
-					var ok = betterThanOtherFTProducts === undefined ? !concerning : betterThanOtherFTProducts; // eslint-disable-line no-var
-
-					var text; // eslint-disable-line no-var
-
 					const results = [];
 
 					if (concerning) {

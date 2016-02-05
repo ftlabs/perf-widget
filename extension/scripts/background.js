@@ -1,7 +1,7 @@
-'use strict';
+'use strict'; // eslint-disable-line strict
 /*global chrome, localStorage*/
 
-var enabled;
+let enabled;
 
 if (localStorage.getItem('enabled') === null) {
 	enabled = true;
