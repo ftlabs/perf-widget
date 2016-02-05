@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<title>FT Labs Perf-Widget</title>
+		<link rel="stylesheet" href="https://origami-buildservice-qa.herokuapp.com/bundles/css?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4" />
+
+		<style type="text/css">
+			body {
+				font-family: BentonSans;
+			}
+
+			.o-techdocs-card .o-techdocs-card__subtitle::before{
+				content: 'Drag me to your bookmarks bar';
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+
+		<header data-o-component="o-header" class="o-header">
+			<div class="o-header__container">
+				<div class="o-header__inner">
+					<div class="o-header__primary">
+						<div class="o-header__primary__left">
+							<a class="o-header__logo o-header__logo--ft" href="http://labs.ft.com">
+								<abbr title="Financial Times">FT</abbr>
+							</a>
+						</div>
+						<div class="o-header__primary__featured">
+							<a href="/grading">Grading</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main>
+				
+			<div class="o-techdocs-hero">
+				<h2 class="o-techdocs-hero__title">
+					FT Labs Perf-Widget Chrome Extension and Service
+				</h2>
+			</div>
+
+			<div class="o-techdocs-container">
+				<div class="o-techdocs-main">
+
+				{{#if grading}}
+
+
+					{{> grading }}
+
+
+				{{else}}
+
+					{{> add }}
+
+				{{/if}}
+
+				</div>
+
+			</div>
+
+		</main>
+
+		<script src="https://origami-buildservice-qa.herokuapp.com/bundles/js?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4"></script>
+
+	</body>
+
+</html>
