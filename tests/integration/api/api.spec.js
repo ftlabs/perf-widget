@@ -11,38 +11,53 @@ describe('App', function () {
 	});
 
 	it('returns 422 for /api/data-for', function (done) {
-		request(app)
-			.get('/api/data-for')
-			.expect(422, done);
+		this.timeout(50000);
+		app.ready.then(() => {
+			request(app)
+				.get('/api/data-for')
+				.expect(422, done);
+		});
 	});
 
 	it('returns JSON for /api/data-for', function (done) {
-		request(app)
-			.get('/api/data-for')
-			.expect('Content-Type', /json/, done)
+		this.timeout(50000);
+		app.ready.then(() => {
+			request(app)
+				.get('/api/data-for')
+				.expect('Content-Type', /json/, done);
+		});
 	});
 
 	it('returns FT Labs API JSON structure for /api/data-for', function (done) {
-		request(app)
-			.get('/api/data-for')
-			.expect({
-				success: false,
-				data: {
-					error: 'Missing url parameter.'
-				}, 
-				code: 422 
-			}, done);
+		this.timeout(50000);
+		app.ready.then(() => {
+			request(app)
+				.get('/api/data-for')
+				.expect({
+					success: false,
+					data: {
+						error: 'Missing url parameter.'
+					}, 
+					code: 422 
+				}, done);
+		});
 	});
 
 	it('returns 202 for a never before seen url', function (done) {
-		request(app)
-			.get('/api/data-for?url=https://next.ft.com/uk')
-			.expect(202, done);
+		this.timeout(50000);
+		app.ready.then(() => {
+			request(app)
+				.get('/api/data-for?url=https://next.ft.com/uk')
+				.expect(202, done);
+		});
 	});
 
 	it('returns 202 for a url it has seen before but has no data for', function (done) {
-		request(app)
-			.get('/api/data-for?url=https://next.ft.com/uk')
-			.expect(202, done);
+		this.timeout(50000);
+		app.ready.then(() => {
+			request(app)
+				.get('/api/data-for?url=https://next.ft.com/uk')
+				.expect(202, done);
+		});
 	});
 });

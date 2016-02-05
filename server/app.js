@@ -48,17 +48,13 @@ app.set('view engine', 'hbs');
 // Decode JSON sent in request bodies
 app.use(require('body-parser').json());
 
-// Assign routes
-app.use('/', require('./routes'));
-
 module.exports = app;
 
-const updateCompetitorInsights = require('./lib/updateCompetitorInsights');
-
-module.exports.ready = db.createTables().then(updateCompetitorInsights)
-.catch(function(error) {
-	debug('Could not create the tables required for the application.');
-	debug(error);
-	process.kill(1);
-	return;
+module.exports.ready = db.createTables().then(function() {
+	debug('tables created')
+	const updateCompetitorInsights = require('./lib/updateCompetitorInsights');
+	updateCompetitorInsights();
+	
+	// Assign routes
+	app.use('/', require('./routes'));
 });
