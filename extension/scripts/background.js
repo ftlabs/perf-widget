@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 
 	if (request.method === 'getData') {
-		co(() => getData(request.url, request.fresh))
+		co(getData(request.url, request.fresh))
 		.then(data => {
 			emitMessage('updateData', data, request.url);
 		}, e => {
