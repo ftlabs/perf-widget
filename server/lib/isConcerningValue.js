@@ -13,6 +13,9 @@ const propertyThresholds = queryResult.then(function(rows) {
 		const maximum = row.maximum || Infinity;
 
 		return [row.name, function(value) {
+				if(value === null){
+					return true;
+				}
 				if (value <= minimum) {
 					return true;
 				} else if (value >= maximum) {
