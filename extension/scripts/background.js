@@ -8,14 +8,17 @@ let enabled;
 
 if (localStorage.getItem('enabled') === null) {
 	enabled = true;
+	localStorage.setItem('enabled', 'true');
 } else {
 	enabled = localStorage.getItem('enabled') === 'true';
 }
 
 function emitMessage (method, data, url){
-	chrome.tabs.query({url}, function (tabs){
-		tabs.forEach(function ({id}) {
-			chrome.tabs.sendMessage(id, {method, data, url});
+	chrome.tabs.query({
+		url : url
+	}, function (tabs){
+		tabs.forEach(function (tab) {
+			chrome.tabs.sendMessage(tab.id, {method : method, data : data, url : url});
 		});
 	});
 }
@@ -51,7 +54,9 @@ function* getData (url) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 	if (request.method === 'isEnabled') {
-		sendResponse({enabled});
+		sendResponse({
+			enabled : enabled
+		});
 	}
 
 	if (request.method === 'setEnabled') {
@@ -64,8 +69,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			active: true,
 			lastFocusedWindow: true
 		}, function (tabs){
-			tabs.forEach(function ({id}) {
-				chrome.tabs.sendMessage(id, {method: 'showWidget'});
+			tabs.forEach(function (tab) {
+				chrome.tabs.sendMessage(tab.id, {method: 'showWidget'});
 			});
 		});
 	}
