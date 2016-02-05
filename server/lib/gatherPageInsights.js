@@ -1,4 +1,4 @@
-const insights = require('./insightProviders');
+const insights = require('./insightProviders/pageInsightProviders');
 const debug = require('debug')('perf-widget:lib:gatherPageInsights');
 const flattenDeep = require('lodash').flattenDeep;
 
