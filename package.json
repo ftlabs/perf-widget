@@ -49,6 +49,7 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
+    "co": "^4.6.0",
     "istanbul": "^0.4.1",
     "json-loader": "^0.5.4",
     "karma": "^0.13.15",
@@ -66,7 +67,7 @@
   },
   "scripts": {
     "build": "npm-run-all clean copy build:app build:extension",
-    "build:app": "gulp set-service-url && gulp one-line-bookmark",
+    "build:app": "gulp set-service-url",
     "build:extension": "gulp build-extension",
     "clean": "rimraf client/dist/ extension-dist/",
     "copy": "mkdir -p client/dist && cp ./client/src/bookmarklet.js ./client/dist && cp -r ./client/src/images ./client/dist",

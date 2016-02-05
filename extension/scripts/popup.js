@@ -11,3 +11,9 @@ document.forms[0].enabled.addEventListener('click', function () {
 		enabled: document.forms[0].enabled.checked
 	});
 });
+
+document.forms[0].showwidget.addEventListener('click', function () {
+	chrome.runtime.sendMessage({
+		method: 'showWidget'
+	});
+});

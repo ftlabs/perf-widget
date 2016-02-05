@@ -1,6 +1,6 @@
 
 const style = document.createElement('style');
-
+const serviceURL = '/* @echo serviceURL */';
 
 style.textContent = `
 
@@ -49,7 +49,7 @@ style.textContent = `
 		background-size: 50%;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('{{serviceURL}}/static/images/cross.png');
+		background-image: url('${serviceURL}/static/images/cross.png');
 	}
 
 	#perf-widget-holder .refresh{
@@ -66,7 +66,7 @@ style.textContent = `
 		background-size: 80%;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('{{serviceURL}}/static/images/refresh.png');
+		background-image: url('${serviceURL}/static/images/refresh.png');
 	}
 
 	#perf-widget-holder h3:first-of-type{
@@ -110,17 +110,17 @@ style.textContent = `
 		padding-top: 2px;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('{{serviceURL}}/static/images/unsure.png');
+		background-image: url('${serviceURL}/static/images/unsure.png');
 		position: absolute;
 		margin-left: -18px;
 	}
 
 	#perf-widget-holder .insights li.ok-true::before{
-		background-image: url('{{serviceURL}}/static/images/check.png');
+		background-image: url('${serviceURL}/static/images/check.png');
 	}
 
 	#perf-widget-holder .insights li.ok-false::before{
-		background-image: url('{{serviceURL}}/static/images/issue.png');
+		background-image: url('${serviceURL}/static/images/issue.png');
 	}
 
 	#perf-widget-holder .insights li a{

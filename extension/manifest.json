@@ -5,7 +5,8 @@
   "description": "A Chrome Extension that automagically adds a performance analysis widget.",
   "version": "1.0.0",
   "permissions": [
-    "tabs"
+    "tabs",
+    "<!--  @echo serviceURL -->/*"
   ],
   "browser_action": {
     "default_icon": "icon.png",
@@ -13,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.ft.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["scripts/main.js"]
     }
   ],
