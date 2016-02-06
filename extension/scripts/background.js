@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; // eslint-disable-line strict
 /*global chrome, localStorage*/
 
 const co = require('co');

@@ -2,6 +2,12 @@
 require('dotenv').load({silent: true});
 const debug = require('debug')('perf-widget:bin:www');
 
+// Kill application if a rejected promise is not handled
+process.on('unhandledRejection', function(error) {
+	debug(error);
+	process.abort();
+});
+
 const start = Date.now();
 const app = require('../app');
 app.ready.then(function () {
@@ -25,7 +31,6 @@ app.ready.then(function () {
 			return false;
 		}
 	}
-
 
 	/**
 	 * Get port from environment and store in Express.
@@ -73,5 +78,4 @@ app.ready.then(function () {
 			: 'port ' + addr.port;
 		debug('Listening on ' + bind);
 	});
-
 });

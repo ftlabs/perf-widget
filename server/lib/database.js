@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const denodeify = require('denodeify');
-const debug = require('debug')('perf-widget:lib:database');
+const debug = require('debug')('perf-widget:lib:database'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
 

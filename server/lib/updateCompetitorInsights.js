@@ -1,6 +1,6 @@
+const debug = require('debug')('perf-widget:lib:updateCompetitorInsights'); // eslint-disable-line no-unused-vars
 const pageDataFor = require('./pageDataFor');
 const bluebird = require('bluebird');
-const debug = require('debug')('perf-widget:lib:updateCompetitorInsights'); // eslint-disable-line no-unused-vars
 
 module.exports = function updateCompetitorInsights () {
 	const DAY_IN_MILLISECONDS = 60 * 60 * 24 * 1000;
@@ -24,5 +24,9 @@ module.exports = function updateCompetitorInsights () {
 		debug('Finished updating the competitor pages.');
 	});
 
-	setTimeout(updateCompetitorInsights, DAY_IN_MILLISECONDS);
+	setTimeout(function () {
+		updateCompetitorInsights().catch(function () {
+			debug('Errored updating the competitor pages.');
+		});
+	}, DAY_IN_MILLISECONDS);
 };

@@ -1,4 +1,4 @@
-'use strict'; 
+'use strict'; // eslint-disable-line strict
 /*global window, chrome, document*/
 
 chrome.runtime.sendMessage({method: 'isEnabled'}, function(response) {

@@ -53,6 +53,11 @@ module.exports = function (url, freshInsights) {
 
 		cache.set(url, insights);
 
+		insights.catch(function () {
+			debug('Promise was rejected, deleting from cache.')
+			cache.del(url);
+		});
+
 		return {
 			reason: 'Gathering results'
 		};
