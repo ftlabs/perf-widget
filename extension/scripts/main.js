@@ -20,7 +20,7 @@ function loadWidget() {
 	function getData (url) {
 		chrome.runtime.sendMessage({
 			method: 'getData',
-			url
+			url: url
 		});
 	}
 

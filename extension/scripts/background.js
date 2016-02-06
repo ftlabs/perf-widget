@@ -13,9 +13,13 @@ if (localStorage.getItem('enabled') === null) {
 }
 
 function emitMessage (method, data, url){
-	chrome.tabs.query({url}, function (tabs){
-		tabs.forEach(function ({id}) {
-			chrome.tabs.sendMessage(id, {method, data, url});
+	chrome.tabs.query({url: url}, function (tabs){
+		tabs.forEach(function (tab) {
+			chrome.tabs.sendMessage(tab.id, {
+				method: method,
+				data: data,
+				url: url
+			});
 		});
 	});
 }
@@ -70,8 +74,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			active: true,
 			lastFocusedWindow: true
 		}, function (tabs){
-			tabs.forEach(function ({id}) {
-				chrome.tabs.sendMessage(id, {method: 'showWidget'});
+			tabs.forEach(function (tab) {
+				chrome.tabs.sendMessage(tab.id, {method: 'showWidget'});
 			});
 		});
 	}
