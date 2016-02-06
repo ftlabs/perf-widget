@@ -17,17 +17,20 @@ function loadWidget() {
 		chrome.runtime.onMessage.removeListener(recieveData);
 	}
 
-	function getData (url, fresh) {
-		fresh = fresh || false;
+	function getData (url) {
 		chrome.runtime.sendMessage({
 			method: 'getData',
-			url : url,
-			fresh : fresh
+			url
 		});
 	}
 
 	function recieveData (request) {
-		if (open && request.method === 'updateData' && request.url === myUrl){
+
+		if (request.method === 'updateError') {
+			textTarget.innerHTML = request.errorMessage;
+		}
+
+		if (open && request.method === 'updateData' && request.url === myUrl) {
 			const data = request.data;
 			let output = '';
 
@@ -46,7 +49,7 @@ function loadWidget() {
 
 	function refreshFn () {
 		textTarget.innerHTML = waitingText;
-		getData(myUrl, true);
+		getData(myUrl);
 	}
 
 	// prepare to recieve data.
@@ -84,7 +87,7 @@ chrome.runtime.sendMessage({method: 'isEnabled'}, response => {
 });
 
 chrome.runtime.onMessage.addListener(function (request) {
-	if (request.method === 'showWidget'){
+	if (request.method === 'showWidget') {
 		if (widgetControls) {
 			widgetControls.refresh();
 		} else {

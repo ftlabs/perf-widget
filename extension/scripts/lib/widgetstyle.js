@@ -1,6 +1,5 @@
 
 const style = document.createElement('style');
-const serviceURL = '/* @echo serviceURL */';
 
 style.textContent = `
 
@@ -8,8 +7,12 @@ style.textContent = `
 		all: initial;
 	}
 
-	#perf-widget-holder > * {
+	#perf-widget-holder * {
 		all: unset;
+	}
+
+	#perf-widget-holder > * {
+		font-weight: 100;
 	}
 
 	#perf-widget-holder {
@@ -31,10 +34,6 @@ style.textContent = `
 		font-family: Helvetica, Arial, sans-serif;
 	}
 
-	#perf-widget-holder > *{
-		font-weight: 100;
-	}
-
 	#perf-widget-holder .close{
 		position: absolute;
 		right: 5px;
@@ -49,7 +48,7 @@ style.textContent = `
 		background-size: 50%;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('${serviceURL}/static/images/cross.png');
+		background-image: url('/images/cross.png');
 	}
 
 	#perf-widget-holder .refresh{
@@ -57,7 +56,6 @@ style.textContent = `
 		right: 30px;
 		top: 5px;
 		color: rgba(255,255,255,.5);
-		// border: 1px solid white;
 		width: 1em;
 		height: 1em;
 		text-align: center;
@@ -66,7 +64,7 @@ style.textContent = `
 		background-size: 80%;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('${serviceURL}/static/images/refresh.png');
+		background-image: url('/images/refresh.png');
 	}
 
 	#perf-widget-holder h3:first-of-type{
@@ -110,17 +108,17 @@ style.textContent = `
 		padding-top: 2px;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('${serviceURL}/static/images/unsure.png');
+		background-image: url('/images/unsure.png');
 		position: absolute;
 		margin-left: -18px;
 	}
 
 	#perf-widget-holder .insights li.ok-true::before{
-		background-image: url('${serviceURL}/static/images/check.png');
+		background-image: url('/images/check.png');
 	}
 
 	#perf-widget-holder .insights li.ok-false::before{
-		background-image: url('${serviceURL}/static/images/issue.png');
+		background-image: url('/images/issue.png');
 	}
 
 	#perf-widget-holder .insights li a{
