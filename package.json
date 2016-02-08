@@ -45,7 +45,8 @@
     "npm-run-all": "^1.4.0",
     "origami-build-tools": "^4.3.2",
     "psi": "^2.0.2",
-    "raven": "^0.9.0"
+    "raven": "^0.9.0",
+    "yargs": "^3.32.0"
   },
   "devDependencies": {
     "chai": "^3.4.1",
@@ -62,6 +63,8 @@
     "build": "npm-run-all clean copy build:app build:extension",
     "build:app": "gulp set-service-url",
     "build:extension": "gulp build-extension",
+    "build:extension:test": "gulp build-extension --destination TEST",
+    "build:extension:live": "gulp build-extension --destination LIVE",
     "clean": "rimraf client/dist/ extension-dist/",
     "copy": "mkdir -p client/dist && cp -r ./client/src/images ./client/dist",
     "develop": "npm run watch -- --exec 'npm-run-all -p start build'",

@@ -12,7 +12,6 @@ module.exports = function getLatestValuesFor(url) {
 	const queryResult = query(command);
 
 	return queryResult.then(function(rows) {
-		if (isFT(url)) {
 			const result = rows.map(function (row) {
 
 				return Promise.all([
@@ -77,14 +76,5 @@ module.exports = function getLatestValuesFor(url) {
 			});
 
 			return Promise.all(result);
-		} else {
-			return rows.map(function (row) {
-				return {
-					category: row.category,
-					provider: row.provider,
-					link: row.link
-				};
-			});
-		}
 	});
 };
