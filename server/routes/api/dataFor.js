@@ -1,6 +1,8 @@
+const debug = require('debug')('perf-widget:routes:api:dataFor'); // eslint-disable-line no-unused-vars
 const dataFor = require('./../../lib/dataFor');
 
 const response = require('./../../lib/jsonResponse');
+const _ = require('lodash');
 
 module.exports = function (req, res) {
 	
@@ -17,8 +19,11 @@ module.exports = function (req, res) {
 
 			response(res, 202, true, data);
 		} else {
-
-			response(res, 200, true, data);
+			const results = data.map(d => {
+				d.comparisons = [_.sample(d.comparisons)];
+				return d;
+			});
+			response(res, 200, true, results);
 		}
 	});
 }
