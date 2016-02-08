@@ -49,7 +49,6 @@ function loadWidget() {
 	}
 
 	function refreshFn (freshInsights) {
-		debugger;
 		textTarget.innerHTML = waitingText;
 		getData(myUrl, freshInsights);
 	}
