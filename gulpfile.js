@@ -5,13 +5,31 @@ const uglify = require('gulp-uglify');
 const insert = require('gulp-insert');
 const env = require('dotenv').config();
 const webpack = require('gulp-webpack');
+const argv = require('yargs').argv;
 const serverDomain = process.env.SERVER_DOMAIN || 'https://ftlabs-perf-widget-test.herokuapp.com';
 const base64 = require('gulp-base64');
+
+function getDestination(){
+
+	const locations = {
+		LIVE : 'https://ftlabs-perf-widget.herokuapp.com',
+		TEST : 'https://ftlabs-perf-widget-test.herokuapp.com'
+	};
+
+	if(argv.destination !== undefined){
+		if (locations[argv.destination] !== undefined){
+			return locations[argv.destination];
+		}
+	}
+
+	return process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain;
+
+}
 
 gulp.task('set-service-url', function (){
 
 	return gulp.src('./client/dist/*.js')
-		.pipe(preprocess( { context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain } } ) )
+		.pipe(preprocess( { context : { serviceURL : getDestination() } } ) )
 		.pipe(gulp.dest('./client/dist/'))
 	;
 
@@ -36,7 +54,7 @@ gulp.task('build-extension-background', ['copy-extension-files'], function(){
 	.pipe(webpack({output: {
 		filename: 'background.js',
 	}}))
-	.pipe(preprocess( { context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain } } ) )
+	.pipe(preprocess( { context : { serviceURL : getDestination() } } ) )
 	.pipe(gulp.dest('./extension-dist/scripts/'));
 });
 
@@ -47,7 +65,7 @@ gulp.task('build-extension-popup', ['copy-extension-files'], function(){
 
 gulp.task('build-extension-manifest', ['copy-extension-files'], function(){
 	gulp.src('./extension/manifest.json')
-	.pipe(preprocess( {context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain } } ) )
+	.pipe(preprocess( {context : { serviceURL : getDestination() } } ) )
 	.pipe(gulp.dest('./extension-dist/'));
 });
 

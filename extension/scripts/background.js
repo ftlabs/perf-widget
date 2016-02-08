@@ -25,14 +25,16 @@ function emitMessage (method, data, url){
 	});
 }
 
-function* getData (url) {
+function* getData (url, freshInsights) {
 	let lastStatus = 202;
 	let data = null;
+	freshInsights = freshInsights === true;
 	const apiUrl = `${apiEndpoint}/api/data-for?url=${encodeURIComponent(url)}`;
 
 	const makeAPICall = function () {
-		return fetch(apiUrl)
+		return fetch(apiUrl + `&fresh=${freshInsights}`, {cache: 'no-cache'})
 		.then(response => {
+			freshInsights = false;
 			lastStatus = response.status;
 			return response.json();
 		})
@@ -52,11 +54,11 @@ function* getData (url) {
 		yield waitThen(makeAPICall, 1000);
 	}
 
-	if (lastStatus === 422) {
+	if (lastStatus === 200) {
+		return data.data;
+	} else {
 		throw Error(data.error);
 	}
-
-	return data.data;
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -82,11 +84,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 
 	if (request.method === 'getData') {
-		co(() => getData(request.url))
+		co(() => getData(request.url, request.freshInsights))
 		.then(data => {
 			emitMessage('updateData', data, request.url);
-		}, e => {
-			emitMessage('updateError', {errorMessage: e.message}, request.url);
+		}, () => {
+			emitMessage('updateError', {errorMessage: 'Could not return results, if this persists contact labs@ft.com'}, request.url);
 		});
 	}
 });

@@ -1,4 +1,4 @@
-CREATE TABLE `current_values_for_domain` (
+CREATE TABLE IF NOT EXISTS `current_values_for_domain` (
   `property_id` int(11) unsigned NOT NULL,
   `domain` varchar(1000) NOT NULL,
   `value` int(100),

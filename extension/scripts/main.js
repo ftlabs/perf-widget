@@ -19,17 +19,18 @@ function loadWidget() {
 		chrome.runtime.onMessage.removeListener(recieveData);
 	}
 
-	function getData (url) {
+	function getData (url, freshInsights) {
 		chrome.runtime.sendMessage({
 			method: 'getData',
-			url: url
+			url: url,
+			freshInsights: freshInsights
 		});
 	}
 
 	function recieveData (request) {
 
 		if (request.method === 'updateError') {
-			textTarget.innerHTML = request.errorMessage;
+			textTarget.innerHTML = request.data.errorMessage;
 		}
 
 		if (open && request.method === 'updateData' && request.url === myUrl) {
@@ -49,9 +50,9 @@ function loadWidget() {
 		}
 	}
 
-	function refreshFn () {
+	function refreshFn (freshInsights) {
 		textTarget.innerHTML = waitingText;
-		getData(myUrl);
+		getData(myUrl, freshInsights);
 	}
 
 	// prepare to recieve data.
@@ -74,7 +75,9 @@ function loadWidget() {
 	close.addEventListener('click', removeSelf, false);
 
 	refresh.setAttribute('class', 'refresh');
-	refresh.addEventListener('click', refreshFn, false);
+	refresh.addEventListener('click', function(){
+		refreshFn(true);
+	}, false);
 
 	holder.setAttribute('id', 'perf-widget-holder');
 	document.body.appendChild(holder);
