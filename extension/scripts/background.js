@@ -51,11 +51,11 @@ function* getData (url) {
 		yield waitThen(makeAPICall, 1000);
 	}
 
-	if (lastStatus === 422) {
+	if (lastStatus === 200) {
+		return data.data;
+	} else {
 		throw Error(data.error);
 	}
-
-	return data.data;
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
