@@ -1,4 +1,4 @@
-INSERT INTO `page` (`id`, `url`, `type`, `domain`)
+INSERT IGNORE INTO `page` (`id`, `url`, `type`, `domain`)
 VALUES
 	(1, 'http://www.theguardian.com/uk', 'homepage', 'www.theguardian.com'),
 	(2, 'http://international.nytimes.com/', 'homepage', 'international.nytimes.com'),
