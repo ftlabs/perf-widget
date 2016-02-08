@@ -3,6 +3,10 @@ const escape = require('mysql').escape;
 const debug = require('debug')('perf-widget:lib:betterThanCompetitors'); // eslint-disable-line no-unused-vars
 const partition = require("lodash").partition;
 
+function percentageDifference(v1, v2) {
+	return (Math.abs((v1 - v2) / ((v1 + v2) / 2)) * 100).toFixed(2);
+}
+
 module.exports = function betterThanCompetitors(name, value, type) {
 	if (type === null || type === undefined) {
 		return undefined;
@@ -13,8 +17,18 @@ module.exports = function betterThanCompetitors(name, value, type) {
 	return query(command).then(function(results) {
 
 		const temp = partition(results, function(o) { return o.value < value; });
-		const betterThan = temp[0].map(o => o.domain);
-		const worseThan = temp[1].map(o => o.domain);
+		const betterThan = temp[0].map(function (o) {
+			return {
+				domain: o.domain,
+				difference: percentageDifference(o.value, value)
+			};
+		});
+		const worseThan = temp[1].map(function (o) {
+			return {
+				domain: o.domain,
+				difference: percentageDifference(o.value, value)
+			};
+		});
 
 		return {
 			'true': betterThan,

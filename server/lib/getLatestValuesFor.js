@@ -53,16 +53,16 @@ module.exports = function getLatestValuesFor(url) {
 					}
 
 					if (betterThanCompetitorProducts !== undefined) {
-						betterThanCompetitorProducts['false'].forEach(function(competitor) {
+						betterThanCompetitorProducts['false'].forEach(function(result) {
 							results.push({
 								ok: false,
-								text: `${row.worse_than_competitor} ${competitor}`
+								text: `${row.worse_than_competitor} ${result.domain} by ${result.difference}%`
 							});
 						});
-						betterThanCompetitorProducts['true'].forEach(function(competitor) {
+						betterThanCompetitorProducts['true'].forEach(function(result) {
 							results.push({
 								ok: true,
-								text: `${row.better_than_competitor} ${competitor}`
+								text: `${row.better_than_competitor} ${result.domain} by ${result.difference}%`
 							});
 						});
 					}
