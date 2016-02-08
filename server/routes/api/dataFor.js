@@ -18,9 +18,14 @@ module.exports = function (req, res) {
 
 			response(res, 202, true, data);
 		} else {
+			// we have data
 			const results = data.map(function(datum) {
 				const clone = Object.assign({}, datum);
-				clone.comparisons = [_.sample(clone.comparisons)];
+
+				const oneRandomComparison = _.sample(clone.comparisons);
+
+				clone.comparisons = [oneRandomComparison];
+
 				return clone;
 			});
 			response(res, 200, true, results);
