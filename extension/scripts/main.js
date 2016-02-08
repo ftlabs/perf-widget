@@ -10,7 +10,9 @@ function loadWidget() {
 	const close = document.createElement('span');
 	const refresh = document.createElement('span');
 	const textTarget = document.createElement('div');
+	const footer = document.createElement('div');
 	const myUrl = window.location.href;
+	const apiEndpoint = '/* @echo serviceURL */';
 
 	function removeSelf (){
 		holder.parentNode.removeChild(holder);
@@ -61,9 +63,12 @@ function loadWidget() {
 
 	const waitingText = 'Loading Analysis...';
 	textTarget.innerHTML = waitingText;
+	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
+	footer.classList.add('footer');
 	holder.appendChild(textTarget);
 	holder.appendChild(close);
 	holder.appendChild(refresh);
+	holder.appendChild(footer)
 
 	close.setAttribute('class', 'close');
 	close.addEventListener('click', removeSelf, false);

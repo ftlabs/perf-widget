@@ -34,7 +34,7 @@ style.textContent = `
 		font-family: Helvetica, Arial, sans-serif;
 	}
 
-	#perf-widget-holder .close{
+	#perf-widget-holder .close {
 		position: absolute;
 		right: 5px;
 		top: 5px;
@@ -51,7 +51,7 @@ style.textContent = `
 		background-image: url('/images/cross.png');
 	}
 
-	#perf-widget-holder .refresh{
+	#perf-widget-holder .refresh {
 		position: absolute;
 		right: 30px;
 		top: 5px;
@@ -67,17 +67,17 @@ style.textContent = `
 		background-image: url('/images/refresh.png');
 	}
 
-	#perf-widget-holder h3:first-of-type{
+	#perf-widget-holder h3:first-of-type {
 		margin-top:0;
 	}
 
 	#perf-widget-holder h3{
 		margin-top: 10px;
 		display: block;
+		font-weight: bold;
 	}
 
-	#perf-widget-holder .insights{
-		padding-left: 10px;
+	#perf-widget-holder .insights {
 	    display: block;
 	    margin-top: 5px;
 	}
@@ -88,7 +88,7 @@ style.textContent = `
 		margin-bottom : 0.3em;
 	}
 
-	#perf-widget-holder .insights li{
+	#perf-widget-holder .insights li {
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
@@ -98,7 +98,7 @@ style.textContent = `
 		display: inline-block;
 	}
 
-	#perf-widget-holder .insights li::before{
+	#perf-widget-holder .insights li::before {
 		width: 1em;
 		height: 1em;
 		display: inline-block;
@@ -113,19 +113,27 @@ style.textContent = `
 		margin-left: -18px;
 	}
 
-	#perf-widget-holder .insights li.ok-true::before{
+	#perf-widget-holder .insights li.ok-true::before {
 		background-image: url('/images/check.png');
 	}
 
-	#perf-widget-holder .insights li.ok-false::before{
+	#perf-widget-holder .insights li.ok-false::before {
 		background-image: url('/images/issue.png');
 	}
 
-	#perf-widget-holder .insights li a{
+	#perf-widget-holder .insights li a {
 		color: rgba(255,255,255,.8);
 		border: 0 solid black;
 		text-decoration:none;
 		display: inline-block;
+	}
+
+	#perf-widget-holder .footer {
+		display: block;
+		text-align: right;
+		text-decoration: underline;
+		font-size: 0.8em;
+		margin-top: 1em;
 	}
 
 `;

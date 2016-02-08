@@ -18,7 +18,8 @@ function emitMessage (method, data, url){
 			chrome.tabs.sendMessage(tab.id, {
 				method: method,
 				data: data,
-				url: url
+				url: url,
+				apiEndpoint: apiEndpoint
 			});
 		});
 	});
