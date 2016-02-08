@@ -1,9 +1,5 @@
-const bm = require('../lib/bookmarklet');
+module.exports = function (req, res){
 
-module.exports = function(req, res){
-
-	res.render('index', {
-		bookmarklet : bm
-	});
+	res.render('index');
 
 }

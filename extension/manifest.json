@@ -3,15 +3,18 @@
 
   "name": "FTLabs Perf Widget",
   "description": "A Chrome Extension that automagically adds a performance analysis widget.",
-  "version": "1.0.0",
-
+  "version": "1.0.2",
+  "permissions": [
+    "tabs",
+    "<!--  @echo serviceURL -->/*"
+  ],
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "dialog.html"
   },
   "content_scripts": [
     {
-      "matches": ["*://*.ft.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["scripts/main.js"]
     }
   ],

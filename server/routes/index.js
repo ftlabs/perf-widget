@@ -4,8 +4,6 @@ const router = require('express').Router(); //eslint-disable-line new-cap
 router.get('/', require('./home'));
 router.use('/static', require('./staticFiles'));
 router.use('/api', require('./api'));
-router.get('/client/data-for', require('./clientData'));
-router.use('/bookmarklet', require('../lib/bookmarklet') );
 
 // 404 handler
 router.use(function (req, res) {
