@@ -63,7 +63,7 @@
     "build:app": "gulp set-service-url",
     "build:extension": "gulp build-extension",
     "clean": "rimraf client/dist/ extension-dist/",
-    "copy": "mkdir -p client/dist && cp ./client/src/bookmarklet.js ./client/dist && cp -r ./client/src/images ./client/dist",
+    "copy": "mkdir -p client/dist && cp -r ./client/src/images ./client/dist",
     "develop": "npm run watch -- --exec 'npm-run-all -p start build'",
     "lint": "obt verify --excludeFiles=\\!client/src/js/**/*.js",
     "postinstall": "npm run build",
