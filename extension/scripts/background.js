@@ -85,7 +85,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		.then(data => {
 			emitMessage('updateData', data, request.url);
 		}, e => {
-			emitMessage('updateError', {errorMessage: e.message}, request.url);
+			emitMessage('updateError', {errorMessage: 'Could not return results, if this persists contact labs@ft.com'}, request.url);
 		});
 	}
 });
