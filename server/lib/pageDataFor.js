@@ -61,6 +61,7 @@ function gatherAndAddPageInsights (page) {
 
 		// Add results to the database
 		const insightsAdded = results.map(function (insight) {
+			debug('hello', insight)
 			debug('addInsights', insight.name, page, insight.value, date, insight.link)
 			return addInsights(insight.name, page, insight.value, date, insight.link);
 		});
