@@ -31,7 +31,7 @@ function* getData (url, freshInsights) {
 	const apiUrl = `${apiEndpoint}/api/data-for?url=${encodeURIComponent(url)}`;
 
 	const makeAPICall = function () {
-		return fetch(apiUrl + `&fresh=${freshInsights}`)
+		return fetch(apiUrl + `&fresh=${freshInsights}`, {cache: 'no-cache'})
 		.then(response => {
 			freshInsights = false;
 			lastStatus = response.status;
