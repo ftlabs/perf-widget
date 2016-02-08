@@ -10,7 +10,6 @@ module.exports = function (req, res) {
 
 	dataFor(req.query.url, freshInsights)
 	.then(function (data) {
-
 		if (data.error) {
 			
 			response(res, 422, false, data);
@@ -19,9 +18,10 @@ module.exports = function (req, res) {
 
 			response(res, 202, true, data);
 		} else {
-			const results = data.map(d => {
-				d.comparisons = [_.sample(d.comparisons)];
-				return d;
+			const results = data.map(function(datum) {
+				const clone = Object.assign({}, datum);
+				clone.comparisons = [_.sample(clone.comparisons)];
+				return clone;
 			});
 			response(res, 200, true, results);
 		}
