@@ -34,13 +34,30 @@ function loadWidget() {
 		if (open && request.method === 'updateData' && request.url === myUrl) {
 			const data = request.data;
 			let output = '';
+			const categories = {};
 
 			data.forEach(datum => {
-				output += `<h3>${datum.category}</h3><div class="insights"><h4>${datum.provider}</h4>`;
-				datum.comparisons.forEach(comparison => {
-					output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank">${comparison.text}</a></li>`;
+
+				if(categories[datum.category] === undefined && datum.category !== undefined){
+					categories[datum.category] = [];
+				}
+
+				categories[datum.category].push(datum);
+
+			})
+
+			Object.keys(categories).forEach(key =>{
+
+				output += `<h3>${key}</h3><div class="insights">`;
+				categories[key].forEach(datum => {
+
+					datum.comparisons.forEach(comparison => {
+						output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
+					});
+
 				});
 				output += '</div>';
+
 
 			});
 
