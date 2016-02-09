@@ -12,79 +12,70 @@ module.exports = function getLatestValuesFor(url) {
 	const queryResult = query(command);
 
 	return queryResult.then(function(rows) {
-		if (isFT(url)) {
-			const result = rows.map(function (row) {
+		const ft = isFT(url);
+		const result = rows.map(function (row) {
 
-				return Promise.all([
-					isConcerningValue(row.name, row.value), 
-					betterThanFT(row.name, row.value),
-					betterThanCompetitors(row.name, row.value, row.type)
-				]).then(function (values) {
-					const concerning = values[0];
-					const betterThanOtherFTProducts = values[1];
-					const betterThanCompetitorProducts = values[2];
+			return Promise.all([
+				isConcerningValue(row.name, row.value), 
+				ft ? betterThanFT(row.name, row.value) : undefined,
+				ft ? betterThanCompetitors(row.name, row.value, row.type) : undefined
+			]).then(function (values) {
+				const concerning = values[0];
+				const betterThanOtherFTProducts = values[1];
+				const betterThanCompetitorProducts = values[2];
 
-					const results = [];
+				const results = [];
 
-					if (concerning) {
+				if (concerning) {
+					results.push({
+						ok: false,
+						text: row.concerning_text
+					});
+				} else {
+					results.push({
+						ok: true,
+						text: row.reassuring_text
+					});
+				}
+
+				if (betterThanOtherFTProducts !== undefined) {
+					if (betterThanOtherFTProducts) {
 						results.push({
-							ok: false,
-							text: row.concerning_text
+							ok: true,
+							text: row.better_than_ft
 						});
 					} else {
 						results.push({
+							ok: false,
+							text: row.worse_than_ft
+						});
+					}
+				}
+
+				if (betterThanCompetitorProducts !== undefined) {
+					betterThanCompetitorProducts['false'].forEach(function(competitor) {
+						results.push({
+							ok: false,
+							text: `${row.worse_than_competitor} ${competitor}`
+						});
+					});
+					betterThanCompetitorProducts['true'].forEach(function(competitor) {
+						results.push({
 							ok: true,
-							text: row.reassuring_text
+							text: `${row.better_than_competitor} ${competitor}`
 						});
-					}
+					});
+				}
 
-					if (betterThanOtherFTProducts !== undefined) {
-						if (betterThanOtherFTProducts) {
-							results.push({
-								ok: true,
-								text: row.better_than_ft
-							});
-						} else {
-							results.push({
-								ok: false,
-								text: row.worse_than_ft
-							});
-						}
-					}
-
-					if (betterThanCompetitorProducts !== undefined) {
-						betterThanCompetitorProducts['false'].forEach(function(competitor) {
-							results.push({
-								ok: false,
-								text: `${row.worse_than_competitor} ${competitor}`
-							});
-						});
-						betterThanCompetitorProducts['true'].forEach(function(competitor) {
-							results.push({
-								ok: true,
-								text: `${row.better_than_competitor} ${competitor}`
-							});
-						});
-					}
-
-					return {
-						category: row.category,
-						provider: row.provider,
-						comparisons: results,
-						link: row.link
-					};
-				});
-			});
-
-			return Promise.all(result);
-		} else {
-			return rows.map(function (row) {
 				return {
 					category: row.category,
 					provider: row.provider,
+					comparisons: results,
 					link: row.link
 				};
 			});
-		}
+		});
+
+		return Promise.all(result);
 	});
 };
