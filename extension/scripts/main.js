@@ -76,7 +76,9 @@ function loadWidget () {
 	const close = document.createElement('span');
 	const refresh = document.createElement('span');
 	const textTarget = document.createElement('div');
+	const footer = document.createElement('div');
 	const myUrl = window.location.href;
+	const apiEndpoint = '/* @echo serviceURL */';
 
 	function removeSelf (){
 		holder.parentNode.removeChild(holder);
@@ -109,7 +111,8 @@ function loadWidget () {
 					comparisons: [{
 						ok: contrastData.proportionBadContrast < 0.2,
 						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.`
-					}]
+					}],
+					link:'https://www.w3.org/TR/WCAG/#visual-audio-contrast'
 				});
 			} catch (e) {
 
@@ -165,6 +168,10 @@ function loadWidget () {
 	holder.appendChild(textTarget);
 	holder.appendChild(close);
 	holder.appendChild(refresh);
+	holder.appendChild(footer)
+
+	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
+	footer.classList.add('footer');
 
 	close.setAttribute('class', 'close');
 	close.addEventListener('click', removeSelf, false);
