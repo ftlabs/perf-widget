@@ -13,7 +13,7 @@ if (localStorage.getItem('enabled') === null) {
 }
 
 function emitMessage (method, data, url){
-	chrome.tabs.query({url: url}, function (tabs){
+	chrome.tabs.query({}, function (tabs){
 		tabs.forEach(function (tab) {
 			chrome.tabs.sendMessage(tab.id, {
 				method: method,

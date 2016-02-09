@@ -86,7 +86,7 @@ function loadWidget () {
 	function getData (url) {
 		chrome.runtime.sendMessage({
 			method: 'getData',
-			url
+			url: url
 		});
 	}
 
@@ -120,18 +120,23 @@ function loadWidget () {
 			let output = '';
 
 			// Produce data structure combining categories and providers
-			const data2 = new Map();
-			data.forEach(datum => {
-				if (!data2.has(datum.category)) {
-					data2.set(datum.category, new Map());
-				}
-				if (!data2.get(datum.category).has(datum.provider)) {
-					data2.get(datum.category).set(datum.provider, new Set());
-				}
-				data2.get(datum.category).get(datum.provider).add(datum);
-			});
+			const reducedData = [];
+			(function () {
+				const data2 = new Map();
+				data.forEach(datum => {
+					if (!data2.has(datum.category)) {
+						data2.set(datum.category, new Map());
+					}
+					if (!data2.get(datum.category).has(datum.provider)) {
+						data2.get(datum.category).set(datum.provider, datum);
+						reducedData.push(datum);
+					} else {
+						data2.get(datum.category).get(datum.provider).comparisons = data2.get(datum.category).get(datum.provider).comparisons.concat(datum.comparisons);
+					}
+				});
+			}());
 
-			data.forEach(datum => {
+			reducedData.forEach(datum => {
 				output += `<h3>${datum.category}</h3><div class="insights"><h4>${datum.provider}</h4>`;
 				datum.comparisons.forEach(comparison => {
 					output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank">${comparison.text}</a></li>`;

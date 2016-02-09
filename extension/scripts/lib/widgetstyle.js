@@ -71,7 +71,7 @@ style.textContent = `
 		margin-top:0;
 	}
 
-	#perf-widget-holder h3{
+	#perf-widget-holder h3 {
 		margin-top: 10px;
 		display: block;
 		font-weight: bold;
@@ -82,7 +82,7 @@ style.textContent = `
 	    margin-top: 5px;
 	}
 
-	#perf-widget-holder .insights h4{
+	#perf-widget-holder .insights h4 {
 		font-size: 0.8em;
 		margin-top: 0;
 		margin-bottom : 0.3em;
@@ -96,6 +96,8 @@ style.textContent = `
 		width: 90%;
 		margin-left: 10%;
 		display: inline-block;
+		line-height: 1.2em;
+		margin-bottom: 0.3em;
 	}
 
 	#perf-widget-holder .insights li::before {
