@@ -168,7 +168,7 @@ function loadWidget () {
 					const canvas = document.createElement('canvas');
 					const width = chartWrapper.clientWidth;
 					canvas.width = width;
-					canvas.height = width / 2;
+					canvas.height = width / 1.5;
 					const ctx = canvas.getContext('2d');
 					chartWrapper.appendChild(canvas);
 
@@ -192,9 +192,12 @@ function loadWidget () {
 							data: chartData
 						}]
 					}, {
-						scaleShowGridLines: false,
 						pointDot: false,
-						pointHitDetectionRadius : 0
+						pointHitDetectionRadius : 0,
+						scaleOverride: true,
+						scaleSteps: 5,
+						scaleStepWidth: 0.2,
+						scaleStartValue: 0
 					});
 
 				}
