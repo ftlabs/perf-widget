@@ -1,5 +1,5 @@
 'use strict'; // eslint-disable-line strict
-/*global chrome key*/
+/*global chrome*/
 
 function loadWidget() {
 
@@ -46,23 +46,20 @@ function loadWidget() {
 
 			})
 
-			for(const key in categories){ // eslint-disable-line
-				debugger;
-				if(categories[key] !== undefined){
+			Object.keys(categories).forEach(key =>{
 
-					output += `<h3>${key}</h3><div class="insights">`;
-					categories[key].forEach(datum => {
+				output += `<h3>${key}</h3><div class="insights">`;
+				categories[key].forEach(datum => {
 
-						datum.comparisons.forEach(comparison => {
-							output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
-						});
-
+					datum.comparisons.forEach(comparison => {
+						output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
 					});
-					output += '</div>';
 
-				}
+				});
+				output += '</div>';
 
-			}
+
+			});
 
 			textTarget.innerHTML = output;
 		}
