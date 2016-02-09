@@ -69,9 +69,6 @@ function generateContrastData () {
 
 function loadWidget () {
 
-	const contrastData = generateContrastData();
-	console.log('Bad Contrast Nodes: ', contrastData.badContrastNodes);
-
 	// add the widget stylesheet
 	require('./lib/widgetstyle');
 
@@ -102,16 +99,37 @@ function loadWidget () {
 		if (open && request.method === 'updateData' && request.url === myUrl) {
 			const data = request.data;
 
-			data.push({
-				category: 'Accessibility',
-				provider: 'Local Page Contrast',
-				comparisons: [{
-					ok: contrastData.proportionBadContrast < 0.2,
-					text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.`
-				}]
-			})
+			try {
+				const contrastData = generateContrastData();
+				console.log('Bad Contrast Nodes: ', contrastData.badContrastNodes);
+
+				data.push({
+					category: 'Accessibility',
+					provider: 'Local Page Contrast',
+					comparisons: [{
+						ok: contrastData.proportionBadContrast < 0.2,
+						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.`
+					}]
+				});
+			} catch (e) {
+
+				// in the event of weird DOM causing the above to break don't break the rest of the data display.
+				console.error(e.message, e.stack);
+			}
 
 			let output = '';
+
+			// Produce data structure combining categories and providers
+			const data2 = new Map();
+			data.forEach(datum => {
+				if (!data2.has(datum.category)) {
+					data2.set(datum.category, new Map());
+				}
+				if (!data2.get(datum.category).has(datum.provider)) {
+					data2.get(datum.category).set(datum.provider, new Set());
+				}
+				data2.get(datum.category).get(datum.provider).add(datum);
+			});
 
 			data.forEach(datum => {
 				output += `<h3>${datum.category}</h3><div class="insights"><h4>${datum.provider}</h4>`;
