@@ -41,6 +41,7 @@ gulp.task('build-extension-main', ['copy-extension-files'], function(){
 	.pipe(webpack({output: {
 		filename: 'main.js',
 	}}))
+	.pipe(preprocess( { context : { serviceURL : process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain } } ))
 	.pipe(base64({
 		baseDir: 'client/src/'
 	}))

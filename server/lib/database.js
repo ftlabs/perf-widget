@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 
 const getConnection = denodeify(pool.getConnection.bind(pool));
 
-function readSQLFiles() {
+function readSQLFiles () {
 	return fs.readdirSync(path.join(__dirname, '../../database')).map(function(item) {
 		if (item.endsWith('.sql')) {
 			return fs.readFileSync(path.join(__dirname, '../../database', item), 'utf8');
@@ -23,14 +23,14 @@ function readSQLFiles() {
 	});
 }
 
-module.exports.createTables = function createTables() {
+module.exports.createTables = function createTables () {
 	const connection = getConnection();
 
-	return connection.then(function(connection) {
+	return connection.then(function (connection) {
 
 		const query = denodeify(connection.query.bind(connection));
 
-		const queries = readSQLFiles().map(function(sql) {
+		const queries = readSQLFiles().map(function (sql) {
 			return query(sql);
 		});
 
@@ -38,13 +38,13 @@ module.exports.createTables = function createTables() {
 	});
 };
 
-module.exports.query = function query(command) {
+module.exports.query = function query (command) {
 	const connection = getConnection();
 
-	return connection.then(function(connection) {
+	return connection.then(function (connection) {
 
 		const query = denodeify(connection.query.bind(connection));
-		return query(command).then(function(results) {
+		return query(command).then(function (results) {
 			connection.release();
 			return results;
 		});
