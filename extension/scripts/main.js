@@ -2,6 +2,7 @@
 /*global chrome*/
 
 const Color = require('./lib/color').Color;
+const Chart = require('chart.js');
 
 function nodesWithTextNodesUnder (el) {
 	const elementsWithTextMap = new Map();
@@ -50,10 +51,18 @@ function generateContrastData () {
 	const badNodes = [];
 	let goodChars = 0;
 	let badChars = 0;
+	let chartData = [
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0
+	]; // buckets representing 0-(15+)
 	textNodes.forEach(inNode => {
 		const n = inNode[0];
 		const ratio = getContrastForEl(n).ratio;
 		const noCharacters = inNode[1].map(t => t.length).reduce((a,b) => a + b, 0);
+		const bucket = Math.min(15, Math.round(ratio));
+		chartData[bucket] += noCharacters;
 		if (ratio < 4) {
 			badNodes.push(n);
 			badChars += noCharacters;
@@ -61,9 +70,11 @@ function generateContrastData () {
 			goodChars += noCharacters;
 		}
 	});
+
 	return {
 		badContrastNodes: badNodes,
-		proportionBadContrast: badChars / goodChars
+		proportionBadContrast: badChars / goodChars,
+		chartData: chartData.map(i => (i/(badChars + goodChars)).toFixed(2)) // average the data to keep numbers small
 	}
 }
 
@@ -101,16 +112,16 @@ function loadWidget () {
 		if (open && request.method === 'updateData' && request.url === myUrl) {
 			const data = request.data;
 
+			let contrastData = null;
 			try {
-				const contrastData = generateContrastData();
-				console.log('Bad Contrast Nodes: ', contrastData.badContrastNodes);
+				contrastData = generateContrastData();
 
 				data.push({
 					category: 'Accessibility',
 					provider: 'Local Page Contrast',
 					comparisons: [{
 						ok: contrastData.proportionBadContrast < 0.2,
-						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.`
+						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.<div style="display: block;" class='perf-widget-accessibility-chart'></div>`
 					}],
 					link:'https://www.w3.org/TR/WCAG/#visual-audio-contrast'
 				});
@@ -148,6 +159,46 @@ function loadWidget () {
 			});
 
 			textTarget.innerHTML = output;
+
+			// Add the accessibility chart
+			(function () {
+				const chartWrapper = textTarget.querySelector('.perf-widget-accessibility-chart');
+				if (chartWrapper && contrastData) {
+					const chartData = contrastData.chartData;
+					const canvas = document.createElement('canvas');
+					const width = chartWrapper.clientWidth;
+					canvas.width = width;
+					canvas.height = width / 2;
+					const ctx = canvas.getContext('2d');
+					chartWrapper.appendChild(canvas);
+
+					const grd = ctx.createLinearGradient(0.000, 150.000, width, 150.000);
+					
+					// Add colors
+					grd.addColorStop(0.000, 'rgba(255, 0, 0, 1.000)');
+					grd.addColorStop(0.470, 'rgba(219, 178, 30, 1.000)');
+					grd.addColorStop(1.000, 'rgba(95, 191, 0, 1.000)');
+
+					new Chart(ctx).Line({
+						labels: ['0', '', '', '3', '', '', '6', '', '', '9', '', '', '12', '', '', '15+'], // [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,'15+'],
+						datasets: [{
+							label: 'Contrast',
+							fillColor: grd,
+							strokeColor: 'rgba(220,220,220,1)',
+							pointColor: 'rgba(220,220,220,1)',
+							pointStrokeColor: '#fff',
+							pointHighlightFill: '#fff',
+							pointHighlightStroke: 'rgba(220,220,220,1)',
+							data: chartData
+						}]
+					}, {
+						scaleShowGridLines: false,
+						pointDot: false,
+						pointHitDetectionRadius : 0
+					});
+
+				}
+			}());
 		}
 	}
 
