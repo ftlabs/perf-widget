@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `page` (
   `url` varchar(2000) NOT NULL DEFAULT '',
   `domain` varchar(2000) NOT NULL DEFAULT '',
   `type` varchar(20),
+  `friendly_name` varchar(1000) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `pagetype_page` (`type`),
   CONSTRAINT `pagetype_page` FOREIGN KEY (`type`) REFERENCES `pagetype` (`type`)
