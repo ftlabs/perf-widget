@@ -5,6 +5,7 @@ const psi = require('psi');
 module.exports = function googlePageSpeedInsights(url) {
 
 	return psi(url).then(function(results) {
+
 		return [{
 			name: 'PageSpeedInsightsScore',
 			value: parseInt(results.ruleGroups.SPEED.score, 10),
@@ -19,11 +20,11 @@ module.exports = function googlePageSpeedInsights(url) {
 			link: `https://developers.google.com/speed/pagespeed/insights/?url=${url}&tab=mobile`
 		},{
 			name: 'WeightOfResources',
-			value: parseInt(results.pageStats.htmlResponseBytes, 10) + 
-					parseInt(results.pageStats.cssResponseBytes, 10) + 
-					parseInt(results.pageStats.imageResponseBytes, 10) + 
-					parseInt(results.pageStats.javascriptResponseBytes, 10) + 
-					parseInt(results.pageStats.otherResponseBytes, 10),
+			value: parseInt(results.pageStats.htmlResponseBytes, 10) || 0 + 
+					parseInt(results.pageStats.cssResponseBytes, 10) || 0 + 
+					parseInt(results.pageStats.imageResponseBytes, 10) || 0 + 
+					parseInt(results.pageStats.javascriptResponseBytes, 10) || 0 + 
+					parseInt(results.pageStats.otherResponseBytes, 10) || 0,
 			link: `https://developers.google.com/speed/pagespeed/insights/?url=${url}&tab=mobile`
 		}];
 	});

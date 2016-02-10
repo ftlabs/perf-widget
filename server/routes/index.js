@@ -2,6 +2,7 @@ const router = require('express').Router(); //eslint-disable-line new-cap
 
 // Serve static assets from /static
 router.get('/', require('./home'));
+router.get('/insights', require('./insights'));
 router.use('/static', require('./staticFiles'));
 router.use('/api', require('./api'));
 

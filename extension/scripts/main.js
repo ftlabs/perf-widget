@@ -151,7 +151,7 @@ function loadWidget () {
 			}());
 
 			reducedData.forEach(datum => {
-				output += `<h3>${datum.category}</h3><div class="insights">`;
+				output += `<h3>${datum.category} <a  href="${apiEndpoint}/insights/#${datum.category.toLowerCase().replace(/[^a-z]+/, '')}">ⓘ</a></h3><div class="insights">`;
 				datum.comparisons.forEach(comparison => {
 					output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
 				});
