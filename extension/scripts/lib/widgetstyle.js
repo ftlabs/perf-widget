@@ -45,7 +45,7 @@ style.textContent = `
 		text-align: center;
 		border-radius: 100%;
 		cursor: pointer;
-		background-size: 50%;
+		background-size: 60%;
 		background-position: 50%;
 		background-repeat: no-repeat;
 		background-image: url('/images/cross.png');

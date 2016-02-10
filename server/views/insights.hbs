@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<title>FT Labs Perf-Widget</title>
+		<link rel="stylesheet" href="https://origami-buildservice-qa.herokuapp.com/bundles/css?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4" />
+
+		<style type="text/css">
+			html, body {
+				font-family: BentonSans;
+				margin: 0;
+				margin-bottom: 5em;
+			}
+
+			h3:target + div {
+				border: 1px solid #ccc;
+			}
+
+			.o-techdocs-content div {
+				margin: 0 -1em;
+				padding: 0 1em;
+				border-radius: 1em;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+		<header data-o-component="o-header" class="o-header">
+			<div class="o-header__container">
+				<div class="o-header__inner">
+					<div class="o-header__primary">
+						<div class="o-header__primary__left">
+							<a class="o-header__logo o-header__logo--ft" href="http://labs.ft.com">
+								<abbr title="Financial Times">FT</abbr>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main>
+			<div class="o-techdocs-hero">
+				<h2 class="o-techdocs-hero__title">
+					FT Labs Perf-Widget Chrome Extension and Service
+				</h2>
+			</div>
+
+			<div class="o-techdocs-container">
+				<div class="o-techdocs-main">
+
+					<div class="o-techdocs-content">
+					<h2>Insights</h2>
+					<p>This page is description of the insights used to generate the information used in each section of the performance widget.</p>
+
+					<h3 id='performance'>Performance</h3>
+					<div>
+						<p>These statistics come from <a href="https://developers.google.com/speed/pagespeed/insights/">Google PageSpeed Insights</a>. The information this service surfaces relate to the loading speed for page. </p>
+						<ul>
+							<li>Number of Connections to 3<sup>rd</sup> party sites, each connection requires a slow handshake which will slow down the site.</li>
+							<li>The size of the content which needs to be downloaded, more content more needs to be downloaded. Consider reducing number of assets, minifying assets and optimising images.</li>
+							<li>Amount of requests, for http 1.1 (most FT online products) making many requests can be slow, consider concatenating stylesheets and scripts to reduce number of required connections.</li>
+						</ul>
+					</div>
+
+
+					<h3 id="security">Security</h3>
+					<div>
+						<p>This insight is provided from <a href="https://www.ssllabs.com/">Qualys's SSL Labs</a> It looks at the https encryption for the web page and determines if it is adequate.</p>
+						<p>Https is important because it prevents malicious 3<sup>rd</sup> parties, i.e. public access points, injecting adverts or malicious scripts amongst other things.</p>
+						<p>There has also been discussion within browser vendors about marking unencrypted http insecure so it is important to ensure web pages are available available over https.</p>
+						<p>This insight will also test for whether the https implementation is out of date and susceptible to known attacks. This may require updating your server.</p>
+					</div>
+
+					<h3 id="accessibility">Accessibility</h3>
+					<div>
+						<p>This insight provides information about the legibility of your site.</p>
+						<p>It compares the css text colour to the css background colour for block of text on the page.</p>
+						<p>It then works out the contrast ratio (a number between 0 and 21). It is based upon <a href="http://leaverou.github.io/contrast-ratio/">this tool by Lea Verou.</a> Where 1 is no contrast (same colour) and 21 is comparing white to black</p>
+						<p>A rating of below 4 is poor contrast and should be considered illegible.</p>
+						<p>The tool measures that enough of the site is above a threshold of 4 and provides a small graph showing what proportion of the text on your page is legible.</p>
+					</div>
+
+				</div>
+
+			</div>
+
+		</main>
+
+		<script src="https://origami-buildservice-qa.herokuapp.com/bundles/js?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4"></script>
+
+	</body>
+
+</html>
