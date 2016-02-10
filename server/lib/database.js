@@ -47,6 +47,9 @@ module.exports.query = function query (command) {
 		return query(command).then(function (results) {
 			connection.release();
 			return results;
+		}).catch(err => {
+			debug('>>>>>>> SQL ERROR <<<<<<<\n\n', command, '>>>\n\n', err, '\n\n>>>>>>> |||||||| <<<<<<<');
+			connection.release();
 		});
 	});
 };
