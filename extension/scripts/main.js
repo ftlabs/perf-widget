@@ -2,6 +2,13 @@
 /*global chrome*/
 
 const Color = require('./lib/color').Color;
+const noColorCalculatedStyle = (function () {
+	const temp = document.createElement('div');
+	document.body.appendChild(temp);
+	const styleAttr = window.getComputedStyle(temp).backgroundColor;
+	document.body.removeChild(temp);
+	return styleAttr;
+}());
 
 function nodesWithTextNodesUnder (el) {
 	const elementsWithTextMap = new Map();
@@ -26,14 +33,16 @@ function nodesWithTextNodesUnder (el) {
 }
 
 function getBackgroundColorForEl (el) {
-	if (el.style && (el.style.background || el.style.backgroundColor)) {
-		const style = window.getComputedStyle(el);
-		return style.backgroundColor;
+
+	const bgc = window.getComputedStyle(el).backgroundColor;
+	if (bgc !== noColorCalculatedStyle && bgc !== '') {
+		return bgc;
 	} else if (el.parentNode) {
 		return getBackgroundColorForEl(el.parentNode);
 	}
 	return null;
 }
+
 
 function getContrastForEl (el) {
 	const style = window.getComputedStyle(el);
@@ -47,23 +56,30 @@ function getContrastForEl (el) {
 function generateContrastData () {
 
 	const textNodes = nodesWithTextNodesUnder(document.body);
-	const badNodes = [];
 	let goodChars = 0;
 	let badChars = 0;
+	let chartData = [
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0
+	]; // buckets representing 0-(15+)
 	textNodes.forEach(inNode => {
 		const n = inNode[0];
 		const ratio = getContrastForEl(n).ratio;
 		const noCharacters = inNode[1].map(t => t.length).reduce((a,b) => a + b, 0);
-		if (ratio < 4) {
-			badNodes.push(n);
+		const bucket = Math.min(15, Math.round(ratio));
+		chartData[bucket] += noCharacters;
+		if (ratio < 4.5) {
 			badChars += noCharacters;
 		} else {
 			goodChars += noCharacters;
 		}
 	});
+
 	return {
-		badContrastNodes: badNodes,
-		proportionBadContrast: badChars / goodChars
+		proportionBadContrast: badChars / goodChars,
+		chartData: chartData.map(i => (i/(badChars + goodChars))) // average the data to keep numbers small
 	}
 }
 
@@ -109,9 +125,9 @@ function loadWidget () {
 					provider: 'Local Page Contrast',
 					comparisons: [{
 						ok: contrastData.proportionBadContrast < 0.2,
-						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.`
+						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.<div style="display: block;" class='perf-widget-accessibility-chart'></div>`
 					}],
-					link:'https://www.w3.org/TR/WCAG/#visual-audio-contrast'
+					link: `${apiEndpoint}/contrastbreakdown/?url=${encodeURIComponent(location.toString())}&data=${contrastData.chartData.join(',')}`
 				});
 			} catch (e) {
 
