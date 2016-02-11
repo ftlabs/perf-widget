@@ -35,7 +35,7 @@ function nodesWithTextNodesUnder (el) {
 function getBackgroundColorForEl (el) {
 
 	const bgc = window.getComputedStyle(el).backgroundColor;
-	if (bgc !== noColorCalculatedStyle && bgc != "") {
+	if (bgc !== noColorCalculatedStyle && bgc !== '') {
 		return bgc;
 	} else if (el.parentNode) {
 		return getBackgroundColorForEl(el.parentNode);
