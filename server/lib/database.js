@@ -45,11 +45,11 @@ module.exports.query = function query (command) {
 
 		const query = denodeify(connection.query.bind(connection));
 		return query(command).then(function (results) {
-			connection.release();
+			connection.destroy();
 			return results;
 		}).catch(err => {
 			debug('>>>>>>> SQL ERROR <<<<<<<\n\n', command, '>>>\n\n', err, '\n\n>>>>>>> |||||||| <<<<<<<');
-			connection.release();
+			connection.destroy();
 		});
 	});
 };
