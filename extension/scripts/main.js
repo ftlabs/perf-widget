@@ -2,7 +2,13 @@
 /*global chrome*/
 
 const Color = require('./lib/color').Color;
-const Chart = require('chart.js');
+const noColorCalculatedStyle = (function () {
+	const temp = document.createElement('div');
+	document.body.appendChild(temp);
+	const styleAttr = window.getComputedStyle(temp).backgroundColor;
+	document.body.removeChild(temp);
+	return styleAttr;
+}());
 
 function nodesWithTextNodesUnder (el) {
 	const elementsWithTextMap = new Map();
@@ -27,14 +33,16 @@ function nodesWithTextNodesUnder (el) {
 }
 
 function getBackgroundColorForEl (el) {
-	if (el.style && (el.style.background || el.style.backgroundColor)) {
-		const style = window.getComputedStyle(el);
-		return style.backgroundColor;
+
+	const bgc = window.getComputedStyle(el).backgroundColor;
+	if (bgc !== noColorCalculatedStyle && bgc != "") {
+		return bgc;
 	} else if (el.parentNode) {
 		return getBackgroundColorForEl(el.parentNode);
 	}
 	return null;
 }
+
 
 function getContrastForEl (el) {
 	const style = window.getComputedStyle(el);
@@ -48,7 +56,6 @@ function getContrastForEl (el) {
 function generateContrastData () {
 
 	const textNodes = nodesWithTextNodesUnder(document.body);
-	const badNodes = [];
 	let goodChars = 0;
 	let badChars = 0;
 	let chartData = [
@@ -63,8 +70,7 @@ function generateContrastData () {
 		const noCharacters = inNode[1].map(t => t.length).reduce((a,b) => a + b, 0);
 		const bucket = Math.min(15, Math.round(ratio));
 		chartData[bucket] += noCharacters;
-		if (ratio < 4) {
-			badNodes.push(n);
+		if (ratio < 4.5) {
 			badChars += noCharacters;
 		} else {
 			goodChars += noCharacters;
@@ -72,9 +78,8 @@ function generateContrastData () {
 	});
 
 	return {
-		badContrastNodes: badNodes,
 		proportionBadContrast: badChars / goodChars,
-		chartData: chartData.map(i => (i/(badChars + goodChars)).toFixed(2)) // average the data to keep numbers small
+		chartData: chartData.map(i => (i/(badChars + goodChars))) // average the data to keep numbers small
 	}
 }
 
@@ -112,9 +117,8 @@ function loadWidget () {
 		if (open && request.method === 'updateData' && request.url === myUrl) {
 			const data = request.data;
 
-			let contrastData = null;
 			try {
-				contrastData = generateContrastData();
+				const contrastData = generateContrastData();
 
 				data.push({
 					category: 'Accessibility',
@@ -123,7 +127,7 @@ function loadWidget () {
 						ok: contrastData.proportionBadContrast < 0.2,
 						text: `${Math.round((1-contrastData.proportionBadContrast)*100)}% of the text has good contrast.<div style="display: block;" class='perf-widget-accessibility-chart'></div>`
 					}],
-					link:'https://www.w3.org/TR/WCAG/#visual-audio-contrast'
+					link: `${apiEndpoint}/contrastbreakdown/?url=${encodeURIComponent(location.toString())}&data=${contrastData.chartData.join(',')}`
 				});
 			} catch (e) {
 
@@ -159,49 +163,6 @@ function loadWidget () {
 			});
 
 			textTarget.innerHTML = output;
-
-			// Add the accessibility chart
-			(function () {
-				const chartWrapper = textTarget.querySelector('.perf-widget-accessibility-chart');
-				if (chartWrapper && contrastData) {
-					const chartData = contrastData.chartData;
-					const canvas = document.createElement('canvas');
-					const width = chartWrapper.clientWidth;
-					canvas.width = width;
-					canvas.height = width / 1.5;
-					const ctx = canvas.getContext('2d');
-					chartWrapper.appendChild(canvas);
-
-					const grd = ctx.createLinearGradient(0.000, 150.000, width, 150.000);
-					
-					// Add colors
-					grd.addColorStop(0.000, 'rgba(255, 0, 0, 1.000)');
-					grd.addColorStop(0.470, 'rgba(219, 178, 30, 1.000)');
-					grd.addColorStop(1.000, 'rgba(95, 191, 0, 1.000)');
-
-					new Chart(ctx).Line({
-						labels: ['0', '', '', '3', '', '', '6', '', '', '9', '', '', '12', '', '', '15+'], // [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,'15+'],
-						datasets: [{
-							label: 'Contrast',
-							fillColor: grd,
-							strokeColor: 'rgba(220,220,220,1)',
-							pointColor: 'rgba(220,220,220,1)',
-							pointStrokeColor: '#fff',
-							pointHighlightFill: '#fff',
-							pointHighlightStroke: 'rgba(220,220,220,1)',
-							data: chartData
-						}]
-					}, {
-						pointDot: false,
-						pointHitDetectionRadius : 0,
-						scaleOverride: true,
-						scaleSteps: 5,
-						scaleStepWidth: 0.2,
-						scaleStartValue: 0
-					});
-
-				}
-			}());
 		}
 	}
 

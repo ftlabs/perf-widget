@@ -51,7 +51,7 @@ function* getData (url, freshInsights) {
 	yield makeAPICall();
 
 	while (lastStatus === 202) {
-		yield waitThen(makeAPICall, 1000);
+		yield waitThen(makeAPICall, 3000);
 	}
 
 	if (lastStatus === 200) {
