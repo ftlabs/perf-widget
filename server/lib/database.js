@@ -54,8 +54,10 @@ module.exports.query = function query (command) {
 	});
 };
 
+process.stdin.resume();
+
 function exitGracefully (){
-	process.stdin.resume();
+
 	pool.end(err => {
 		if(err){
 			debug('An error occured when ending the SQL pool');		
