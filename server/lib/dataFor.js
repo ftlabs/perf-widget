@@ -58,7 +58,7 @@ module.exports = function (url, freshInsights) {
 		});
 
 		return {
-			reason : 'Gathering results'
+			reason: 'Gathering results'
 		};
 	});
 };
