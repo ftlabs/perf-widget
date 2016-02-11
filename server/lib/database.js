@@ -53,3 +53,17 @@ module.exports.query = function query (command) {
 		});
 	});
 };
+
+function exitGracefully (){
+	process.stdin.resume();
+	pool.end(err => {
+		if(err){
+			debug('An error occured when ending the SQL pool');		
+		}
+		process.exit();
+	});
+}
+
+process.on('exit', exitGracefully);
+process.on('SIGINT', exitGracefully);
+process.on('uncaughtException', exitGracefully);
