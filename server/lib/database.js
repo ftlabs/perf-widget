@@ -49,7 +49,7 @@ module.exports.query = function query (command) {
 			return results;
 		}).catch(err => {
 			debug('>>>>>>> SQL ERROR <<<<<<<\n\n', command, '>>>\n\n', err, '\n\n>>>>>>> |||||||| <<<<<<<');
-			connection.destroy();
+			connection.destroy(); 
 		});
 	});
 };
