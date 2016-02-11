@@ -34,6 +34,8 @@ module.exports.createTables = function createTables () {
 			return query(sql);
 		});
 
+		queries.length = 5;
+
 		return Promise.all(queries);
 	});
 };
