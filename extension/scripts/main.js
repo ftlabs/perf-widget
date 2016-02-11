@@ -111,7 +111,7 @@ function loadWidget () {
 	function recieveData (request) {
 
 		if (request.method === 'updateError') {
-			textTarget.innerHTML = request.errorMessage;
+			textTarget.innerHTML = request.data.errorMessage;
 		}
 
 		if (open && request.method === 'updateData' && request.url === myUrl) {
