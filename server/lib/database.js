@@ -34,8 +34,6 @@ module.exports.createTables = function createTables () {
 			return query(sql);
 		});
 
-		queries.length = 10;
-
 		return Promise.all(queries);
 	});
 };
@@ -62,6 +60,7 @@ function exitGracefully (){
 		if(err){
 			debug('An error occured when ending the SQL pool');		
 		}
+		debug("Ended the SQL pool")
 		process.exit();
 	});
 }
