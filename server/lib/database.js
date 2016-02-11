@@ -3,6 +3,7 @@ const denodeify = require('denodeify');
 const debug = require('debug')('perf-widget:lib:database'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
+const co = require('co');
 
 const pool = mysql.createPool({
 	connectionLimit : process.env.MYSQL_CONNECTION_LIMIT,
@@ -30,11 +31,11 @@ module.exports.createTables = function createTables () {
 
 		const query = denodeify(connection.query.bind(connection));
 
-		const queries = readSQLFiles().map(function (sql) {
-			return query(sql);
-		});
+		const queries = readSQLFiles();
 
-		return Promise.all(queries);
+		return co(function *() {
+			for(let sql of queries) yield query(sql);
+		});
 	});
 };
 
