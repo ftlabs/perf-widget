@@ -55,6 +55,7 @@ module.exports = function (url, freshInsights) {
 		cache.set(url, insights);
 
 		insights.catch(function (err) {
+			debug("\n\n\n\n", err,"\n\n\n\n");		
 			debug(`Promise was rejected, deleting ${url} from cache. ${err} `);
 		});
 
