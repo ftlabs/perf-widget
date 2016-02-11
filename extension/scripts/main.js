@@ -168,7 +168,7 @@ function loadWidget () {
 
 	function refreshFn () {
 		textTarget.innerHTML = waitingText;
-		getData(myUrl);
+		getData(myUrl, true);
 	}
 
 	// prepare to recieve data.

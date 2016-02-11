@@ -38,8 +38,8 @@ module.exports = function (url, freshInsights) {
 					debug('insightsPromise.value()', insightsPromise.value())
 					return insightsPromise.value();
 				} else if (insightsPromise.isRejected()) {
-					debug('Promise was rejected, deleting from cache.')
-					cache.del(url);
+					debug(`Promise was rejected, deleting ${url} from cache.`);
+					return { error : 'Unable to check this url' }
 				} else {
 					return {
 						reason: 'Gathering results'
@@ -53,13 +53,12 @@ module.exports = function (url, freshInsights) {
 
 		cache.set(url, insights);
 
-		insights.catch(function () {
-			debug('Promise was rejected, deleting from cache.')
-			cache.del(url);
+		insights.catch(function (err) {
+			debug(`Promise was rejected, deleting ${url} from cache. ${err} `);
 		});
 
 		return {
-			reason: 'Gathering results'
+			reason : 'Gathering results'
 		};
 	});
 };
