@@ -38,6 +38,7 @@ module.exports = function (url, freshInsights) {
 					debug('insightsPromise.value()', insightsPromise.value())
 					return insightsPromise.value();
 				} else if (insightsPromise.isRejected()) {
+					debug("\n\n\n\n", insightsPromise.value(),"\n\n\n\n");
 					debug(`Promise was rejected, deleting ${url} from cache.`);
 					return { error : 'Unable to check this url' }
 				} else {
