@@ -22,11 +22,11 @@ let blackListPromise;
 	setTimeout(updateBlacklist , 3600 * 1000);
 }());
 
-function checkIsNotBlackListed (url) {
+function escapeRegExp (str) {
+	return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 
-	function escapeRegExp (str) {
-		return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-	}
+function ensureNotBlackListed (url) {
 
 	return blackListPromise.then(function (data) {
 		for (let condition of data) {
@@ -65,12 +65,14 @@ function emitMessage (method, data, url){
 }
 
 function* getData (url, freshInsights) {
+
 	let lastStatus = 202;
 	let data = null;
 	freshInsights = freshInsights === true;
-
-	yield checkIsNotBlackListed(url);
 	const apiUrl = `${apiEndpoint}/api/data-for?url=${encodeURIComponent(url)}`;
+
+	// Rejects if the url is blacklisted
+	yield ensureNotBlackListed(url);
 
 	const makeAPICall = function () {
 		return fetch(apiUrl + `&fresh=${freshInsights}`, {cache: 'no-cache'})
@@ -105,6 +107,8 @@ function* getData (url, freshInsights) {
 	if (lastStatus === 200) {
 		return data.data;
 	} else {
+
+		// Error message from the server, don't expose it to the user.
 		console.log(data.error);
 		throw Error('Could not return results, if this persists contact labs@ft.com');
 	}
