@@ -70,13 +70,13 @@ module.exports = function getLatestValuesFor(url) {
 					betterThanCompetitorProducts['false'].forEach(function(result) {
 						results.push({
 							ok: false,
-							text: `${row.worse_than_competitor} ${result.domain} by ${result.difference}%`
+							text: `${row.worse_than_competitor} ${result.domain}`
 						});
 					});
 					betterThanCompetitorProducts['true'].forEach(function(result) {
 						results.push({
 							ok: true,
-							text: `${row.better_than_competitor} ${result.domain} by ${result.difference}%`
+							text: `${row.better_than_competitor} ${result.domain}`
 						});
 					});
 				}
