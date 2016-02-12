@@ -1,3 +1,4 @@
+'use strict'; //eslint-disable-line strict
 // From lea Verous Color Contrast tool.
 // https://github.com/LeaVerou/contrast-ratio/blob/gh-pages/color.js 
 // 2016-02-08
