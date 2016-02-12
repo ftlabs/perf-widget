@@ -70,7 +70,7 @@ function* getData (url, freshInsights) {
 
 	const blackListed = yield checkIsNotBlackListed(url);
 	if (blackListed) {
-		throw Error('Website black listed');
+		throw Error('Sorry this website does not work with the perf widget.');
 	}
 	const apiUrl = `${apiEndpoint}/api/data-for?url=${encodeURIComponent(url)}`;
 
@@ -93,14 +93,22 @@ function* getData (url, freshInsights) {
 
 	yield makeAPICall();
 
+	const dateStarted = Date.now();
+
 	while (lastStatus === 202) {
+
+		// wait for minutes then timeout
+		if (Date.now() - dateStarted >= 1000 * 240) {
+			throw Error('Sorry the request is taking a long time please try again later.');
+		}
 		yield waitThen(makeAPICall, 3000);
 	}
 
 	if (lastStatus === 200) {
 		return data.data;
 	} else {
-		throw Error(data.error);
+		console.log(data.error);
+		throw Error('Could not return results, if this persists contact labs@ft.com');
 	}
 }
 
@@ -130,8 +138,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		co(() => getData(request.url, request.freshInsights))
 		.then(data => {
 			emitMessage('updateData', data, request.url);
-		}, () => {
-			emitMessage('updateError', {errorMessage: 'Could not return results, if this persists contact labs@ft.com'}, request.url);
+		}, e => {
+			emitMessage('updateError', {errorMessage: e.message}, request.url);
 		});
 	}
 });
