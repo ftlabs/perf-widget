@@ -31,10 +31,10 @@ function checkIsNotBlackListed (url) {
 	return blackListPromise.then(function (data) {
 		for (let condition of data) {
 			let testRegex;
-			if (condition.type === 'regex') {
+			if (condition.matchtype === 'regex') {
 				testRegex = new RegExp(condition.blacklistsite);
 			}
-			if (condition.type === 'string') {
+			if (condition.matchtype === 'string') {
 
 				// RegExp to match from the start of the string replacing * with .*
 				// Escaping special RegExp characters.
@@ -43,10 +43,11 @@ function checkIsNotBlackListed (url) {
 			if (testRegex) {
 
 				// if it matches it is blackListed
-				return !url.match(testRegex);
+				if (!!url.match(testRegex)) {
+					throw Error('Sorry this website does not work with the perf widget. The reason given is ' + condition.reason);
+				}
 			}
 		}
-		return true;
 	})
 }
 
@@ -68,10 +69,7 @@ function* getData (url, freshInsights) {
 	let data = null;
 	freshInsights = freshInsights === true;
 
-	const blackListed = yield checkIsNotBlackListed(url);
-	if (blackListed) {
-		throw Error('Sorry this website does not work with the perf widget.');
-	}
+	yield checkIsNotBlackListed(url);
 	const apiUrl = `${apiEndpoint}/api/data-for?url=${encodeURIComponent(url)}`;
 
 	const makeAPICall = function () {
