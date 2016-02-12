@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; // eslint-disable-line strict
 /*global chrome*/
 
 const Color = require('./lib/color').Color;
