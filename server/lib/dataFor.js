@@ -23,7 +23,6 @@ module.exports = function (url, freshInsights) {
 				error: 'Missing url parameter.'
 			};
 		}
-
 		const isUrl = typeof url === 'string' ? detectUrl(url) : false;
 
 		if (!isUrl) {
@@ -34,19 +33,21 @@ module.exports = function (url, freshInsights) {
 
 		if (!freshInsights){
 			debug('pingCache.has(url)', pingCache.has(url), url);
-
 			if (!pingCache.has(url)){
 				pingCache.set(url, null);
-				fetch(url, {cache : 'no-cache'})
+				fetch(url, {cache : 'no-cache', timeout : 2500})
 					.then(res => {
+						debug(res, res.status, typeof(res.status));
 						if(res.status !== 200){
 							pingCache.set(url, false);
 						} else {
 							pingCache.set(url, true);
 						}
+					}).
+					catch(err => {
+						debug(`An error occurred whilst checking a URL's network visility`, err);
 					})
 				;
-
 				return {
 					reason: 'Checking page can be accessed'
 				}
@@ -55,7 +56,6 @@ module.exports = function (url, freshInsights) {
 				const isAccessible = pingCache.get(url);
 
 				if(!isAccessible){
-					
 					return {
 						error: 'Unable to access this URL to perform insights'
 					}
@@ -70,7 +70,6 @@ module.exports = function (url, freshInsights) {
 			debug('insightsCache.has(url)', insightsCache.has(url), url);
 			if (insightsCache.has(url)) {
 				const insightsPromise = bluebird.resolve(insightsCache.get(url));
-
 				if (insightsPromise.isFulfilled()) {
 					debug('insightsPromise.value()', insightsPromise.value())
 					return insightsPromise.value();
@@ -80,7 +79,7 @@ module.exports = function (url, freshInsights) {
 				} else {
 					return {
 						reason: 'Gathering results'
-					};				
+					};
 				}
 			}
 		}
