@@ -138,6 +138,24 @@ style.textContent = `
 		margin-top: 1em;
 	}
 
+	#perf-widget-holder .error-refresh-button {
+		fontSize: 0.9em;
+		border: 2px outset #A2A0A0;
+		background: #ccc;
+		fontFamily: 'Open Sans', Sans-serif;
+		borderRadius: 1em;
+		color: black;
+		padding: 0.2em 0.4em;
+		cursor: pointer;
+		margin: 0 0.5em 0.5em 0;
+	}
+
+	#perf-widget-holder .error-refresh-button-wrapper {
+		text-align: center;
+		display: block;
+		margin: 0.1em;
+	}
+
 `;
 
 document.head.appendChild(style);

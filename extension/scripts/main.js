@@ -111,7 +111,9 @@ function loadWidget () {
 	function recieveData (request) {
 
 		if (request.method === 'updateError') {
-			textTarget.innerHTML = request.data.errorMessage;
+			textTarget.innerHTML = request.data.errorMessage + '<div class="error-refresh-button-wrapper"><button class="error-refresh-button">Try Again</button></div>';
+			const refreshButton = textTarget.querySelector('button');
+			refreshButton.addEventListener('click', () => getData(myUrl));
 		}
 
 		if (open && request.method === 'updateData' && request.url === myUrl) {
