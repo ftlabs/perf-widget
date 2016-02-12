@@ -5,13 +5,16 @@ const flattenDeep = require('lodash').flattenDeep;
 const bluebird = require('bluebird');
 const pageDataFor = require('./pageDataFor');
 const domainDataFor = require('./domainDataFor');
+const fetch = require('node-fetch');
+const lru = require('lru-cache');
 
-const cache = require('lru-cache')(
-	{ 
+const lruOptions = { 
 		max: 500, 
 		maxAge: 1000 * 60 * 60 * 24 
 	}
-);
+
+const pingCache = lru(lruOptions)
+const insightsCache = lru(lruOptions);
 
 module.exports = function (url, freshInsights) {
 	return Promise.resolve().then(function () {
@@ -29,16 +32,50 @@ module.exports = function (url, freshInsights) {
 			};
 		}
 
+		if (!freshInsights){
+			debug('pingCache.has(url)', pingCache.has(url), url);
+
+			if (!pingCache.has(url)){
+				pingCache.set(url, null);
+				fetch(url, {cache : 'no-cache'})
+					.then(res => {
+						if(res.status !== 200){
+							pingCache.set(url, false);
+						} else {
+							pingCache.set(url, true);
+						}
+					})
+				;
+
+				return {
+					reason: 'Checking page can be accessed'
+				}
+			
+			} else {
+				const isAccessible = pingCache.get(url);
+
+				if(!isAccessible){
+					
+					return {
+						error: 'Unable to access this URL to perform insights'
+					}
+
+				}
+
+			} 
+
+		}
+
 		if (!freshInsights) {
-			debug('cache.has(url)', cache.has(url), url);
-			if (cache.has(url)) {
-				const insightsPromise = bluebird.resolve(cache.get(url));
+			debug('insightsCache.has(url)', insightsCache.has(url), url);
+			if (insightsCache.has(url)) {
+				const insightsPromise = bluebird.resolve(insightsCache.get(url));
 
 				if (insightsPromise.isFulfilled()) {
 					debug('insightsPromise.value()', insightsPromise.value())
 					return insightsPromise.value();
 				} else if (insightsPromise.isRejected()) {
-					debug(`Promise was rejected, deleting ${url} from cache.`);
+					debug(`Promise was rejected, deleting ${url} from insightsCache.`);
 					return { error : 'Unable to check this url' }
 				} else {
 					return {
@@ -51,10 +88,10 @@ module.exports = function (url, freshInsights) {
 		const host = parseUrl(url).host;
 		const insights = bluebird.all([pageDataFor(url, freshInsights), domainDataFor(host, freshInsights)]).then(flattenDeep);
 
-		cache.set(url, insights);
+		insightsCache.set(url, insights);
 
 		insights.catch(function (err) {
-			debug(`Promise was rejected, deleting ${url} from cache. ${err} `);
+			debug(`Promise was rejected, deleting ${url} from insightsCache. ${err} `);
 		});
 
 		return {
