@@ -50,7 +50,7 @@ app.use(require('body-parser').json());
 
 module.exports = app;
 
-module.exports.ready = db.createTables().then(function() {
+module.exports.ready = db.createTables().then(function () {
 	debug('tables created')
 	const updateCompetitorInsights = require('./lib/updateCompetitorInsights');
 	updateCompetitorInsights();

@@ -13,12 +13,13 @@ if (localStorage.getItem('enabled') === null) {
 }
 
 function emitMessage (method, data, url){
-	chrome.tabs.query({url: url}, function (tabs){
+	chrome.tabs.query({}, function (tabs){
 		tabs.forEach(function (tab) {
 			chrome.tabs.sendMessage(tab.id, {
 				method: method,
 				data: data,
-				url: url
+				url: url,
+				apiEndpoint: apiEndpoint
 			});
 		});
 	});
@@ -50,7 +51,7 @@ function* getData (url, freshInsights) {
 	yield makeAPICall();
 
 	while (lastStatus === 202) {
-		yield waitThen(makeAPICall, 1000);
+		yield waitThen(makeAPICall, 3000);
 	}
 
 	if (lastStatus === 200) {
