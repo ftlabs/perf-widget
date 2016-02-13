@@ -179,9 +179,9 @@ function loadWidget () {
 
 	const waitingText = 'Loading Analysis...';
 	textTarget.innerHTML = waitingText;
-	holder.appendChild(textTarget);
 	holder.appendChild(close);
 	holder.appendChild(refresh);
+	holder.appendChild(textTarget);
 	holder.appendChild(footer)
 
 	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
@@ -204,8 +204,11 @@ function loadWidget () {
 
 let widgetControls;
 
-chrome.runtime.sendMessage({method: 'isEnabled'}, response => {
-	if (response.enabled && location.hostname.match(/ft.com$/)) widgetControls = loadWidget();
+chrome.runtime.sendMessage({
+	method: 'isEnabledForThisHost',
+	host: location.host
+}, response => {
+	if (response.enabled) widgetControls = loadWidget();
 });
 
 chrome.runtime.onMessage.addListener(function (request) {
