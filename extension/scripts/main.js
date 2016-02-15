@@ -78,7 +78,7 @@ function generateContrastData () {
 	});
 
 	return {
-		proportionBadContrast: badChars / goodChars,
+		proportionBadContrast: badChars / (goodChars + badChars),
 		chartData: chartData.map(i => (i/(badChars + goodChars))) // average the data to keep numbers small
 	}
 }
