@@ -88,6 +88,7 @@ function loadWidget () {
 	// add the widget stylesheet
 	require('./lib/widgetstyle');
 
+	const header = document.createElement('div');
 	const holder = document.createElement('div');
 	const close = document.createElement('span');
 	const refresh = document.createElement('span');
@@ -180,8 +181,9 @@ function loadWidget () {
 	const waitingText = 'Loading Analysis...';
 	textTarget.innerHTML = waitingText;
 	holder.appendChild(textTarget);
-	holder.appendChild(close);
-	holder.appendChild(refresh);
+	holder.appendChild(header);
+	header.appendChild(close);
+	header.appendChild(refresh);
 	holder.appendChild(footer)
 
 	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
@@ -204,8 +206,11 @@ function loadWidget () {
 
 let widgetControls;
 
-chrome.runtime.sendMessage({method: 'isEnabled'}, response => {
-	if (response.enabled && location.hostname.match(/ft.com$/)) widgetControls = loadWidget();
+chrome.runtime.sendMessage({
+	method: 'isEnabledForThisHost',
+	host: location.host
+}, response => {
+	if (response.enabled) widgetControls = loadWidget();
 });
 
 chrome.runtime.onMessage.addListener(function (request) {

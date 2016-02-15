@@ -12,6 +12,11 @@ if (localStorage.getItem('enabled') === null) {
 	enabled = localStorage.getItem('enabled') === 'true';
 }
 
+const enabledHosts = new Set(JSON.parse(localStorage.getItem('enabledHosts') || '[]'));
+
+// Runs automatically for the FT so be able to disable it for some domains
+const disabledFTHosts = new Set(JSON.parse(localStorage.getItem('disabledFTHosts') || '[]'));
+
 function emitMessage (method, data, url){
 	chrome.tabs.query({}, function (tabs){
 		tabs.forEach(function (tab) {
@@ -61,10 +66,46 @@ function* getData (url, freshInsights) {
 	}
 }
 
+function isHostEnabled (host) {
+	if (host.match(/ft.com$/)) {
+		return !disabledFTHosts.has(host);
+	} else {
+		return enabledHosts.has(host);
+	}
+}
+
+function setHostEnabled (host, enabled) {
+	if (host.match(/ft.com$/)) {
+		if (enabled) {
+			disabledFTHosts.delete(host);
+		} else {
+			disabledFTHosts.add(host);
+		}
+		localStorage.setItem('disabledFTHosts', JSON.stringify(Array.from(disabledFTHosts)));
+	} else {
+		if (enabled) {
+			enabledHosts.add(host);
+		} else {
+			enabledHosts.delete(host);
+		}
+		localStorage.setItem('enabledHosts', JSON.stringify(Array.from(enabledHosts)));
+	}
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 	if (request.method === 'isEnabled') {
-		sendResponse({enabled});
+		sendResponse({
+			enabled: enabled
+		});
+	}
+
+	if (request.method === 'isEnabledForThisHost') {
+		sendResponse({enabled: enabled && isHostEnabled(request.host)});
+	}
+
+	if (request.method === 'setEnabledForThisHost') {
+		setHostEnabled(request.host, request.enabled);
 	}
 
 	if (request.method === 'setEnabled') {
