@@ -5,6 +5,10 @@ const response = require('./../../lib/jsonResponse');
 const _ = require('lodash');
 
 module.exports = function (req, res) {
+
+	res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  	res.header('Expires', '-1');
+  	res.header('Pragma', 'no-cache');
 	
 	const freshInsights = req.query.fresh === "true";
 
