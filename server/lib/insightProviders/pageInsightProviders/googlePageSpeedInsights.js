@@ -4,7 +4,10 @@ const psi = require('psi');
 
 module.exports = function googlePageSpeedInsights(url) {
 
+	console.time('PSI');
+
 	return psi(url).then(function(results) {
+		debug(console.timeEnd('PSI'));
 
 		return [{
 			name: 'PageSpeedInsightsScore',
