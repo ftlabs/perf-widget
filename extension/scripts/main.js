@@ -83,6 +83,20 @@ function generateContrastData () {
 	}
 }
 
+const userIdentityPromise = new Promise(resolve => chrome.runtime.sendMessage({method: 'getUserIdentity'}, resolve)).then(data => data.identity);
+
+function logInteraction (e) {
+	const name = e.target.className || e.target.id;
+	if (!name) return;
+	userIdentityPromise.then(id => {
+		console.log({
+			id: id.id,
+			email: id.email,
+			target: name
+		});
+	});
+}
+
 function loadWidget () {
 
 	// add the widget stylesheet
@@ -184,7 +198,8 @@ function loadWidget () {
 	holder.appendChild(header);
 	header.appendChild(close);
 	header.appendChild(refresh);
-	holder.appendChild(footer)
+	holder.appendChild(footer);
+	holder.addEventListener('click', logInteraction);
 
 	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
 	footer.classList.add('footer');
