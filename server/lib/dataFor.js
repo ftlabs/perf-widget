@@ -34,7 +34,7 @@ const isUp = function (url){
 const isRedirect = function (url){
 
 	return fetch( url, {cache: 'no-cache', mode: 'head', redirect: 'error', timeout : 2500, follow: 0} )
-		.then(res => {
+		.then(() => {
 			return false;
 		}).catch(err => {
 			debug('err', err, true);
