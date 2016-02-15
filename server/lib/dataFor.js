@@ -8,24 +8,37 @@ const domainDataFor = require('./domainDataFor');
 const fetch = require('node-fetch');
 const lru = require('lru-cache');
 
-const pingCache = lru({ 
-		max: 500, 
-		maxAge: 1000 * 60 * 60 * 2 
-	})
 const insightsCache = lru({ 
-		max: 500, 
-		maxAge: 1000 * 60 * 60 * 24 
-	});
+	max: 500, 
+	maxAge: 1000 * 60 * 60 * 24 
+});
+
+const domainInsightsCache = lru({ 
+	max: 500, 
+	maxAge: 1000 * 60 * 60 * 24 
+});
 
 const isUp = function (url){
 
-	return fetch( url, {cache: 'no-cache', timeout : 2500} )
+	return fetch( url, {cache: 'no-cache', mode: 'head', timeout : 2500} )
 		.then(res => {
 			const up = res.status < 500;
-			pingCache.set(url, up);
-			debug('Is site up?', url, up);
+
+			debug('Is site accessible from the server\'s location?', url, up);
 
 			return up;
+		})
+	;
+}
+
+const isRedirect = function (url){
+
+	return fetch( url, {cache: 'no-cache', mode: 'head', redirect: 'error', timeout : 2500, follow: 0} )
+		.then(res => {
+			return false;
+		}).catch(err => {
+			debug('err', err, true);
+			return true;
 		})
 	;
 }
@@ -65,6 +78,41 @@ const getInsights = function(url, freshInsights){
 
 }
 
+const getDomainInsights = function(url, freshInsights){
+
+	if (!freshInsights) {
+		debug('domainInsightsCache.has(url)', domainInsightsCache.has(url), url);
+		if (domainInsightsCache.has(url)) {
+			const insightsPromise = bluebird.resolve(domainInsightsCache.get(url));
+			if (insightsPromise.isFulfilled()) {
+				debug('insightsPromise.value()', insightsPromise.value())
+				return insightsPromise.value();
+			} else if (insightsPromise.isRejected()) {
+				debug(`Promise was rejected, deleting ${url} from domainInsightsCache.`);
+				return { error : 'Unable to check this url' }
+			} else {
+				return {
+					reason: 'Gathering results'
+				};
+			}
+		}
+	}
+
+	const host = parseUrl(url).host;
+	const insights = bluebird.all([domainDataFor(host, freshInsights)]).then(flattenDeep);
+
+	domainInsightsCache.set(url, insights);
+
+	insights.catch(function (err) {
+		debug(`Promise was rejected, deleting ${url} from domainInsightsCache. ${err} `);
+	});
+
+	return {
+		reason: 'Gathering results'
+	};
+
+}
+
 module.exports = function (url, freshInsights) {
 	return Promise.resolve().then(function () {
 		if (!url) {
@@ -80,47 +128,27 @@ module.exports = function (url, freshInsights) {
 			};
 		}
 
-		if(!freshInsights){
-			debug('URL in pingCache', pingCache.has(url), url);
-			if (!pingCache.has(url)){
-				pingCache.set(url, null);
-				return isUp(url)
-					.then(up => {
-						if(up){
-
-							return getInsights(url, freshInsights);
-
+		return isUp(url)
+			.then(up => {
+				if(up){
+					return isRedirect(url).then(redirect => {
+						if (redirect) {
+							return getDomainInsights(url, freshInsights);
 						} else {
-							return {
-								error: 'Unable to access this URL to perform insights'
-							}
+							return getInsights(url, freshInsights);
 						}
 					})
-					.catch(() => {
-						pingCache.delete(url);
-						return {
-							error : `An error occurred when we tried to check this URL.`
-						}
-					})
-				;
-			
-			} else {
-				const isAccessible = pingCache.get(url);
-				debug('isAccessible', isAccessible);
-
-				if(!isAccessible){
+				} else {
 					return {
 						error: 'Unable to access this URL to perform insights'
 					}
 				}
-
-				return getInsights(url, freshInsights);
-
-			}
-
-		}
-
-		return getInsights(url, freshInsights);
-
+			})
+			.catch(() => {
+				return {
+					error : `An error occurred when we tried to check this URL.`
+				}
+			})
+		;
 	});
 };
