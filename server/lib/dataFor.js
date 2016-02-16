@@ -26,7 +26,7 @@ const isUp = function (url){
 
 const isRedirect = function (url){
 
-	return fetch( url, {cache: 'no-cache', mode: 'head', redirect: 'error', timeout : 2500, follow: 0} )
+	return fetch(url, {cache: 'no-cache', mode: 'head', redirect: 'error', timeout : 2500, follow: 0})
 		.then(() => {
 			return false;
 		}).catch(err => {
