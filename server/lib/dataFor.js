@@ -6,17 +6,10 @@ const bluebird = require('bluebird');
 const pageDataFor = require('./pageDataFor');
 const domainDataFor = require('./domainDataFor');
 const fetch = require('node-fetch');
-const lru = require('lru-cache');
+const inFlight = require('./inFlight');
 
-const insightsCache = lru({ 
-	max: 500, 
-	maxAge: 1000 * 60 * 60 * 24 
-});
-
-const domainInsightsCache = lru({ 
-	max: 500, 
-	maxAge: 1000 * 60 * 60 * 24 
-});
+const hasInDateInsights = require('./hasInDateInsights');
+const getLatestValuesFor = require('./getLatestValuesFor');
 
 const isUp = function (url){
 
@@ -33,7 +26,7 @@ const isUp = function (url){
 
 const isRedirect = function (url){
 
-	return fetch( url, {cache: 'no-cache', mode: 'head', redirect: 'error', timeout : 2500, follow: 0} )
+	return fetch(url, {cache: 'no-cache', mode: 'head', redirect: 'error', timeout : 2500, follow: 0})
 		.then(() => {
 			return false;
 		}).catch(err => {
@@ -43,112 +36,97 @@ const isRedirect = function (url){
 	;
 }
 
-const getInsights = function(url, freshInsights){
-
-	if (!freshInsights) {
-		debug('insightsCache.has(url)', insightsCache.has(url), url);
-		if (insightsCache.has(url)) {
-			const insightsPromise = bluebird.resolve(insightsCache.get(url));
-			if (insightsPromise.isFulfilled()) {
-				debug('insightsPromise.value()', insightsPromise.value())
-				return insightsPromise.value();
-			} else if (insightsPromise.isRejected()) {
-				debug(`Promise was rejected, deleting ${url} from insightsCache.`);
-				return { error : 'Unable to check this url' }
-			} else {
-				return {
-					reason: 'Gathering results'
-				};
-			}
-		}
-	}
-
-	const host = parseUrl(url).host;
-	const insights = bluebird.all([pageDataFor(url, freshInsights), domainDataFor(host, freshInsights)]).then(flattenDeep);
-
-	insightsCache.set(url, insights);
-
-	insights.catch(function (err) {
+const getPageInsights = function(url, freshInsights){
+	return pageDataFor(url, freshInsights).catch(function (err) {
 		debug(`Promise was rejected, deleting ${url} from insightsCache. ${err} `);
 	});
-
-	return {
-		reason: 'Gathering results'
-	};
-
 }
 
 const getDomainInsights = function(url, freshInsights){
-
-	if (!freshInsights) {
-		debug('domainInsightsCache.has(url)', domainInsightsCache.has(url), url);
-		if (domainInsightsCache.has(url)) {
-			const insightsPromise = bluebird.resolve(domainInsightsCache.get(url));
-			if (insightsPromise.isFulfilled()) {
-				debug('insightsPromise.value()', insightsPromise.value())
-				return insightsPromise.value();
-			} else if (insightsPromise.isRejected()) {
-				debug(`Promise was rejected, deleting ${url} from domainInsightsCache.`);
-				return { error : 'Unable to check this url' }
-			} else {
-				return {
-					reason: 'Gathering results'
-				};
-			}
-		}
-	}
-
 	const host = parseUrl(url).host;
-	const insights = bluebird.all([domainDataFor(host, freshInsights)]).then(flattenDeep);
-
-	domainInsightsCache.set(url, insights);
-
-	insights.catch(function (err) {
-		debug(`Promise was rejected, deleting ${url} from domainInsightsCache. ${err} `);
+	return domainDataFor(host, freshInsights).catch(function (err) {
+		debug(`Promise was rejected, ${url} . ${err} `);
 	});
-
-	return {
-		reason: 'Gathering results'
-	};
-
 }
 
-module.exports = function (url, freshInsights) {
-	return Promise.resolve().then(function () {
-		if (!url) {
-			return {
-				error: 'Missing url parameter.'
-			};
-		}
-		const isUrl = typeof url === 'string' ? detectUrl(url) : false;
+function getLatestValuesForPageAndDomain (url) {
+	const host = parseUrl(url).host;
 
-		if (!isUrl) {
-			return {
-				error: 'URL parameter needs to be a valid URL.'
-			};
-		}
+	return bluebird.all([getLatestValuesFor(url), getLatestValuesFor(host)]).then(flattenDeep);
+}
 
-		return isUp(url)
-			.then(up => {
-				if(up){
-					return isRedirect(url).then(redirect => {
-						if (redirect) {
-							return getDomainInsights(url, freshInsights);
-						} else {
-							return getInsights(url, freshInsights);
-						}
-					})
-				} else {
-					return {
-						error: 'Unable to access this URL to perform insights'
-					}
-				}
-			})
-			.catch(() => {
-				return {
-					error : `An error occurred when we tried to check this URL.`
-				}
-			})
-		;
+function hasPageOrDomainInsights (url) {
+	const host = parseUrl(url).host;
+
+	return bluebird.all([hasInDateInsights(url), hasInDateInsights(host)]).then(results => {
+		return results[0] || results[1];
 	});
-};
+}
+
+module.exports = bluebird.coroutine(function* (url, freshInsights) {
+	if (!url) {
+		return {
+			error: 'Missing url parameter.'
+		};
+	}
+
+	const isUrl = typeof url === 'string' ? detectUrl(url) : false;
+
+	if (!isUrl) {
+		return {
+			error: 'URL parameter needs to be a valid URL.'
+		};
+	}
+
+	try {
+		const inDateInsights = yield hasPageOrDomainInsights(url);
+			
+		if (inDateInsights) {
+			debug('has in date insights, returning insights.');
+			return getLatestValuesForPageAndDomain(url);
+		}
+
+		if (inFlight.has(url)) {
+			return {
+				reason: 'Gathering results'
+			};
+		}
+
+		const up = yield isUp(url)
+
+		if (up) {
+			debug('adding to in flight table.');							
+								
+			inFlight.add(url);
+								
+			const redirect = yield isRedirect(url)
+			
+			if (redirect) {
+				getDomainInsights(url, freshInsights).then(() => {
+					debug('insights gathered, removing from in flight table.');
+					inFlight.remove(url);
+				});
+			} else {
+				Promise.all([getPageInsights(url, freshInsights), getDomainInsights(url, freshInsights)]).then(() => {
+					debug('insights gathered, removing from in flight table.');
+					inFlight.remove(url);
+				});
+			}
+
+			return {
+				reason: 'Gathering results'
+			};
+
+		}
+
+		return {
+			error: 'Unable to access this URL to perform insights'
+		}
+	} catch (e) {
+		debug(e)
+		
+		return {
+			error : `An error occurred when we tried to check this URL.`
+		}
+	}
+});

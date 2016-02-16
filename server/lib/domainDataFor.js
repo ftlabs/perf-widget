@@ -61,6 +61,7 @@ function gatherAndAddDomainInsights(domain) {
 
 		// Add results to the database
 		const insightsAdded = results.map(function (insight) {
+			debug('addInsights', insight.name, domain, insight.value, date, insight.link)
 			return addInsights(insight.name, domain, insight.value, date, insight.link);
 		});
 
