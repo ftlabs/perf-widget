@@ -52,17 +52,31 @@ module.exports = function getLatestValuesFor(url) {
 					}
 				}
 
-				if (betterThanCompetitorProducts !== undefined) {
-					betterThanCompetitorProducts['false'].forEach(function(competitor) {
-						results.push({
-							ok: false,
-							text: `${row.worse_than_competitor} ${competitor}`
-						});
-					});
-					betterThanCompetitorProducts['true'].forEach(function(competitor) {
+				if (betterThanOtherFTProducts !== undefined) {
+					if (betterThanOtherFTProducts) {
 						results.push({
 							ok: true,
-							text: `${row.better_than_competitor} ${competitor}`
+							text: row.better_than_ft
+						});
+					} else {
+						results.push({
+							ok: false,
+							text: row.worse_than_ft
+						});
+					}
+				}
+
+				if (betterThanCompetitorProducts !== undefined) {
+					betterThanCompetitorProducts['false'].forEach(function(result) {
+						results.push({
+							ok: false,
+							text: `${row.worse_than_competitor} ${result.domain}`
+						});
+					});
+					betterThanCompetitorProducts['true'].forEach(function(result) {
+						results.push({
+							ok: true,
+							text: `${row.better_than_competitor} ${result.domain}`
 						});
 					});
 				}
