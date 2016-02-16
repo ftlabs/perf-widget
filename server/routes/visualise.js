@@ -5,7 +5,7 @@ module.exports = function (req, res){
 
 	whatDoesItAllMean()
 		.then(data => {
-			debug("First row of response," data[0]);
+			debug('First row of response', data[0]);
 			res.render('visualise', {results : data});
 		})
 		.catch(err => {
