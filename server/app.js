@@ -60,6 +60,10 @@ module.exports.ready = db.createTables().then(function () {
 }).catch(err => {
 
 	debug(`An error occurred while we were trying to create the tables for the application.\n${err}`);
-	process.exit();
-
+	db.abort()
+		.then(function (){
+			process.exit(1);		
+		})
+	;
+	
 });
