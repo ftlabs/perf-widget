@@ -1,4 +1,5 @@
 const debug = require('debug')('perf-widget:lib:pageDataFor');
+const bluebird = require('bluebird');
 const insightsExist = require('./insightsExist');
 const pageExists = require('./pageExists');
 const getLatestValuesFor = require('./getLatestValuesFor');
@@ -7,65 +8,49 @@ const insightsOutOfDate = require('./insightsOutOfDate');
 const addInsights = require('./addInsights');
 const gatherPageInsights = require('./gatherPageInsights');
 
-module.exports = function pageDataFor (url, freshInsights) {
-	return pageExists(url)
-		.then (function (exists) {
-			debug('pageExists', exists, url)
-			if (!exists) {
+module.exports = bluebird.coroutine(function* pageDataFor (url, freshInsights) {
+	const page = yield pageExists(url);
+	debug('pageExists', page, url)
+	if (!page) {
+		yield createPage(url);
+		yield gatherAndAddPageInsights(url);
+		yield getLatestValuesFor(url);
+	}
 
-				return createPage(url).then (function () {
-					return gatherAndAddPageInsights(url).then (function () {
-						return getLatestValuesFor(url);
-					});
-				});
-			}
+	if (freshInsights) {
+		yield gatherAndAddPageInsights(url);
+		yield getLatestValuesFor(url);
+	}
 
-			if(freshInsights){
+	const insights = yield insightsExist(url);
+	
+	if (!insights) {
+		yield gatherAndAddPageInsights(url);
+		yield getLatestValuesFor(url);
+	}
 
-				return gatherAndAddPageInsights(url).then (function () {
-					return getLatestValuesFor(url);
-				});
+	const outOfDate = yield insightsOutOfDate(url);
 
-			}
+	if (outOfDate) {
+		yield gatherAndAddPageInsights(url);
+		yield getLatestValuesFor(url);
+	}
 
-			return insightsExist(url)
-			.then (function (exists) {
+	return getLatestValuesFor(url);
+});
 
-				if (!exists) {
-					return gatherAndAddPageInsights(url).then (function () {
-						return getLatestValuesFor(url);
-					});
-				}
+const gatherAndAddPageInsights = bluebird.coroutine(function* (page) {
+	const results = yield gatherPageInsights(page);
 
-				return insightsOutOfDate(url)
-				.then (function (outOfDate) {
+	// Use same timestamp for all results
+	const date = Date.now() / 1000;
 
-					if (outOfDate) {
-						return gatherAndAddPageInsights(url).then (function () {
-							return getLatestValuesFor(url);
-						});
-					}
-
-					return getLatestValuesFor(url);
-			});
-		});
+	// Add results to the database
+	const insightsAdded = results.map(function (insight) {
+		debug('addInsights', insight.name, page, insight.value, date, insight.link)
+		return addInsights(insight.name, page, insight.value, date, insight.link);
 	});
-};
 
-function gatherAndAddPageInsights (page) {
-	return gatherPageInsights(page)
-	.then (function (results) {
-
-		// Use same timestamp for all results
-		const date = Date.now() / 1000;
-
-		// Add results to the database
-		const insightsAdded = results.map(function (insight) {
-			debug('addInsights', insight.name, page, insight.value, date, insight.link)
-			return addInsights(insight.name, page, insight.value, date, insight.link);
-		});
-
-		// After results are added to the database, repeat this process
-		return Promise.all(insightsAdded)
-	});
-}
+	// After results are added to the database, repeat this process
+	return Promise.all(insightsAdded)
+});
