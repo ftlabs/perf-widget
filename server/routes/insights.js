@@ -1,5 +1,7 @@
 module.exports = function (req, res){
 
-	res.render('insights');
+	res.render('main', {
+		partial : 'insights'
+	});
 
 }

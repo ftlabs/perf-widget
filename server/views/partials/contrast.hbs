@@ -1,0 +1,59 @@
+<style type="text/css">
+	html, body {
+		font-family: BentonSans;
+		margin: 0;
+		margin-bottom: 5em;
+	}
+
+	h3:target + div {
+		border: 1px solid #ccc;
+	}
+
+	.o-techdocs-content div {
+		margin: 0 -1em;
+		padding: 0 1em;
+		border-radius: 1em;
+	}
+
+	#contrastChartWrapper {
+		display: inline-block;
+		float: right;
+		margin-left: 1em;
+		border: 1px solid #ccc;
+		border-radius: 1em;
+		padding: 0.5em;
+	}
+
+	#contrastChartWrapper h3 {
+		margin: 0 0 1em 0;
+		text-align: center;
+		width: 480px;
+		overflow: hidden;
+	}
+
+</style>
+
+<div class="o-techdocs-hero">
+	<h2 class="o-techdocs-hero__title">
+		FT Labs Perf-Widget Chrome Extension and Service
+	</h2>
+</div>
+
+<div class="o-techdocs-container">
+	<div class="o-techdocs-main">
+
+		<div class="o-techdocs-content">
+		<h2>Contrast Analysis</h2>
+		<div id="contrastChartWrapper"></div>
+
+		<p>This insight provides information about the legibility of your site.</p>
+		<p>It compares the css text colour to the css background colour for block of text on the page.</p>
+		<p>It then works out the contrast ratio (a number between 0 and 21). It is based upon <a href="http://leaverou.github.io/contrast-ratio/">this tool by Lea Verou.</a> Where 1 is no contrast (same colour) and 21 is comparing white to black</p>
+		<p>A rating of below 4 is poor contrast and should be considered illegible.</p>
+		<p>The tool measures that enough of the site is above a threshold of 4 and provides a small graph showing what proportion of the text on your page is legible.</p>
+
+	</div>
+
+</div>
+
+<script src="/static/contrast-bundle.js" async defer></script>

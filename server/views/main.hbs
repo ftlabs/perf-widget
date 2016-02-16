@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<title>FT Labs Perf-Widget</title>
+		<link rel="stylesheet" href="https://origami-buildservice-qa.herokuapp.com/bundles/css?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4" />
+
+		<style type="text/css">
+			html, body {
+				font-family: BentonSans;
+				margin: 0;
+				margin-bottom: 5em;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+			{{>header}}
+
+			<main>
+				{{>(lookup . 'partial')  }}
+			</main>
+
+			<script src="https://origami-buildservice-qa.herokuapp.com/bundles/js?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4"></script>
+
+	</body>
+
+</html>
