@@ -57,4 +57,9 @@ module.exports.ready = db.createTables().then(function () {
 	
 	// Assign routes
 	app.use('/', require('./routes'));
+}).catch(err => {
+
+	debug(`An error occurred while we were trying to create the tables for the application.\n${err}`);
+	process.exit();
+
 });
