@@ -63,6 +63,9 @@ module.exports.ready = db.createTables().then(function () {
 	db.abort()
 		.then(function (){
 			process.exit(1);		
+		}).
+		catch(err => {
+			process.exit(1);
 		})
 	;
 	
