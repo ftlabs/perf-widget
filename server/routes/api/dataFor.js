@@ -1,7 +1,7 @@
 const debug = require('debug')('perf-widget:routes:api:dataFor'); // eslint-disable-line no-unused-vars
-const dataFor = require('./../../lib/dataFor');
+const dataFor = require('../../lib/dataFor');
 
-const response = require('./../../lib/jsonResponse');
+const response = require('../helper/jsonResponse');
 const _ = require('lodash');
 
 module.exports = function (req, res) {
