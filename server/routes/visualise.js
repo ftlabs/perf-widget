@@ -3,7 +3,7 @@ const whatDoesItAllMean = require('../lib/report');
 
 module.exports = function (req, res){
 
-	whatDoesItAllMean()
+	whatDoesItAllMean.insights.allValues()
 		.then(data => {
 			debug('First row of response', data[0]);
 			res.render('main', {
