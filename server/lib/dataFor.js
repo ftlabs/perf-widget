@@ -37,7 +37,7 @@ const isRedirect = function (url){
 }
 
 const getPageInsights = function(url, freshInsights){
-	return insights = pageDataFor(url, freshInsights).catch(function (err) {
+	return pageDataFor(url, freshInsights).catch(function (err) {
 		debug(`Promise was rejected, deleting ${url} from insightsCache. ${err} `);
 	});
 }
