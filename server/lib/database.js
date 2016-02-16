@@ -59,7 +59,7 @@ module.exports.abort = function (){
 
 		pool.end(function (err){
 			if(err){
-				reject();
+				reject(err);
 			} else {
 				resolve();			
 			}

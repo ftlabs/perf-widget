@@ -65,6 +65,7 @@ module.exports.ready = db.createTables().then(function () {
 			process.exit(1);		
 		}).
 		catch(err => {
+			debug(`An error occurred when we tried to gracefully end the connections in our SQL pool.\n${err}`);
 			process.exit(1);
 		})
 	;
