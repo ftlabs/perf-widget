@@ -55,69 +55,70 @@ function getLatestValuesForPageAndDomain (url) {
 	return bluebird.all([getLatestValuesFor(url), getLatestValuesFor(host)]).then(flattenDeep);
 }
 
-module.exports = function (url, freshInsights) {
-	return Promise.resolve().then(function () {
-		if (!url) {
+module.exports = bluebird.coroutine(function* (url, freshInsights) {
+	if (!url) {
+		return {
+			error: 'Missing url parameter.'
+		};
+	}
+
+	const isUrl = typeof url === 'string' ? detectUrl(url) : false;
+
+	if (!isUrl) {
+		return {
+			error: 'URL parameter needs to be a valid URL.'
+		};
+	}
+
+	try {
+		const inDateInsights = yield hasInDateInsights(url);
+			
+		if (inDateInsights) {
+			debug('has in date insights, returning insights.');
+			return getLatestValuesForPageAndDomain(url);
+		}
+
+		if (inFlight.has(url)) {
 			return {
-				error: 'Missing url parameter.'
+				reason: 'Gathering results'
 			};
 		}
-		const isUrl = typeof url === 'string' ? detectUrl(url) : false;
 
-		if (!isUrl) {
-			return {
-				error: 'URL parameter needs to be a valid URL.'
-			};
-		}
+		const up = yield isUp(url)
 
-		return hasInDateInsights(url).then(inDateInsights => {
-			if (inDateInsights) {
-				debug('has in date insights, returning insights.');
-				return getLatestValuesForPageAndDomain(url);
+		if (up) {
+			debug('adding to in flight table.');							
+								
+			inFlight.add(url);
+								
+			const redirect = yield isRedirect(url)
+			
+			if (redirect) {
+				getDomainInsights(url, freshInsights).then(() => {
+					debug('insights gathered, removing from in flight table.');
+					inFlight.remove(url);
+				});
 			} else {
-				if (inFlight.has(url)) {
-					return {
-						reason: 'Gathering results'
-					};
-				}
-
-				return isUp(url)
-					.then(up => {
-						if(up){
-							debug('adding to in flight table.');
-							
-							inFlight.add(url);
-							
-							return isRedirect(url).then(redirect => {
-								if (redirect) {
-									getDomainInsights(url, freshInsights).then(() => {
-										debug('insights gathered, removing from in flight table.');
-										inFlight.remove(url);
-									});
-								} else {
-									Promise.all([getPageInsights(url, freshInsights), getDomainInsights(url, freshInsights)]).then(() => {
-										debug('insights gathered, removing from in flight table.');
-										inFlight.remove(url);
-									});
-								}
-
-								return {
-									reason: 'Gathering results'
-								};
-							});
-						}
-						return {
-							error: 'Unable to access this URL to perform insights'
-						}
-					})
-					.catch((e) => {
-						debug(e)
-						return {
-							error : `An error occurred when we tried to check this URL.`
-						}
-					})
-				;
+				Promise.all([getPageInsights(url, freshInsights), getDomainInsights(url, freshInsights)]).then(() => {
+					debug('insights gathered, removing from in flight table.');
+					inFlight.remove(url);
+				});
 			}
-		});
-	});
-};
+
+			return {
+				reason: 'Gathering results'
+			};
+
+		}
+
+		return {
+			error: 'Unable to access this URL to perform insights'
+		}
+	} catch (e) {
+		debug(e)
+		
+		return {
+			error : `An error occurred when we tried to check this URL.`
+		}
+	}
+});
