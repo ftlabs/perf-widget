@@ -145,8 +145,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		new Promise(
 			resolve => chrome.identity.getProfileUserInfo(resolve)
 		).then(identity => {
-			const trackingReq = {};
-			trackingReq.details = request.details;
+			const trackingReq = request.details;
+			trackingReq.category = 'ftlabs-performance-widget';
 			trackingReq.id = identity.id;
 			trackingReq.email = identity.email;
 			ftSessionCookiePromise.then(sessionCookieData => {

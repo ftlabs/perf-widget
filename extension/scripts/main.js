@@ -87,16 +87,14 @@ function generateContrastData () {
 
 function logInteraction (e) {
 	const details = {};
-	const trackingAction = e.target.dataset.trackingAction;
+	const context = e.target.dataset.trackingAction;
 	if (e.target.tagName === 'A') {
 			details.action = 'widget-link-click';
-			details.href = e.target.href;
-	} else if (trackingAction) {
+			details.destination = e.target.href;
+			if (context) details.context = context;
+	} else if (context) {
 			details.action = 'click';
-	}
-
-	if (trackingAction) {
-		details.trackingAction = trackingAction;
+			details.context = context;
 	}
 
 	if (details.action) {

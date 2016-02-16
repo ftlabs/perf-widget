@@ -5,6 +5,13 @@ chrome.runtime.sendMessage({method: 'isEnabled'}, function (response) {
 	document.forms[0].enabled.checked = response.enabled;
 });
 
+chrome.runtime.sendMessage({
+	method: 'trackUiInteraction',
+	details: {
+		action: 'open-extension-pop-up',
+	}
+});
+
 chrome.tabs.query({
 	active: true,
 	lastFocusedWindow: true
@@ -32,9 +39,8 @@ chrome.tabs.query({
 			chrome.runtime.sendMessage({
 				method: 'trackUiInteraction',
 				details: {
-					action: 'disabledForHost',
-					host: host,
-					enabled: enabled
+					action: enabled ? 'enable-for-host' : 'disable-for-host',
+					host: host
 				}
 			});
 		});
@@ -53,8 +59,7 @@ document.forms[0].enabled.addEventListener('click', function () {
 	chrome.runtime.sendMessage({
 		method: 'trackUiInteraction',
 		details: {
-			action: 'toggleEnabledGlobally',
-			enabled: enabled
+			action: enabled ? 'enable-globally' : 'disable-globally',
 		}
 	});
 });
@@ -64,7 +69,7 @@ document.forms[0].showwidget.addEventListener('click', function (e) {
 	chrome.runtime.sendMessage({
 		method: 'trackUiInteraction',
 		details: {
-			action: 'showWidget'
+			action: 'press-show-widget'
 		}
 	});
 
