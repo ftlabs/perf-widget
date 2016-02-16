@@ -6,6 +6,7 @@ router.get('/insights', require('./insights'));
 router.get('/contrastbreakdown', require('./contrast'));
 router.use('/static', require('./staticFiles'));
 router.use('/api', require('./api'));
+router.use('/visualise', require('./visualise'));
 
 // 404 handler
 router.use(function (req, res) {
