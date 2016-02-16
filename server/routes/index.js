@@ -1,11 +1,15 @@
 const router = require('express').Router(); //eslint-disable-line new-cap
 
 // Serve static assets from /static
-router.get('/', require('./home'));
 router.get('/insights', require('./insights'));
 router.get('/contrastbreakdown', require('./contrast'));
 router.use('/static', require('./staticFiles'));
 router.use('/api', require('./api'));
+
+const authS3O = require('s3o-middleware');
+
+router.use(authS3O);
+router.get('/', require('./home'));
 router.use('/visualise', require('./visualise'));
 
 // 404 handler
