@@ -10,7 +10,7 @@ module.exports = function (req, res){
 		})
 		.catch(err => {
 			res.end();
-			debug('An error occured whilst trying to show what this all means');
+			debug(`An error occured whilst trying to show what this all means\n${ err }`);
 		})
 	;
 
