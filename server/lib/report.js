@@ -10,15 +10,4 @@ module.exports = function (){
 			return result;
 		})
 	;
-
-	/*return Promise.resolve({
-		gettingBetter : true,
-		historicalResponseTimes : {
-			timePeriod : "24 Hours",
-			data : [
-				{}
-			]
-		}
-	});*/
-
 }
