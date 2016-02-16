@@ -12,6 +12,11 @@
 				margin: 0;
 				margin-bottom: 5em;
 			}
+
+			th{
+				cursor: pointer;
+			}
+
 		</style>
 
 	</head>
@@ -38,11 +43,13 @@
 
 				<div class="o-techdocs-main o-techdocs-main--fullwidth">
 
+					<h3>All insights for the last 24 hours</h3>
+
 					<div class="o-techdocs-table-wrapper">
 
 						<table>
 							<thead>
-								<tr><th>Domain</th><th>URL</th><th>Time</th><th>Provider</th><th>Metric</th><th>Value</th></tr>
+								<tr><th>Domain</th><th>URL</th><th data-value-type="number">Time</th><th>Provider</th><th>Metric</th><th data-value-type="number">Value</th></tr>
 							</thead>
 							<tbody>
 									
@@ -62,6 +69,91 @@
 		</main>
 
 		<script src="https://build.origami.ft.com/v2/bundles/js?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4,o-grid@^4.0.0"></script>
+
+		<script>
+
+			var table = document.querySelector('table'),
+				ths = table.querySelectorAll('thead th'),
+				rows = table.querySelectorAll('tbody tr');
+
+			function ascendingSort(a, b){
+
+				if(a < b){
+					return -1;
+				} else if (b < a){
+					return 1;
+				} else {
+					return 0;
+				}
+
+			}
+
+			function descendingSort(a, b){
+
+				if(a < b){
+					return 1;
+				} else if (b < a){
+					return -1;
+				} else {
+					return 0;
+				}
+				
+			}
+
+			function sortRowsByColumn(idx, ASC, isNumberValue){
+
+				var r = Array.from(rows),
+					tbody = table.querySelector('tbody');
+
+				r.sort(function(a, b){
+
+					var aCol = a.childNodes[idx].textContent;
+					var bCol = b.childNodes[idx].textContent;
+
+					if(isNumberValue){
+						aCol = parseInt(aCol);
+						bCol = parseInt(bCol);
+					}
+
+					if(ASC){
+						return ascendingSort(aCol, bCol);
+					} else {
+						return descendingSort(aCol, bCol);
+					}
+				
+				});
+
+				tbody.innerHTML = "";
+	
+				r.forEach(function(row){
+					tbody.appendChild(row);
+				});
+
+			}
+
+			Array.from(ths).forEach(function(th, idx){
+
+				(function(columnIndex){
+
+					th.addEventListener('click', function(){
+						console.log(this, columnIndex);
+
+						if(this.getAttribute('data-order') === null || this.getAttribute('data-order') === "DES"){
+							this.setAttribute('data-order', 'ASC');
+						} else {
+							this.setAttribute('data-order', 'DES');
+						}
+
+						sortRowsByColumn(columnIndex, this.getAttribute('data-order') === "ASC", this.getAttribute('data-value-type') === "number")
+					}, false);
+
+				})(idx)
+
+				
+			});
+
+
+		</script>
 
 	</body>
 
