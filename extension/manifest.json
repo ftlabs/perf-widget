@@ -6,6 +6,7 @@
   "version": "2.1.2",
   "permissions": [
     "tabs",
+    "activeTab",
     "identity",
     "identity.email",
     "<!--  @echo serviceURL -->/*"

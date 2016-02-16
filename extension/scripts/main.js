@@ -83,18 +83,26 @@ function generateContrastData () {
 	}
 }
 
-const userIdentityPromise = new Promise(resolve => chrome.runtime.sendMessage({method: 'getUserIdentity'}, resolve)).then(data => data.identity);
-
 function logInteraction (e) {
-	const name = e.target.className || e.target.id;
-	if (!name) return;
-	userIdentityPromise.then(id => {
-		console.log({
-			id: id.id,
-			email: id.email,
-			target: name
+	const details = {};
+	const trackingAction = e.target.dataset.trackingAction;
+	if (e.target.tagName === 'A') {
+			details.action = 'widget-link-click';
+			details.href = e.target.href;
+	} else if (trackingAction) {
+			details.action = 'click';
+	}
+
+	if (trackingAction) {
+		details.trackingAction = trackingAction;
+	}
+
+	if (details.action) {
+		chrome.runtime.sendMessage({
+			method: 'trackUiInteraction',
+			details: details
 		});
-	});
+	}
 }
 
 function loadWidget () {
@@ -112,6 +120,7 @@ function loadWidget () {
 	const apiEndpoint = '/* @echo serviceURL */';
 
 	function removeSelf (){
+		widgetControls = null;
 		holder.parentNode.removeChild(holder);
 		chrome.runtime.onMessage.removeListener(recieveData);
 	}
@@ -170,9 +179,9 @@ function loadWidget () {
 			}());
 
 			reducedData.forEach(datum => {
-				output += `<h3>${datum.category} <a  href="${apiEndpoint}/insights/#${datum.category.toLowerCase().replace(/[^a-z]+/, '')}">ⓘ</a></h3><div class="insights">`;
+				output += `<h3>${datum.category} <a data-tracking-action="insight-link" href="${apiEndpoint}/insights/#${datum.category.toLowerCase().replace(/[^a-z]+/, '')}">ⓘ</a></h3><div class="insights">`;
 				datum.comparisons.forEach(comparison => {
-					output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
+					output += `<li class="ok-${ comparison.ok }"><a data-tracking-action="data-link-ok-${ comparison.ok }" href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
 				});
 				output += '</div>';
 			});
@@ -201,13 +210,15 @@ function loadWidget () {
 	holder.appendChild(footer);
 	holder.addEventListener('click', logInteraction);
 
-	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
+	footer.innerHTML = `<h3><a data-tracking-action="why-am-i-seeing-this" href="${apiEndpoint}/">Why am I seeing this?</a></h3>`;
 	footer.classList.add('footer');
 
-	close.setAttribute('class', 'close');
+	close.classList.add('close');
+	close.dataset.trackingAction = 'close';
 	close.addEventListener('click', removeSelf, false);
 
-	refresh.setAttribute('class', 'refresh');
+	refresh.classList.add('refresh');
+	refresh.dataset.trackingAction = 'refresh';
 	refresh.addEventListener('click', refreshFn, false);
 
 	holder.setAttribute('id', 'perf-widget-holder');

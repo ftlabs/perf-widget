@@ -94,8 +94,6 @@ function setHostEnabled (host, enabled) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
-	let async = false;
-
 	if (request.method === 'isEnabled') {
 		sendResponse({
 			enabled: enabled
@@ -106,12 +104,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		sendResponse({enabled: enabled && isHostEnabled(request.host)});
 	}
 
-	if (request.method === 'getUserIdentity') {
-		const userIdPromise = new Promise(resolve => chrome.identity.getProfileUserInfo(resolve));
-		userIdPromise.then(id => {
-			sendResponse({identity: id});
+	if (request.method === 'trackUiInteraction') {
+		new Promise(
+			resolve => chrome.identity.getProfileUserInfo(resolve)
+		).then(identity => {
+			const trackingReq = {};
+			trackingReq.details = request.details;
+			trackingReq.id = identity.id;
+			trackingReq.email = identity.email;
+			console.log(trackingReq);
 		});
-		async = true;
 	}
 
 	if (request.method === 'setEnabledForThisHost') {
@@ -142,6 +144,4 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			emitMessage('updateError', {errorMessage: 'Could not return results, if this persists contact labs@ft.com'}, request.url);
 		});
 	}
-
-	return async;
 });
