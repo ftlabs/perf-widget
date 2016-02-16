@@ -1,5 +1,7 @@
 module.exports = function (req, res){
 
-	res.render('contrast');
+	res.render('main', {
+		partial : 'contrast'
+	});
 
 }

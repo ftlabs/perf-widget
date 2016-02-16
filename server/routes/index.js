@@ -8,6 +8,10 @@ router.use('/static', require('./staticFiles'));
 router.use('/api', require('./api'));
 router.use('/visualise', require('./visualise'));
 
+/*router.use('/main', function(req, res){
+	res.render('main');
+});*/
+
 // 404 handler
 router.use(function (req, res) {
 	res.sendStatus(404); // TODO: Redirect to FT 404 Page?

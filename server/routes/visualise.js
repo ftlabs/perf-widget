@@ -6,7 +6,10 @@ module.exports = function (req, res){
 	whatDoesItAllMean()
 		.then(data => {
 			debug('First row of response', data[0]);
-			res.render('visualise', {results : data});
+			res.render('main', {
+				partial : 'visualise',
+				results : data
+			})
 		})
 		.catch(err => {
 			res.end();
