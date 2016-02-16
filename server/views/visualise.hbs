@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<title>FT Labs Perf-Widget</title>
+		<link rel="stylesheet" href="https://origami-buildservice-qa.herokuapp.com/bundles/css?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4,o-grid@^4.0.0,o-header@^4.0.0" />
+
+		<style type="text/css">
+			html, body {
+				font-family: BentonSans;
+				margin: 0;
+				margin-bottom: 5em;
+			}
+		</style>
+
+	</head>
+
+	<body class="o-techdocs">
+
+		<header data-o-component="o-header" class="o-header">
+			<div class="o-header__container">
+				<div class="o-header__inner">
+					<div class="o-header__primary">
+						<div class="o-header__primary__left">
+							<a class="o-header__logo o-header__logo--ft" href="http://labs.ft.com">
+								<abbr title="Financial Times">FT</abbr>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main class="o-techdocs-container">
+					
+			<div class="o-techdocs-layout">
+
+				<div class="o-techdocs-main o-techdocs-main--fullwidth">
+
+					<div class="o-techdocs-table-wrapper">
+
+						<table>
+							<thead>
+								<tr><th>Domain</th><th>URL</th><th>Time</th><th>Provider</th><th>Metric</th><th>Value</th></tr>
+							</thead>
+							<tbody>
+									
+								{{#each results}}
+									<tr><td>{{domain}}</td><td>{{url}}</td><td data-info="time">{{date}}</td><td>{{provider}}</td><td>{{name}}</td><td>{{value}}</td></tr>
+								{{/each}}
+
+							</tbody>
+						</table>
+
+					</div>
+				
+				</div>
+
+			</div>
+
+		</main>
+
+		<script src="https://origami-buildservice-qa.herokuapp.com/bundles/js?modules=o-techdocs@^5.0.1,o-fonts@^1.6.4,o-grid@^4.0.0"></script>
+
+	</body>
+
+</html>
