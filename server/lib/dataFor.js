@@ -55,6 +55,14 @@ function getLatestValuesForPageAndDomain (url) {
 	return bluebird.all([getLatestValuesFor(url), getLatestValuesFor(host)]).then(flattenDeep);
 }
 
+function hasPageOrDomainInsights (url) {
+	const host = parseUrl(url).host;
+
+	return bluebird.all([hasInDateInsights(url), hasInDateInsights(host)]).then(results => {
+		return results[0] || results[1];
+	});
+}
+
 module.exports = bluebird.coroutine(function* (url, freshInsights) {
 	if (!url) {
 		return {
@@ -71,7 +79,7 @@ module.exports = bluebird.coroutine(function* (url, freshInsights) {
 	}
 
 	try {
-		const inDateInsights = yield hasInDateInsights(url);
+		const inDateInsights = yield hasPageOrDomainInsights(url);
 			
 		if (inDateInsights) {
 			debug('has in date insights, returning insights.');
