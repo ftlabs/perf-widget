@@ -40,7 +40,9 @@ function getBackgroundColorForEl (el) {
 	if (bgc !== noColorCalculatedStyle && bgc !== '') {
 		return bgc;
 	} else if (el.parentNode) {
-		return getBackgroundColorForEl(el.parentNode);
+		if (el.parentNode !== document) {
+			return getBackgroundColorForEl(el.parentNode);
+		}
 	}
 	return null;
 }

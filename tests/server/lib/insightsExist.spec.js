@@ -39,61 +39,34 @@ describe('insightsExist', function () {
 
 	after(mockery.disable);
 
-	it('given any parameters, it returns a promise', function () {
-		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve());
-		expect(insightsExist()).to.be.a('promise');
-		expect(insightsExist(null)).to.be.a('promise');
-		expect(insightsExist(0)).to.be.a('promise');
-		expect(insightsExist(true)).to.be.a('promise');
-		expect(insightsExist(NaN)).to.be.a('promise');
-		expect(insightsExist('a')).to.be.a('promise');
-		expect(insightsExist([])).to.be.a('promise');
-		expect(insightsExist({})).to.be.a('promise');
-	});
-
 	it('rejects if the queries promise is rejected', function () {
 		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.reject());
-		expect(insightsExist()).to.be.rejected;
-		expect(insightsExist(null)).to.be.rejected;
-		expect(insightsExist(0)).to.be.rejected;
-		expect(insightsExist(true)).to.be.rejected;
-		expect(insightsExist(NaN)).to.be.rejected;
 		expect(insightsExist('a')).to.be.rejected;
-		expect(insightsExist([])).to.be.rejected;
-		expect(insightsExist({})).to.be.rejected;
 	});
 
 	it('resolves if the queries promise is resolved', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve());
-		expect(insightsExist()).to.be.resolved;
-		expect(insightsExist(null)).to.be.resolved;
-		expect(insightsExist(0)).to.be.resolved;
-		expect(insightsExist(true)).to.be.resolved;
-		expect(insightsExist(NaN)).to.be.resolved;
+		databaseMock.query.returns(Promise.resolve([{a:1}]));
 		expect(insightsExist('a')).to.be.resolved;
-		expect(insightsExist([])).to.be.resolved;
-		expect(insightsExist({})).to.be.resolved;
 	});
 
 	it('resolves with a boolean value', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve());
-		expect(insightsExist()).to.eventually.be.resolved;
-		expect(insightsExist(0, 1)).to.eventually.be.a('boolean');
+		databaseMock.query.returns(Promise.resolve([{a:1}]));
+		expect(insightsExist('a')).to.eventually.be.resolved;
+		expect(insightsExist('a')).to.eventually.be.a('boolean');
 	});
 
 	it('resolves with true if page exists', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve(1));
-		expect(insightsExist()).to.eventually.be.true;
+		databaseMock.query.returns(Promise.resolve([{a:1}]));
+		expect(insightsExist('a')).to.eventually.be.true;
 	});
 
 	it('resolves with false if page does not exist', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve(0));
-		expect(insightsExist()).to.eventually.be.false;
+		databaseMock.query.returns(Promise.resolve([{a:0}]));
+		expect(insightsExist('a')).to.eventually.be.false;
 	});
 });

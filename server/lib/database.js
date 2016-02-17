@@ -53,3 +53,17 @@ module.exports.query = function query (command) {
 		});
 	});
 };
+
+module.exports.abort = function (){
+	return new Promise(function (resolve, reject){
+
+		pool.end(function (err){
+			if(err){
+				reject(err);
+			} else {
+				resolve();			
+			}
+		});
+
+	});
+}
