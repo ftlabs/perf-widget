@@ -104,10 +104,11 @@ function loadWidget () {
 		chrome.runtime.onMessage.removeListener(recieveData);
 	}
 
-	function getData (url) {
+	function getData (url, freshInsights) {
 		chrome.runtime.sendMessage({
 			method: 'getData',
-			url: url
+			url: url,
+			freshInsights : freshInsights
 		});
 	}
 
