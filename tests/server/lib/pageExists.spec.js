@@ -39,61 +39,33 @@ describe('pageExists', function () {
 
 	after(mockery.disable);
 
-	it('given any parameters, it returns a promise', function () {
-		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve());
-		expect(pageExists()).to.be.a('promise');
-		expect(pageExists(null)).to.be.a('promise');
-		expect(pageExists(0)).to.be.a('promise');
-		expect(pageExists(true)).to.be.a('promise');
-		expect(pageExists(NaN)).to.be.a('promise');
-		expect(pageExists('a')).to.be.a('promise');
-		expect(pageExists([])).to.be.a('promise');
-		expect(pageExists({})).to.be.a('promise');
-	});
-
 	it('rejects if the queries promise is rejected', function () {
 		mysqlMock.escape.returnsArg(0);
 		databaseMock.query.returns(Promise.reject());
-		expect(pageExists()).to.be.rejected;
-		expect(pageExists(null)).to.be.rejected;
-		expect(pageExists(0)).to.be.rejected;
-		expect(pageExists(true)).to.be.rejected;
-		expect(pageExists(NaN)).to.be.rejected;
 		expect(pageExists('a')).to.be.rejected;
-		expect(pageExists([])).to.be.rejected;
-		expect(pageExists({})).to.be.rejected;
 	});
 
 	it('resolves if the queries promise is resolved', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve());
-		expect(pageExists()).to.be.resolved;
-		expect(pageExists(null)).to.be.resolved;
-		expect(pageExists(0)).to.be.resolved;
-		expect(pageExists(true)).to.be.resolved;
-		expect(pageExists(NaN)).to.be.resolved;
+		databaseMock.query.returns(Promise.resolve([{a:1}]));
 		expect(pageExists('a')).to.be.resolved;
-		expect(pageExists([])).to.be.resolved;
-		expect(pageExists({})).to.be.resolved;
 	});
 
 	it('resolves with a boolean value', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve());
-		expect(pageExists()).to.eventually.be.resolved;
+		databaseMock.query.returns(Promise.resolve([{a:1}]));
 		expect(pageExists(0, 1)).to.eventually.be.a('boolean');
 	});
 
 	it('resolves with true if page exists', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve(1));
-		expect(pageExists()).to.eventually.be.true;
+		databaseMock.query.returns(Promise.resolve([{a:1}]));
+		expect(pageExists('a')).to.eventually.be.true;
 	});
 
 	it('resolves with false if page does not exist', function () {
 		mysqlMock.escape.returnsArg(0);
-		databaseMock.query.returns(Promise.resolve(0));
-		expect(pageExists()).to.eventually.be.false;
+		databaseMock.query.returns(Promise.resolve([{a:0}]));
+		expect(pageExists('a')).to.eventually.be.false;
 	});
 });

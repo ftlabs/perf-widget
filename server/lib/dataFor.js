@@ -21,6 +21,9 @@ const isUp = function (url){
 
 			return up;
 		})
+		.catch(() => {
+			return false;
+		})
 	;
 }
 

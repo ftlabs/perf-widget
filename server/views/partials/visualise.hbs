@@ -113,34 +113,87 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.15/d3.min.js"></script>
 
+	<style>
+
+		.charts .container{
+			display: flex;
+			align-items: flex-end;
+		}
+
+		.charts .container div{
+			width: 30px;
+			margin-right: 10px;
+			display: inline-block;
+			background-color: #5DB5FF;
+			color: white;
+			text-align: center;
+		}
+
+	</style>
+
 	<h3>Page Speed values across all pages on <em>{{ results.historical.domain }}</em> across time</h3>
 
-	{{#each results.historical.data}}
-		<div></div>
-	{{/each}}
+	<div class="charts">
 
-	<section class='historicalChart'>
+	</div>
 
-	</section>
+	<!--<section class='historicalChart'>
+
+	</section>-->
 
 
 	<script>
 
 		var data = JSON.parse('{{{results.historical.str}}}');
+		var uniquePages = {};
+		var chartsHolder = document.querySelector('.charts');
 
-		console.log(data);
+		data.forEach(function(res){
 
-		d3.select('.historicalChart')
-			.selectAll('div')
-				.data(data)
-			.enter().append('div')
-				.style("width", function(d) {
-					debugger; 
-					return d.value + "px"; 
-				})
-		;
+			if(uniquePages[res.url] === undefined){
+				
+				uniquePages[res.url] = {
+					data : [{
+						value : res.value,
+						date : res.date
+					}],
+				}
+
+			} else {
+				
+				var entry = uniquePages[res.url];
+				entry.data.push({
+					value : res.value,
+					date : res.date
+				});
+
+			}
+
+		});
+
+		for(key in uniquePages){
+			var page = uniquePages[key];			
+
+			var title = document.createElement('h4');
+			var container = document.createElement('div');
+
+			title.textContent = key;
+			container.setAttribute('class', 'container');
+
+			page.data.forEach(function(info){
+				var bar = document.createElement('div');
+				bar.style.height = info.value + "px";
+				bar.textContent = info.value;
+				container.appendChild(bar);
+
+			});
 
 
+			chartsHolder.appendChild(title);
+			chartsHolder.appendChild(container);
+
+		}
+		
 	</script>
 
 </main>

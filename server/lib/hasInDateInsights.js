@@ -1,32 +1,28 @@
 const debug = require('debug')('perf-widget:lib:hasInDateInsights');
+const bluebird = require('bluebird');
 const insightsExist = require('./insightsExist');
 const pageExists = require('./pageExists');
 const insightsOutOfDate = require('./insightsOutOfDate');
 
-module.exports = function hasInDateInsights (url) {
-	return pageExists(url)
-		.then (function (exists) {
-			debug('pageExists', exists, url)
-			if (!exists) {
-				return false;
-			}
+module.exports = bluebird.coroutine(function* hasInDateInsights (url) {
+	const page = yield pageExists(url);
+	debug('pageExists', page, url);
 
-			return insightsExist(url)
-			.then (function (exists) {
+	if (!page) {
+		return false;
+	}
 
-				if (!exists) {
-					return false;
-				}
+	const insights = yield insightsExist(url);
 
-				return insightsOutOfDate(url)
-				.then (function (outOfDate) {
+	if (!insights) {
+		return false;
+	}
 
-					if (outOfDate) {
-						return false;
-					}
+	const outOfDate = yield insightsOutOfDate(url);
 
-					return true;
-			});
-		});
-	});
-};
+	if (outOfDate) {
+		return false;
+	}
+
+	return true;
+});

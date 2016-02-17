@@ -19,14 +19,11 @@ function getDestination () {
 
 	if(argv.destination !== undefined){
 		if (locations[argv.destination] !== undefined){
-			return "http://5f26c1b5.ngrok.com";
-			// return locations[argv.destination];
+			return locations[argv.destination];
 		}
 	}
 
-	return "http://5f26c1b5.ngrok.com";
-
-	// return process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain;
+	return process.env.NODE_ENV === "development" ? 'http://localhost:3000' : serverDomain;
 
 }
 

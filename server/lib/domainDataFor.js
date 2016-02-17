@@ -1,4 +1,5 @@
 const debug = require('debug')('perf-widget:lib:domainDataFor');
+const bluebird = require('bluebird');
 const insightsExist = require('./insightsExist');
 const pageExists = require('./pageExists');
 const getLatestValuesFor = require('./getLatestValuesFor');
@@ -7,65 +8,45 @@ const insightsOutOfDate = require('./insightsOutOfDate');
 const addInsights = require('./addInsights');
 const gatherDomainInsights = require('./gatherDomainInsights');
 
-module.exports = function domainDataFor(domain, freshInsights) {
-	return pageExists(domain)
-		.then(function(exists) {
-			debug('pageExists', exists, domain)
-			if (!exists) {
+module.exports = bluebird.coroutine(function* domainDataFor(domain, freshInsights) {
+	const page = yield pageExists(domain);
+	debug('pageExists', page, domain)
+	
+	if (!page) {
+		yield createPage(domain);
+		yield gatherAndAddDomainInsights(domain);
+	}
 
-				return createPage(domain).then(function() {
-					return gatherAndAddDomainInsights(domain).then(function() {
-						return getLatestValuesFor(domain);
-					});
-				});
-			}
+	if (freshInsights) {
+		yield gatherAndAddDomainInsights(domain);
+	}
 
-			if(freshInsights){
+	const insights = yield insightsExist(domain);
 
-				return gatherAndAddDomainInsights(domain).then(function() {
-					return getLatestValuesFor(domain);
-				});				
+	if (!insights) {
+		yield gatherAndAddDomainInsights(domain)
+	}
 
-			}
+	const outOfDate = yield insightsOutOfDate(domain);
 
-			return insightsExist(domain)
-			.then(function(exists) {
+	if (outOfDate) {
+		yield gatherAndAddDomainInsights(domain)
+	}
 
-				if (!exists) {
-					return gatherAndAddDomainInsights(domain).then(function() {
-						return getLatestValuesFor(domain);
-					});
-				}
+	yield getLatestValuesFor(domain)
+});
 
-				return insightsOutOfDate(domain)
-				.then(function(outOfDate) {
+const gatherAndAddDomainInsights = bluebird.coroutine(function* (domain) {
+	const results = yield gatherDomainInsights(domain);
 
-					if (outOfDate) {
-						return gatherAndAddDomainInsights(domain).then(function() {
-							return getLatestValuesFor(domain);
-						});
-					}
+	// Use same timestamp for all results
+	const date = Date.now() / 1000;
 
-					return getLatestValuesFor(domain);
-			});
-		});
+	// Add results to the database
+	const insightsAdded = results.map(function (insight) {
+		debug('addInsights', insight.name, domain, insight.value, date, insight.link)
+		return addInsights(insight.name, domain, insight.value, date, insight.link);
 	});
-};
 
-function gatherAndAddDomainInsights(domain) {
-	return gatherDomainInsights(domain)
-	.then(function(results) {
-
-		// Use same timestamp for all results
-		const date = Date.now() / 1000;
-
-		// Add results to the database
-		const insightsAdded = results.map(function (insight) {
-			debug('addInsights', insight.name, domain, insight.value, date, insight.link)
-			return addInsights(insight.name, domain, insight.value, date, insight.link);
-		});
-
-		// After results are added to the database, repeat this process
-		return Promise.all(insightsAdded);
-	});
-}
+	return Promise.all(insightsAdded);
+});
