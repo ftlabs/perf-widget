@@ -84,7 +84,7 @@ module.exports = bluebird.coroutine(function* (url, freshInsights) {
 	try {
 		const inDateInsights = yield hasPageOrDomainInsights(url);
 			
-		if (inDateInsights) {
+		if (inDateInsights && !freshInsights) {
 			debug('has in date insights, returning insights.');
 			return getLatestValuesForPageAndDomain(url);
 		}
