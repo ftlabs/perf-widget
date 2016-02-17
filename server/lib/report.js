@@ -4,11 +4,19 @@ const query = require('./database').query;
 
 function getHistoricalInsightsForDomain (domain){
 
-	const command = `SELECT page.id, page.url, value_history.value, value_history.date FROM page JOIN value_history ON page.id = value_history.page_id WHERE page.domain=${escape(domain)};`;
+	debug('\n\n\n', domain);
+
+	//const command = `SELECT page.url, value_history.value, value_history.date FROM page JOIN value_history ON page.id = value_history.page_id WHERE page.domain=${escape(domain)};`;
+	const command = `SELECT page.url, value_history.value, value_history.date FROM page JOIN value_history ON page.id = value_history.page_id JOIN properties ON value_history.property_id=1 WHERE page.domain=${escape(domain)} GROUP BY value_history.date;`;
 
 	return query(command)
 		.then(result => {
-			return result;
+			debug('\n\n\n', result);
+			return {
+				data : result,
+				domain : domain,
+				str : JSON.stringify(result)
+			};
 		})
 	;
 
