@@ -256,14 +256,6 @@ function loadWidget () {
 
 let widgetControls;
 
-if (location.host.match(/[\.\/]ft.com$/)) {
-	const sessionCookieData = oTracking.utils.getValueFromCookie(/FTSession=([^;]+)/);
-	chrome.runtime.sendMessage({
-		method: 'setSessionCookieInformation',
-		sessionCookieData: sessionCookieData
-	});
-}
-
 chrome.runtime.sendMessage({
 	method: 'isEnabledForThisHost',
 	host: location.host
