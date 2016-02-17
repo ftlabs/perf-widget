@@ -6,7 +6,6 @@ const insert = require('gulp-insert');
 const env = require('dotenv').config();
 const argv = require('yargs').argv;
 const serverDomain = process.env.SERVER_DOMAIN || 'https://ftlabs-perf-widget-test.herokuapp.com';
-const base64 = require('gulp-base64');
 const obt = require('origami-build-tools');
 
 function getDestination () {
