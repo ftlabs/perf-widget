@@ -35,7 +35,6 @@
     "gulp-preprocess": "^2.0.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
-    "gulp-webpack": "^1.5.0",
     "hsts": "^1.0.0",
     "is-url-superb": "^2.0.0",
     "lodash": "^4.0.0",
@@ -62,9 +61,10 @@
     "supertest": "^1.1.0"
   },
   "scripts": {
-    "build": "npm-run-all clean mkdir build:app build:extension build:obt",
+    "bower": "bower install",
+    "build": "npm-run-all clean bower mkdir build:app build:extension build:client",
     "build:app": "gulp set-service-url",
-    "build:obt": "gulp obt",
+    "build:client": "gulp client",
     "build:extension": "gulp build-extension",
     "build:extension:test": "gulp build-extension --destination TEST",
     "build:extension:live": "gulp build-extension --destination LIVE",
