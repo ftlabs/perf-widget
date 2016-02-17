@@ -49,9 +49,8 @@ gulp.task('build-extension-main', ['copy-extension-files'], function () {
 	return obt.build(gulp, {
 		js: './extension/scripts/main.js',
 		buildJs: 'main.js',
-		buildFolder: 'disabled'
-	})
-	.pipe(gulp.dest('./extension-dist/scripts/'));
+		buildFolder: './extension-dist/scripts/'
+	});
 });
 
 gulp.task('build-extension-background', ['copy-extension-files'], function () {
@@ -59,9 +58,8 @@ gulp.task('build-extension-background', ['copy-extension-files'], function () {
 	return obt.build(gulp, {
 		js: './extension/scripts/background.js',
 		buildJs: 'background.js',
-		buildFolder: 'disabled'
-	})
-	.pipe(gulp.dest('./extension-dist/scripts/'));
+		buildFolder: './extension-dist/scripts/'
+	});
 });
 
 gulp.task('build-extension-popup', ['copy-extension-files'], function () {
