@@ -104,6 +104,27 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		sendResponse({enabled: enabled && isHostEnabled(request.host)});
 	}
 
+	if (request.method === 'trackUiInteraction') {
+		new Promise(
+			resolve => chrome.identity.getProfileUserInfo(resolve)
+		).then(identity => {
+			chrome.tabs.query({
+				active: true,
+				lastFocusedWindow: true
+			}, function (tabs){
+				tabs.forEach(function (tab) {
+					chrome.tabs.sendMessage(tab.id, {
+						method: 'makeTrackingRequest',
+						data: {
+							identity: identity,
+							details: request.details
+						}
+					});
+				});
+			});
+		});
+	}
+
 	if (request.method === 'setEnabledForThisHost') {
 		setHostEnabled(request.host, request.enabled);
 	}

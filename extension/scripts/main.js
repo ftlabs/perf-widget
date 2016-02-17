@@ -2,6 +2,8 @@
 /*global chrome*/
 
 const Color = require('./lib/color').Color;
+const oTracking = require('o-tracking');
+
 const noColorCalculatedStyle = (function () {
 	const temp = document.createElement('div');
 	document.body.appendChild(temp);
@@ -85,6 +87,48 @@ function generateContrastData () {
 	}
 }
 
+function logInteraction (e) {
+	const details = {};
+	const context = e.target.dataset.trackingAction;
+	if (e.target.tagName === 'A') {
+			details.action = 'widget-link-click';
+			details.destination = e.target.href;
+			if (context) details.context = context;
+	} else if (context) {
+			details.action = 'click';
+			details.context = context;
+	}
+
+	if (details.action) {
+		chrome.runtime.sendMessage({
+			method: 'trackUiInteraction',
+			details: details
+		});
+	}
+}
+
+// The background script picks the active tab in the active window to make
+// this request since it cannot be made from the background script
+function makeTrackingRequest (details, identity) {
+
+	const trackingReq = details;
+	trackingReq.category = 'ftlabs-performance-widget';
+	trackingReq.id = identity.id;
+	trackingReq.email = identity.email;
+
+	// may not work without a DOM, may have to redirect to active tab.
+	oTracking.init({
+		server: 'https://spoor-api.ft.com/px.gif',
+		context: {
+			product: 'ftlabs-perf-widget'
+		}
+	});
+
+	oTracking.event({
+		detail: trackingReq
+	});
+}
+
 function loadWidget () {
 
 	// add the widget stylesheet
@@ -100,6 +144,7 @@ function loadWidget () {
 	const apiEndpoint = '/* @echo serviceURL */';
 
 	function removeSelf (){
+		widgetControls = null;
 		holder.parentNode.removeChild(holder);
 		chrome.runtime.onMessage.removeListener(recieveData);
 	}
@@ -159,9 +204,9 @@ function loadWidget () {
 			}());
 
 			reducedData.forEach(datum => {
-				output += `<h3>${datum.category} <a  href="${apiEndpoint}/insights/#${datum.category.toLowerCase().replace(/[^a-z]+/, '')}">ⓘ</a></h3><div class="insights">`;
+				output += `<h3>${datum.category} <a data-tracking-action="insight-link" href="${apiEndpoint}/insights/#${datum.category.toLowerCase().replace(/[^a-z]+/, '')}">ⓘ</a></h3><div class="insights">`;
 				datum.comparisons.forEach(comparison => {
-					output += `<li class="ok-${ comparison.ok }"><a href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
+					output += `<li class="ok-${ comparison.ok }"><a data-tracking-action="data-link-ok-${ comparison.ok }" href="${datum.link}" target="_blank" title="${datum.provider}">${comparison.text}</a></li>`;
 				});
 				output += '</div>';
 			});
@@ -187,15 +232,18 @@ function loadWidget () {
 	holder.appendChild(header);
 	header.appendChild(close);
 	header.appendChild(refresh);
-	holder.appendChild(footer)
+	holder.appendChild(footer);
+	holder.addEventListener('click', logInteraction);
 
-	footer.innerHTML = `<a href="${apiEndpoint}/"><h3>Why am I seeing this?</h3></a>`;
+	footer.innerHTML = `<h3><a data-tracking-action="why-am-i-seeing-this" href="${apiEndpoint}/">Why am I seeing this?</a></h3>`;
 	footer.classList.add('footer');
 
-	close.setAttribute('class', 'close');
+	close.classList.add('close');
+	close.dataset.trackingAction = 'close';
 	close.addEventListener('click', removeSelf, false);
 
-	refresh.setAttribute('class', 'refresh');
+	refresh.classList.add('refresh');
+	refresh.dataset.trackingAction = 'refresh';
 	refresh.addEventListener('click', refreshFn, false);
 
 	holder.setAttribute('id', 'perf-widget-holder');
@@ -217,11 +265,16 @@ chrome.runtime.sendMessage({
 });
 
 chrome.runtime.onMessage.addListener(function (request) {
+
 	if (request.method === 'showWidget') {
 		if (widgetControls) {
 			widgetControls.refresh();
 		} else {
 			widgetControls = loadWidget();
 		}
+	}
+
+	if (request.method === 'makeTrackingRequest') {
+		makeTrackingRequest(request.data.details, request.data.identity);
 	}
 });
