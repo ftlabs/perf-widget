@@ -1,4 +1,4 @@
-
+/* global chrome*/
 const style = document.createElement('style');
 
 style.textContent = `
@@ -48,7 +48,7 @@ style.textContent = `
 		background-size: 60%;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('/images/cross.png');
+		background-image: url('${chrome.extension.getURL('/images/cross.png')}');
 	}
 
 	#perf-widget-holder .refresh {
@@ -64,7 +64,7 @@ style.textContent = `
 		background-size: 80%;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('/images/refresh.png');
+		background-image: url('${chrome.extension.getURL('/images/refresh.png')}');
 	}
 
 	#perf-widget-holder h3:first-of-type {
@@ -110,17 +110,17 @@ style.textContent = `
 		padding-top: 2px;
 		background-position: 50%;
 		background-repeat: no-repeat;
-		background-image: url('/images/unsure.png');
+		background-image: url('${chrome.extension.getURL('/images/unsure.png')}');
 		position: absolute;
 		margin-left: -18px;
 	}
 
 	#perf-widget-holder .insights li.ok-true::before {
-		background-image: url('/images/check.png');
+		background-image: url('${chrome.extension.getURL('/images/check.png')}');
 	}
 
 	#perf-widget-holder .insights li.ok-false::before {
-		background-image: url('/images/issue.png');
+		background-image: url('${chrome.extension.getURL('/images/issue.png')}');
 	}
 
 	#perf-widget-holder .insights li a {

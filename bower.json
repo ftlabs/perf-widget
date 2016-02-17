@@ -1,0 +1,19 @@
+{
+  "name": "perf-widget",
+  "version": "1.0.0",
+  "homepage": "https://ftlabs-perf-widget.herokuapp.com",
+  "authors": [
+    "FTLabs <enquiries@labs.ft.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "o-tracking": "^1.1.6"
+  }
+}
