@@ -3,43 +3,6 @@
 
 const co = require('co');
 const apiEndpoint = '/* @echo serviceURL */';
-const oTracking = require('o-tracking');
-
-let ftSessionCookiePromise;
-let assignFtSessionCookie;
-(function () {
-
-	function reloadFtSessionCookiePromise() {
-
-		// Wait to recieve the information before making the requests.
-		ftSessionCookiePromise = new Promise(resolve => {
-
-			// Set the assign function to wait then resolve
-			assignFtSessionCookie = function (sessionCookie) {
-				resetSessionCookieTimeout();
-				resolve(sessionCookie);
-
-				// if we recieve a new session cookie before it expires then just update the
-				// value and reset the timeout
-				assignFtSessionCookie = function () {
-					ftSessionCookiePromise = Promise.resolve(sessionCookie);
-					resetSessionCookieTimeout();
-				}
-			}
-		});
-	}
-
-	let resetSessionCookieTimeout = (function () {
-
-		let timeout;
-		reloadFtSessionCookiePromise();
-
-		return function resetSessionCookieTimeout() {
-			clearTimeout(timeout);
-			timeout = setTimeout(reloadFtSessionCookiePromise, 2000);
-		}
-	}());
-}());
 
 let enabled;
 
@@ -145,28 +108,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		new Promise(
 			resolve => chrome.identity.getProfileUserInfo(resolve)
 		).then(identity => {
-			const trackingReq = request.details;
-			trackingReq.category = 'ftlabs-performance-widget';
-			trackingReq.id = identity.id;
-			trackingReq.email = identity.email;
-			ftSessionCookiePromise.then(sessionCookieData => {
-
-				// TEMP: Log out request to console when they are being made
-				console.log(trackingReq);
-
-				// may not work without a DOM, may have to redirect to active tab.
-				oTracking.init({
-					server: 'https://spoor-api.ft.com/px.gif',
-					context: {
-						product: 'ft.com'
-					},
-					user: {
-						ft_session: sessionCookieData
-					}
+			chrome.tabs.query({
+				active: true,
+				lastFocusedWindow: true
+			}, function (tabs){
+				tabs.forEach(function (tab) {
+					chrome.tabs.sendMessage(tab.id, {
+						method: 'makeTrackingRequest',
+						data: {
+							identity: identity,
+							details: request.details
+						}
+					});
 				});
-
-				oTracking.event(trackingReq);
-			})
+			});
 		});
 	}
 
@@ -188,10 +143,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 				chrome.tabs.sendMessage(tab.id, {method: 'showWidget'});
 			});
 		});
-	}
-
-	if (request.method === 'setSessionCookieInformation') {
-		assignFtSessionCookie(request.sessionCookieData);
 	}
 
 	if (request.method === 'getData') {

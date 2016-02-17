@@ -53,9 +53,6 @@ gulp.task('build-extension-main', ['copy-extension-files'], function () {
 		buildFolder: 'disabled'
 	})
 	.pipe(preprocess( { context : { serviceURL : getDestination() } } ) )
-	.pipe(base64({
-		baseDir: 'client/src/'
-	}))
 	.pipe(gulp.dest('./extension-dist/scripts/'));
 });
 
@@ -73,7 +70,7 @@ gulp.task('build-extension-background', ['copy-extension-files'], function () {
 gulp.task('build-extension-popup', ['copy-extension-files'], function () {
 
 	return obt.build(gulp, {
-		js: './extension/scripts/popup.js.js',
+		js: './extension/scripts/popup.js',
 		buildJs: 'popup.js',
 		buildFolder: './extension-dist/scripts/'
 	});
@@ -87,11 +84,20 @@ gulp.task('build-extension-manifest', ['copy-extension-files'], function () {
 
 gulp.task('build-extension', ['build-extension-main', 'build-extension-background', 'build-extension-popup', 'build-extension-manifest']);
 
-gulp.task('copy-extension-files', function () {
+gulp.task('copy-extension-files', ['copy-extension-images'], function () {
 
 	return gulp.src([
 		'extension/*'
 	])
 	.pipe(gulp.dest('./extension-dist/'));
+
+});
+
+gulp.task('copy-extension-images', function () {
+
+	return gulp.src([
+		'extension/images/*'
+	])
+	.pipe(gulp.dest('./extension-dist/images/'));
 
 });

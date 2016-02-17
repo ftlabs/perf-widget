@@ -107,6 +107,28 @@ function logInteraction (e) {
 	}
 }
 
+// The background script picks the active tab in the active window to make
+// this request since it cannot be made from the background script
+function makeTrackingRequest (details, identity) {
+
+	const trackingReq = details;
+	trackingReq.category = 'ftlabs-performance-widget';
+	trackingReq.id = identity.id;
+	trackingReq.email = identity.email;
+
+	// may not work without a DOM, may have to redirect to active tab.
+	oTracking.init({
+		server: 'https://spoor-api.ft.com/px.gif',
+		context: {
+			product: 'ftlabs-perf-widget'
+		}
+	});
+
+	oTracking.event({
+		detail: trackingReq
+	});
+}
+
 function loadWidget () {
 
 	// add the widget stylesheet
@@ -250,11 +272,16 @@ chrome.runtime.sendMessage({
 });
 
 chrome.runtime.onMessage.addListener(function (request) {
+
 	if (request.method === 'showWidget') {
 		if (widgetControls) {
 			widgetControls.refresh();
 		} else {
 			widgetControls = loadWidget();
 		}
+	}
+
+	if (request.method === 'makeTrackingRequest') {
+		makeTrackingRequest(request.data.details, request.data.identity);
 	}
 });
