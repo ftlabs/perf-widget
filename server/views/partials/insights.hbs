@@ -14,6 +14,7 @@
 		<h3 id='performance'>Performance</h3>
 		<div>
 			<p>These statistics come from <a href="https://developers.google.com/speed/pagespeed/insights/">Google PageSpeed Insights</a>. The information this service surfaces relate to the loading speed for page. </p>
+			<p>This insight needs to load up the webpage so will be unavailable if the page URL returns a redirect, e.g. you have to log in.</p>
 			<ul>
 				<li>Number of Connections to 3<sup>rd</sup> party sites, each connection requires a slow handshake which will slow down the site.</li>
 				<li>The size of the content which needs to be downloaded, more content more needs to be downloaded. Consider reducing number of assets, minifying assets and optimising images.</li>
@@ -24,7 +25,8 @@
 
 		<h3 id="security">Security</h3>
 		<div>
-			<p>This insight is provided from <a href="https://www.ssllabs.com/">Qualys's SSL Labs</a> It looks at the https encryption for the web page and determines if it is adequate.</p>
+			<p><a href="https://www.ssllabs.com/">Qualys's SSL Labs</a> provide this insight. It looks at the https encryption for the web page and determines if it is adequate.</p>
+			<p>To take the measurements the insight provider by queries the server. Insights may be unavailable if the server is inaccessible from outside a local network.</p>
 			<p>Https is important because it prevents malicious 3<sup>rd</sup> parties, i.e. public access points, injecting adverts or malicious scripts amongst other things.</p>
 			<p>There has also been discussion within browser vendors about marking unencrypted http insecure so it is important to ensure web pages are available available over https.</p>
 			<p>This insight will also test for whether the https implementation is out of date and susceptible to known attacks. This may require updating your server.</p>
@@ -32,6 +34,7 @@
 
 		<h3 id="accessibility">Accessibility</h3>
 		<div>
+			<p>This insight is calculated by the extension so should work regardless, and is displayed if the server is accessible.</p>
 			<p>This insight provides information about the legibility of your site.</p>
 			<p>It compares the css text colour to the css background colour for block of text on the page.</p>
 			<p>It then works out the contrast ratio (a number between 0 and 21). It is based upon <a href="http://leaverou.github.io/contrast-ratio/">this tool by Lea Verou.</a> Where 1 is no contrast (same colour) and 21 is comparing white to black</p>
