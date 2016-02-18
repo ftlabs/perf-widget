@@ -25,7 +25,7 @@ function getDestination () {
 
 }
 
-gulp.task('client', function () {
+gulp.task('client', ['copy-client-images'], function () {
 
 	return obt.build(gulp, {
 		js: './client/src/js/main.js',
@@ -34,6 +34,16 @@ gulp.task('client', function () {
 	});
 
 });
+
+gulp.task('copy-client-images', function () {
+
+	return gulp.src([
+		'client/src/images/*'
+	])
+	.pipe(gulp.dest('./client/dist/images/'));
+
+});
+
 
 gulp.task('set-service-url', function () {
 
