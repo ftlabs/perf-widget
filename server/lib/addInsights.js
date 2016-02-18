@@ -1,7 +1,10 @@
+const debug = require('debug')('perf-widget:lib:addInsights'); // eslint-disable-line no-unused-vars
 const bluebird = require('bluebird');
 const query = require('./database').query;
 const escape = require('mysql').escape;
-const debug = require('debug')('perf-widget:lib:addInsights'); // eslint-disable-line no-unused-vars
+const graphite = require('graphite');
+const GRAPHITE_ENDPOINT = process.env.GRAPHITE_ENDPOINT;
+const client = graphite.createClient(GRAPHITE_ENDPOINT);
 
 module.exports = bluebird.coroutine(function* addInsights(propertyName, url, value, date, link) {
 	const insertIntoValueHistory = `INSERT INTO value_history (property_id, page_id, value, date, link) VALUES ((SELECT id from properties WHERE name=${escape(propertyName)}), (SELECT id from page WHERE url=${escape(url)}), ${escape(value)}, ${escape(date)}, ${escape(link)});`;
@@ -15,4 +18,12 @@ module.exports = bluebird.coroutine(function* addInsights(propertyName, url, val
 	yield query(insertIntoCurrentValues);
 	yield query(deleteFromCurrentValuesForDomain);
 	yield query(insertIntoCurrentValuesForDomain);
+
+	const metrics = {[`labs.perf_widget.${url.replace(/\./g,'_')}.${propertyName}`]: value};
+
+	client.write(metrics, date, function(err) {
+		if (err) {
+			debug(err);
+		}
+	});
 });
