@@ -5,6 +5,13 @@ router.get('/insights', require('./insights'));
 router.get('/contrastbreakdown', require('./contrast'));
 router.use('/static', require('./staticFiles'));
 router.use('/api', require('./api'));
+router.use('/destruct', function(req, res){
+
+	res.json({
+		selfDestruct : process.env.EXTENSION_SELFDESTRUCT === "true"
+	});
+
+});
 
 const authS3O = require('s3o-middleware');
 
