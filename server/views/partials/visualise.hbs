@@ -114,19 +114,34 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.15/d3.min.js"></script>
 
 	<style>
+		
+		.charts .container div{
+			width: 100%;
+		}
 
-		.charts .container{
+		.charts .container .bars{
 			display: flex;
 			align-items: flex-end;
 		}
 
-		.charts .container div{
+		.charts .container .times{
+			font-size: 0.5em;
+		}
+
+		.charts .container .bars div, .charts .container .times div{
 			width: 30px;
 			margin-right: 10px;
 			display: inline-block;
+			text-align: center;
+		}
+
+		.charts .container .bars div{
 			background-color: #5DB5FF;
 			color: white;
-			text-align: center;
+		}
+
+		.charts .container .time div{
+			height: 20px;
 		}
 
 	</style>
@@ -136,11 +151,6 @@
 	<div class="charts">
 
 	</div>
-
-	<!--<section class='historicalChart'>
-
-	</section>-->
-
 
 	<script>
 
@@ -174,22 +184,35 @@
 		for(key in uniquePages){
 			var page = uniquePages[key];			
 
-			var title = document.createElement('h4');
+			var title = document.createElement('h5');
 			var container = document.createElement('div');
+			var bars = document.createElement('div');
+			var times = document.createElement('div');
 
 			title.textContent = key;
 			container.setAttribute('class', 'container');
+			bars.setAttribute('class', 'bars');
+			times.setAttribute('class', 'times');
 
 			page.data.forEach(function(info){
 				var bar = document.createElement('div');
 				bar.style.height = info.value + "px";
 				bar.textContent = info.value;
-				container.appendChild(bar);
+				bars.appendChild(bar);
 
+				var time = document.createElement('div');
+				var d = new Date(info.date * 1000);
+
+				time.textContent = d.getDate() + "/" + (d.getMonth() + 1);
+				times.appendChild(time);
 			});
 
 
 			chartsHolder.appendChild(title);
+			
+			container.appendChild(bars);
+			container.appendChild(times);
+
 			chartsHolder.appendChild(container);
 
 		}
