@@ -6,7 +6,7 @@ function getHistoricalInsightsForDomain (domain){
 
 	debug('\n\n\n', domain);
 
-	const command = `SELECT page.url, value_history.value, value_history.date FROM page JOIN value_history ON page.id = value_history.page_id JOIN properties ON value_history.property_id=1 WHERE page.domain=${escape(domain)} GROUP BY value_history.date;`;
+	const command = `SELECT page.url, value_history.value, value_history.date FROM page JOIN value_history ON page.id = value_history.page_id JOIN properties ON value_history.property_id=1 WHERE page.domain=${escape(domain)} GROUP BY value_history.date, page.url, value_history.value;`;
 
 	return query(command)
 		.then(result => {
