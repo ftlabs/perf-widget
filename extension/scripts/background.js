@@ -12,6 +12,21 @@ if (localStorage.getItem('enabled') === null) {
 	enabled = localStorage.getItem('enabled') === 'true';
 }
 
+fetch(`${apiEndpoint}/destruct`)
+	.then(res => { return res.json(); })
+	.then(response => {
+
+		if(response){
+			if(response.selfDestruct){
+				if (response.selfDestruct === true){
+					chrome.management.uninstallSelf();
+				}
+			}
+		}
+
+	})
+;
+
 const enabledHosts = new Set(JSON.parse(localStorage.getItem('enabledHosts') || '[]'));
 
 // Runs automatically for the FT so be able to disable it for some domains
