@@ -8,9 +8,7 @@ module.exports = function (req, res){
 	Promise.all(visRequests)
 		.then(results => {
 
-			// debug(`First row of response\n${results[0][0]}\n${results[1][0]}`);
-
-			debug(results[1]);
+			debug(`First row of response\n${results[0][0]}\n${results[1][0]}`);
 
 			res.render('main', {
 				partial : 'visualise',
@@ -31,19 +29,5 @@ module.exports = function (req, res){
 
 		});
 	;
-
-	/*whatDoesItAllMean.insights.allValues()
-		.then(data => {
-			debug('First row of response', data[0]);
-			res.render('main', {
-				partial : 'visualise',
-				results : data
-			})
-		})
-		.catch(err => {
-			res.end();
-			debug(`An error occured whilst trying to show what this all means\n${ err }`);
-		})
-	;*/
 
 }
