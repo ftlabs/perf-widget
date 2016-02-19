@@ -22,9 +22,11 @@ module.exports = bluebird.coroutine(function* addInsights(propertyName, url, val
 	if (client) {
 		const metrics = {[`labs.perf_widget.${url.replace(/\./g,'_')}.${propertyName}`]: value};
 
-		client.write(metrics, date, function(err) {
+		client.write(metrics, date * 1000, function(err) {
 			if (err) {
 				debug(err);
+			} else {
+				debug(metrics);
 			}
 		});
 	}
