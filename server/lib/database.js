@@ -51,6 +51,11 @@ module.exports.query = function query (command) {
 			debug('>>>>>>> SQL ERROR <<<<<<<\n\n', command, '>>>\n\n', err, '\n\n>>>>>>> |||||||| <<<<<<<');
 			connection.release();
 		});
+	})
+	.catch(err => {
+			debug('An error occured when retrieving a database connection');
+			debug(err);
+			connection.release();
 	});
 };
 
