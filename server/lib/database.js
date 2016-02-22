@@ -48,6 +48,7 @@ module.exports.query = function query (command) {
 			connection.release();
 			return results;
 		}).catch(err => {
+			debug('An error occured when running the query.');
 			debug('>>>>>>> SQL ERROR <<<<<<<\n\n', command, '>>>\n\n', err, '\n\n>>>>>>> |||||||| <<<<<<<');
 			connection.release();
 		});
