@@ -71,3 +71,5 @@ module.exports.ready = db.createTables().then(function () {
 	;
 	
 });
+
+process.on('SIGTERM', db.abort);
