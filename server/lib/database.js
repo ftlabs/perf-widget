@@ -24,18 +24,47 @@ function readSQLFiles () {
 }
 
 module.exports.createTables = function createTables () {
+
 	const connection = getConnection();
 
-	return connection.then(function (connection) {
+	function createDB (conn){
 
-		const query = denodeify(connection.query.bind(connection));
+		const query = denodeify(conn.query.bind(conn));
 
-		const queries = readSQLFiles().map(function (sql) {
+		return readSQLFiles().map(function (sql) {
 			return query(sql);
 		});
 
-		return Promise.all(queries);
-	});
+	}
+
+	if (process.env.NODE_ENV !== 'production'){
+
+		debug('Not in production. Rebuild DB');
+		return connection.then(function (connection){
+			return Promise.all( createDB(connection) )
+		});
+
+	} else {
+		debug('In production. Check state of DB. Build if required.');
+		return connection.then(function (connection){
+
+			const query = denodeify(connection.query.bind(connection));
+
+			return query(`SELECT table_name FROM information_schema.tables WHERE table_schema='perf_widget'`)
+				.then(res => {
+					if(res.length < 1){
+						// There are no tables, let's add them
+						return Promise.all( createDB(connection) );
+					} else {
+						connection.release();
+						return
+					}
+				})
+			;
+
+		});
+
+	}
 };
 
 module.exports.query = function query (command) {
