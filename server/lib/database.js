@@ -85,7 +85,6 @@ module.exports.query = function query (command) {
 	.catch(err => {
 			debug('An error occured when retrieving a database connection');
 			debug(err);
-			connection.release();
 	});
 };
 
