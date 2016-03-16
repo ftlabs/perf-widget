@@ -18,4 +18,4 @@ const pageExists = bluebird.coroutine(function* pageExists(url) {
 	return exists;
 });
 
-module.exports = url => pageExists(url);
+module.exports = pageExists;
