@@ -28,7 +28,7 @@
     "express": "^4.13.3",
     "express-enforces-ssl": "^1.1.0",
     "express-ftwebservice": "^2.0.0",
-    "express-hbs": "^0.8.4",
+    "express-hbs": "1.0.2",
     "graphite": "0.0.6",
     "gulp": "^3.9.0",
     "gulp-env": "^0.4.0",
@@ -45,11 +45,12 @@
     "node-fetch": "^1.3.3",
     "node-ssllabs": "^0.4.3",
     "npm-run-all": "^1.4.0",
-    "origami-build-tools": "^4.5.2",
+    "origami-build-tools": "5.0.0",
     "psi": "^2.0.2",
     "raven": "^0.9.0",
     "s3o-middleware": "^1.2.1",
-    "yargs": "^3.32.0"
+    "yargs": "^3.32.0",
+    "snyk": "^1.19.1"
   },
   "devDependencies": {
     "chai": "^3.4.1",
@@ -81,6 +82,9 @@
     "test:integration": "npm-run-all test:integration:*",
     "test:integration:api": "_mocha ./tests/integration/api/*.spec.js",
     "test:server": "istanbul cover _mocha -- -R spec ./tests/server/**/*.spec.js",
-    "watch": "nodemon --ignore client/dist --ignore coverage -e js,scss,json"
-  }
+    "watch": "nodemon --ignore client/dist --ignore coverage -e js,scss,json",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }

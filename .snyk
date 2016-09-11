@@ -1,0 +1,32 @@
+version: v1.5.0
+ignore: {}
+patch:
+  'npm:minimatch:20160620':
+    - origami-build-tools > nightwatch > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - origami-build-tools > babel-core > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - gulp > vinyl-fs > glob-stream > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - origami-build-tools > gulp > vinyl-fs > glob-stream > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - gulp > vinyl-fs > glob-stream > glob > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - origami-build-tools > gulp > vinyl-fs > glob-stream > glob > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - origami-build-tools > babel-loader > babel-core > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - origami-build-tools > gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+    - origami-build-tools > gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
+        patched: '2016-09-11T18:57:27.402Z'
+  'npm:request:20160119':
+    - psi > googleapis > google-auth-library > request:
+        patched: '2016-09-11T18:57:27.402Z'
+  'npm:tough-cookie:20160722':
+    - psi > googleapis > request > tough-cookie:
+        patched: '2016-09-11T18:57:27.402Z'
